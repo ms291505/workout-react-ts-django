@@ -54,7 +54,12 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
         />
       </td>
       <td>
-        <select name={ setTypeInputName } id={ setTypeInputName } value={ setType } onChange={ handleSetTypeChange }>
+        <select
+          name={ setTypeInputName }
+          id={ setTypeInputName }
+          value={ setType }
+          onChange={ handleSetTypeChange }
+        >
           {
             EX_SET_TYPE_LIST.map(type => (
               <option value={ type } key={ type } >{ type }</option>
@@ -63,7 +68,7 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
         </select>
       </td>
       <td>
-        {children}
+        { children }
       </td>
     </tr>
   )

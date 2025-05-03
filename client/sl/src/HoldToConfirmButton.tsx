@@ -1,15 +1,15 @@
 // @ts-check
 
-import React, { useRef } from "react";
+import { ReactNode, useRef } from "react";
 
 /**
- * 
- * @param {{
- *  actionToConfirm: function,
- *  timeToConfirm?: number,
- *  children?: any}} props
+ * This isn't actually used anywhere right now, but could be used to prevent accidental deletion.
  */
-export default function HoldToConfirmButton({ actionToConfirm, timeToConfirm=750, children }) {
+export default function HoldToConfirmButton({ actionToConfirm, timeToConfirm=750, children }: {
+    actionToConfirm: Function;
+    timeToConfirm?: number;
+    children?: ReactNode;
+  }) {
   const timeoutRef = useRef(null);
 
   const handleMouseDown = () => {

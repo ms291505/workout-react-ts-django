@@ -1,6 +1,4 @@
 type FormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => void;
-
-
 /**
  * Handles a button click by printing form data to the console log.
  * e.g., onClick={handleSubmitToLog}

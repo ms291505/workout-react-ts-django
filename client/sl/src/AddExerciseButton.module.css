@@ -1,0 +1,12 @@
+button.AddExerciseButton {
+  height: 4rem;
+  width: 8rem;
+  background-color: #333333;
+  border-radius: 12px;       /* rounded corners */
+  padding: 16px;             /* some spacing inside */
+  margin: 12px;            /* space around the card */
+  margin-top: 0px;
+  box-shadow: 0 2px 4px #1a1a1a; /* soft shadow for depth */
+  font-size: 20px;
+  align-items: center;
+}

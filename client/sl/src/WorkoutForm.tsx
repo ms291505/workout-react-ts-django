@@ -41,7 +41,7 @@ export default function WorkoutForm({editMode = false, workout = testWorkout}: {
     setExerciseList(nextExerciseList);
   }
 
-  const removeExerciseClick = (exerciseIDToDelete) => {
+  const removeExerciseClick = (exerciseIDToDelete: string | number) => {
     const nextExerciseList = exerciseList.filter(
       exercise => exercise.id !== exerciseIDToDelete
     );

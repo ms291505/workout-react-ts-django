@@ -1,0 +1,79 @@
+.
+├── .DS_Store
+├── .gitignore
+├── client
+│   ├── .DS_Store
+│   └── sl
+│       ├── .DS_Store
+│       ├── .gitignore
+│       ├── eslint.config.js
+│       ├── index.html
+│       ├── package-lock.json
+│       ├── package.json
+│       ├── public
+│       │   └── vite.svg
+│       ├── README.md
+│       ├── src
+│       │   ├── AddExerciseButton.module.css
+│       │   ├── AddExerciseButton.tsx
+│       │   ├── App.css
+│       │   ├── App.tsx
+│       │   ├── assets
+│       │   │   └── react.svg
+│       │   ├── constants.ts
+│       │   ├── ExerciseCard.module.css
+│       │   ├── ExerciseCard.tsx
+│       │   ├── global.css
+│       │   ├── HoldToConfirmButton.tsx
+│       │   ├── HomeScreen.tsx
+│       │   ├── index.css
+│       │   ├── main.tsx
+│       │   ├── SetRow.module.css
+│       │   ├── SetRow.tsx
+│       │   ├── SetTableHeader.tsx
+│       │   ├── types.ts
+│       │   ├── utils.tsx
+│       │   ├── vite-env.d.ts
+│       │   ├── WorkoutForm.module.css
+│       │   └── WorkoutForm.tsx
+│       ├── tsconfig.app.json
+│       ├── tsconfig.json
+│       ├── tsconfig.node.json
+│       └── vite.config.ts
+├── docs
+│   ├── make.bat
+│   ├── Makefile
+│   └── source
+│       ├── _static
+│       ├── _templates
+│       ├── api.rst
+│       ├── conf.py
+│       └── index.rst
+├── LICENSE
+├── project_tree.txt
+└── server
+    └── djangobackend
+        ├── __init__.py
+        ├── api
+        │   ├── __init__.py
+        │   ├── admin.py
+        │   ├── apps.py
+        │   ├── migrations
+        │   │   ├── __init__.py
+        │   │   ├── 0001_initial.py
+        │   │   ├── 0002_rename_workout_exercise_hist_workout_hist_and_more.py
+        │   │   └── 0003_alter_exercise_created_alter_exercise_hist_created_and_more.py
+        │   ├── models.py
+        │   ├── tests.py
+        │   ├── urls.py
+        │   └── views.py
+        ├── manage.py
+        ├── requirements.txt
+        └── workout
+            ├── __init__.py
+            ├── asgi.py
+            ├── settings.py
+            ├── urls.py
+            └── wsgi.py
+
+15 directories, 62 files

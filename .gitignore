@@ -1,3 +1,31 @@
-.DS_store
+# macOS
+.DS_Store
 
+# Python
+*.py[cod]
+__pycache__/
+*.sqlite3
+
+# Virtual environments
 env/
+venv/
+
+# Django
+server/djangobackend/db.sqlite3
+
+# Node
+client/sl/node_modules/
+client/sl/.parcel-cache/
+
+# Build output
+client/sl/dist/
+/docs/build/
+/docs/.doctrees/
+
+# Logs and temp
+*.log
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp

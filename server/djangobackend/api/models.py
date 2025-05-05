@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.contrib.auth.models import User
 
 
 # python3 manage.py makemigrations api
@@ -18,6 +19,9 @@ class Workout_Hist(models.Model):
     date (DateTimeField): workout date
     notes (TextField): workout notes
     created (DateTimeField): created date
+    voided (CharField): void flag
+    replaced_by (OneToOneField): ID for replacement
+    user (ForeignKey): ID for the user
 
   Methods:
     formatted_date: Reutrns the workout date as a human-readable string.
@@ -46,6 +50,18 @@ class Workout_Hist(models.Model):
     blank=True,
     on_delete=models.SET_NULL
   )
+  user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="workouts",
+    blank=True,
+    null=True,
+    default=None
+  )
+
+  class Meta:
+    verbose_name = "Workout"
+    verbose_name_plural = "Workouts"
 
   def was_in_last_30_days(self):
     """
@@ -100,13 +116,25 @@ class Exercise(models.Model):
   created = models.DateTimeField(
     verbose_name="created date",
     auto_now_add=True)
+  user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="created_exercises",
+    null=True,
+    blank=True,
+    default=None
+  )
 
   def __str__(self):
     """
     Returns:
       str: Exercise name.
     """
-    return self.name
+    return f"'{self.name}' ({'user-added' if self.user else 'defualt'})"
+  
+  def clean(self):
+    if self.user_added_flag == "Y" and self.user is None:
+      raise ValueError("User must be set if user_added_flag is 'Y'")
 
 
 class Exercise_Hist(models.Model):

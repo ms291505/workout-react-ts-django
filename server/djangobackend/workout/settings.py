@@ -32,7 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "api.authentication.CookieJWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -42,6 +43,20 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+
+    # shared options for the access and refresh tokens
+    "AUTH_COOKIE_SECURE": False,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_SAMESITE": "Lax",
+
+    # token specific options
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_PATH": "/",
+
+    "AUTH_COOKIE_REFRESH": "refresh_token",
+    "AUTH_COOKIE_REFRESH_PATH": "/api/token/refresh",
+
+
 }
 
 INSTALLED_APPS = [

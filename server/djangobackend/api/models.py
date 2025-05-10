@@ -185,10 +185,11 @@ class ExSet(models.Model):
   Contains the sets performed for each exercise.
 
   Attributes:
-    exercise (ForeignKey)
+    exercise (ForeignKey): Foreign key for `EXERCISE` table (Exercise).
     order (PositiveSmallIntegerField): the order the sets were performed for each exercise
     weight_lbs (DecimalField): the weight in pounds, up to two decimal places
-    reps (PostiveSmallIntergerField)
+    reps (PostiveSmallIntergerField): count of reps performed
+    target_reps (PositiveSmallIntergerField): target reps for the athlete
     type (CharField): the set type (ExSetType)
     created (DateTimeField): created date
   """
@@ -209,6 +210,11 @@ class ExSet(models.Model):
     help_text="Enter weight in pounds, up to two decimal places."
   )
   reps = models.PositiveSmallIntegerField()
+  target_reps = models.PositiveBigIntegerField(
+    verbose_name="target reps",
+    blank=True,
+    null=True
+  )
   type = models.CharField(
     verbose_name="set type",
     max_length=2,
@@ -218,4 +224,5 @@ class ExSet(models.Model):
   )
   created = models.DateTimeField(
     verbose_name="ceated date",
-    auto_now_add=True)
+    auto_now_add=True
+  )

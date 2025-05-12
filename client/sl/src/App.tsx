@@ -1,28 +1,33 @@
 import { Routes, Route } from 'react-router-dom';
-import { createElement } from 'react'
 import './App.css'
+import PageHeader from './components/PageHeader';
 import WorkoutForm from './WorkoutForm';
 import HomeScreen from './HomeScreen';
+import Login from './components/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
+export default function App() {
 
-  const title1 = "The Log";
-  const pageHeader = createElement(
-    "h1",
-    {id: "pageHeader"},
-    title1
-  );
 
   return (
     <>
-      { pageHeader }
+      <PageHeader />
+      <div>
+        
+      </div>
       <Routes>
-        <Route path="/" element={<HomeScreen />} />
+        <Route
+          path="/"
+          element={
+          <ProtectedRoute>
+            <HomeScreen />
+          </ProtectedRoute>
+          }
+        />
         <Route path="/workout" element={<WorkoutForm />} />
-        <Route path="/edit_test" element={<WorkoutForm editMode={true} />} />
+        <Route path="/edit_test" element={<WorkoutForm editMode />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </>
   )
 }
-
-export default App;

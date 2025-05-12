@@ -1,4 +1,4 @@
-// types.js
+// types.ts
 
 export interface ExSet {
   id: string | number | null;
@@ -20,4 +20,12 @@ export interface Workout {
   date: string | null;
   notes: string | null;
   exercises: Exercise[] | null;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
 }

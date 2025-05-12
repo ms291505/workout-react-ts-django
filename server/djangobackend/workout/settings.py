@@ -28,6 +28,36 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+PROJECT_LOGGING_FLAG = True
+
+LOGGING = {
+  "version": 1,
+  "disable_existing_loggers": False,
+  "formatters": {
+    "verbose": {
+      "format": "{asctime} {levelname:<8} [{name}] {message}",
+      "style": "{",
+    },
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "formatter": "verbose",
+    },
+  },
+  "loggers": {
+    "django": {
+      "handlers": ["console"],
+      "level": "INFO",
+    },
+    "api": {
+      "handlers": ["console"],
+      "level": "DEBUG",
+      "propagate": False,
+    },
+  }
+}
+
 
 # Application definition
 REST_FRAMEWORK = {
@@ -72,6 +102,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,8 +110,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
 ]
+
+CORS_ALLOWED_ORIGINS = [
+  "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'workout.urls'
 

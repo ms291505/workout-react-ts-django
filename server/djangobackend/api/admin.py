@@ -23,20 +23,29 @@ class ExerciseInLine(admin.TabularInline):
 
 admin.site.unregister(User)
 
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
   """
   Uses the defualt User admin as a base, adds the following:
   - list of workouts inline
   """
-  inlines = UserAdmin.inlines + (WorkoutInLine, ExerciseInLine)
+  inlines = tuple(UserAdmin.inlines) + (
+    WorkoutInLine,
+    ExerciseInLine
+    )
 
-  readonly_fields = UserAdmin.readonly_fields + ("view_workouts_link",)
+  readonly_fields = tuple(UserAdmin.readonly_fields) + (
+    "view_workouts_link",
+    )
 
-  fieldsets = UserAdmin.fieldsets + (
-    ("Workout Tools", {"fields": ("view_workouts_link",)}),
-  )
+  fieldsets = [
+    *UserAdmin.fieldsets,
+    ("Workout Tools", {"fields": ("view_workouts_link",),
+                       }),
+  ]
 
+  @admin.display(description="Workouts")
   def view_workouts_link(self, obj):
     if not obj.pk:
       return ""
@@ -47,7 +56,6 @@ class CustomUserAdmin(UserAdmin):
     return format_html(
       '<a class="button" href="{}">View Workouts</a>', url
     )
-  view_workouts_link.short_description = "Workouts"
 
 
 @admin.register(Exercise)

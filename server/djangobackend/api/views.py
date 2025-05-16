@@ -44,7 +44,7 @@ class CookieTokenRefreshView(CookieTokenMixin, TokenRefreshView):
 
     raw = request.COOKIES.get(settings.SIMPLE_JWT["AUTH_COOKIE_REFRESH"])
 
-    d_log(f"{raw}")
+    d_log(f"CookieTokenRefreshView: {raw}")
 
     if not raw:
       return Response(
@@ -110,6 +110,9 @@ class WhoAmIView(APIView):
 
   def get(self, request):
     serializer = UserSerializer(request.user)
+
+    d_log(f"WhoAmIView: {Response(serializer.data)}")
+
     return Response(serializer.data)
 
 

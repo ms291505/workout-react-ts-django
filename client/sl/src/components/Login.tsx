@@ -1,6 +1,7 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { login } from "../api";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login() {
 
@@ -11,6 +12,8 @@ export default function Login() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { refreshUser } = useContext(AuthContext);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -27,6 +30,7 @@ export default function Login() {
       setError(msg);
     } finally {
       setLoading(false);
+      refreshUser();
     }
   };
 

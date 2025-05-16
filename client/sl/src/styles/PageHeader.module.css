@@ -1,0 +1,18 @@
+.appTitle {
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.userControls {
+  display: flex;
+  margin-left: auto;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.userName {
+  color: var(--color-accent);
+  font-weight: bold;
+}

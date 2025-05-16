@@ -1,12 +1,15 @@
 import { createContext, FC, ReactNode, useEffect, useState } from "react";
 import { whoAmI } from "../api";
 import { User } from "../types";
+import { logout } from "../api";
+import { useNavigate } from "react-router";
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   error: string | null;
   refreshUser: () => Promise<void>;
+  handleLogout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue>({
@@ -14,9 +17,11 @@ export const AuthContext = createContext<AuthContextValue>({
   loading: true,
   error: null,
   refreshUser: async () => {},
+  handleLogout: async () => {},
 });
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,13 +44,23 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
+  const handleLogout = async () => {
+      try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.error(err)
+    } finally {
+      await refreshUser();
+    }
+  }
+
   useEffect(() => {
-    console.log("AuthProvider effect triggered.")
     refreshUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, error, refreshUser, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );

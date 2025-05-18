@@ -1,4 +1,4 @@
-import { Workout, User } from "./types";
+import { Workout_Hist, User, Exercise } from "./types";
 
 const API_BASE = "http://localhost:8000/api";
 
@@ -41,13 +41,84 @@ export async function logout(): Promise<void> {
   if (!response.ok) throw new Error("Logout failed");
 }
 
-export async function fetchWorkouts(): Promise<Workout[]> {
+export async function fetchWorkouts(): Promise<Workout_Hist[]> {
   const response = await fetch(`${API_BASE}/workouts/`, {
     credentials: "include",
   });
   if (response.status === 401) {
     await refreshAccess();
     return fetchWorkouts();
+  }
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function fetchWorkoutDetail(
+  workoutID: number
+): Promise<Workout_Hist> {
+  const response = await fetch(`${API_BASE}/workouts/${workoutID}/`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "Application/json",
+    }
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchWorkoutDetail(workoutID);
+  }
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function postWorkout(workout: Workout_Hist): Promise<void> {
+  const response = await fetch(`${API_BASE}/workouts/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {"Content-Type": "Application/json"},
+    body: JSON.stringify(workout),
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return postWorkout(workout);
+  }
+  await checkStatus(response);
+}
+
+export async function fetchExercises(): Promise<Exercise[]> {
+  const response = await fetch(`${API_BASE}/exercises/`, {
+    credentials: "include",
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchExercises();
+  }
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function fetchExercisesByName(inputValue: string): Promise<Exercise[]> {
+  const response = await fetch(
+    `${API_BASE}/exercises/?search=${encodeURIComponent(inputValue)}`, {
+      credentials: "include"
+    });
+    if (response.status === 401) {
+      await refreshAccess();
+      return fetchExercisesByName(inputValue);
+    }
+    await checkStatus(response);
+    return response.json();
+}
+
+export async function postExercise(inputValue: string): Promise<Exercise> {
+  const response = await fetch(`${API_BASE}/exercises/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {"Content-Type": "Application/json"},
+    body: JSON.stringify({ name: inputValue }),
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return postExercise(inputValue);
   }
   await checkStatus(response);
   return response.json();

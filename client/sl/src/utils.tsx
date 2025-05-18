@@ -10,3 +10,7 @@ export const handleSubmitToLog: FormSubmitHandler = (event) => {
     
     console.log(JSON.stringify(dataObject, null, 2));
   }
+
+export const handleKeyDownPD = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "Enter") e.preventDefault();
+};

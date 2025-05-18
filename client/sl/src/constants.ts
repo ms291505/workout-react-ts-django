@@ -1,40 +1,36 @@
-/** @typedef {import("./types.js").ExSet} */
-/** @typedef {import("./types.js").Exercise} */
-/** @typedef {import("./types.js").Workout} */
+import { Exercise_Hist, ExSet } from "./types";
+import { Workout_Hist } from "./types";
 
-/** @type {ExSet}*/
-export const EMPTY_EX_SET = {
-  setOrder: null,
-  weight: null,
+export const EMPTY_EX_SET: ExSet = {
+  order: null,
+  weightLbs: null,
   reps: null,
-  setType: "",
+  type: "",
 };
 
-/** @type {ExSet} */
-export const testSet = {
-  setOrder: 1,
-  weight: 50,
+export const testSet: ExSet = {
+  order: 1,
+  weightLbs: 50,
   reps: 5,
-  setType: "Working",
+  type: "Working",
 };
 
-/** @type {Array} */
-export const EX_SET_TYPE_LIST = [
+
+export const EX_SET_TYPE_LIST: Array<string> = [
   "Warm-up",
   "Working",
   "MyoRep",
   "Drop"
 ]
 
-/** @type {Exercise} */
-export const EMPTY_EXERCISE = {
+export const EMPTY_EXERCISE_HIST: Exercise_Hist = {
   name: null,
   notes: null,
   exSets: []
 }
 
-/** @type {Workout} */
-export const testWorkout = {
+/** @type {Workout_Hist} */
+export const testWorkout: Workout_Hist = {
   name: "Full Body Strength",
   date: "2024-01-26",
   notes: "Focus on compound lifts and maintain strict form.",
@@ -44,9 +40,9 @@ export const testWorkout = {
       id: 1,
       notes: "Keep knees tracking over toes; hit parallel depth.",
       exSets: [
-        { setOrder: 1, weight: 95,  reps: 8, setType: "Warm-up", id: 1 },
-        { setOrder: 2, weight: 135, reps: 5, setType: "Working", id: 2 },
-        { setOrder: 3, weight: 185, reps: 5, setType: "Working", id: 3 },
+        { order: 1, weightLbs: 95,  reps: 8, type: "Warm-up", id: 1 },
+        { order: 2, weightLbs: 135, reps: 5, type: "Working", id: 2 },
+        { order: 3, weightLbs: 185, reps: 5, type: "Working", id: 3 },
       ]
     },
     {
@@ -54,9 +50,9 @@ export const testWorkout = {
       id: 2,
       notes: "Tuck elbows, drive feet into floor.",
       exSets: [
-        { setOrder: 1, weight: 65,  reps: 10, setType: "Warm-up", id: 4 },
-        { setOrder: 2, weight: 95,  reps: 5,  setType: "Working", id: 5 },
-        { setOrder: 3, weight: 115, reps: 3,  setType: "Working", id: 6 }
+        { order: 1, weightLbs: 65,  reps: 10, type: "Warm-up", id: 4 },
+        { order: 2, weightLbs: 95,  reps: 5,  type: "Working", id: 5 },
+        { order: 3, weightLbs: 115, reps: 3,  type: "Working", id: 6 }
       ]
     },
     {
@@ -64,9 +60,9 @@ export const testWorkout = {
       id: 3,
       notes: null,
       exSets: [
-        { setOrder: 1, weight: 135, reps: 5, setType: "Warm-up", id: 7 },
-        { setOrder: 2, weight: 225, reps: 3, setType: "Working", id: 8 },
-        { setOrder: 3, weight: 265, reps: 1, setType: "Working", id: 9 }
+        { order: 1, weightLbs: 135, reps: 5, type: "Warm-up", id: 7 },
+        { order: 2, weightLbs: 225, reps: 3, type: "Working", id: 8 },
+        { order: 3, weightLbs: 265, reps: 1, type: "Working", id: 9 }
       ]
     },
   ]

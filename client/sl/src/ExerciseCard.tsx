@@ -1,34 +1,44 @@
+// ExerciseCard.tsx
+
 import styles from "./ExerciseCard.module.css";
-import { useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import SetRow from "./SetRow.js";
 import { EMPTY_EX_SET } from "./constants.ts";
 import SetTableHeader from "./SetTableHeader.tsx";
 import { v4 as uuidv4 } from "uuid";
+import { Exercise_Hist, ExSet } from "./types.ts";
+import { handleKeyDownPD } from "./utils.tsx";
 
-/** @typedef {import("./types.js").ExSet} */
-/** @typedef {import("./types.js").Exercise} */
+interface ExerciseCardProps {
+  exercise: Exercise_Hist;
+  exerciseInputIndex: number;
+  children?: ReactNode;
+}
 
-/**
- * A card for an exercise.
- * @param {{
- *  exercise?: Exercise,
- *  exerciseInputIndex?: number,
- *  children: any
- * }} props 
- * @returns 
- */
 export default function ExerciseCard({
-  exercise = null,
-  exerciseInputIndex = 0,
-  children
-}) {
+  exercise,
+  exerciseInputIndex,
+  children,
+}: ExerciseCardProps) {
   const exerciseInputName = `exerciseName[${ exerciseInputIndex }]`;
   const exerciseInputNotes = `exerciseNotes[${ exerciseInputIndex }]`;
+  const exerciseInputDBID = `exerciseId[${ exerciseInputIndex }]`;
   
-  const [setList, setSetList] = useState(
-    exercise.exSets.length > 0
-    ? exercise.exSets.slice()
-    : [{...EMPTY_EX_SET, id: uuidv4()},]);
+  //pick up HERE
+  const [setList, setSetList] = useState<ExSet[]>(
+    [
+      { ...EMPTY_EX_SET, id: uuidv4() }
+    ]
+  );
+
+  useEffect(() => {
+    if (exercise.exSets?.length) {
+      setSetList(exercise.exSets);
+    } else {
+      setSetList([{ ...EMPTY_EX_SET, id: uuidv4() }]);
+    }
+  }, [exercise])
+
   const [exerciseName, setExerciseName] = useState(
     exercise.name != ""
     ? exercise.name
@@ -40,7 +50,7 @@ export default function ExerciseCard({
     setSetList(nextSetList);
   }
 
-  const removeSetClick = (setIDToDelete) => {
+  const removeSetClick = (setIDToDelete: string | number | null | undefined) => {
     const nextSetList = setList.filter(exSet => exSet.id !== setIDToDelete);
     setSetList(nextSetList);
   }
@@ -53,14 +63,18 @@ export default function ExerciseCard({
           name={ exerciseInputName }
           id={ exerciseInputName }
           placeholder="Exercise name..."
-          defaultValue={exerciseName}
+          defaultValue={exerciseName ?? ""}
           onChange={(e) => setExerciseName(e.target.value)}
-          onKeyDown={(e) => {
-            e.key === "Enter" && e.preventDefault();
-          }}
+          onKeyDown={handleKeyDownPD}
           required
         />
         {children}
+        <input
+          type="hidden"
+          readOnly
+          name={ exerciseInputDBID }
+          value={exercise.exerciseId ?? ""}
+        />
       </div>
       <div className={styles.row}>
         <textarea
@@ -68,7 +82,7 @@ export default function ExerciseCard({
           name={ exerciseInputNotes }
           id={ exerciseInputNotes }
           placeholder="Exercise notes..."
-          defaultValue={exercise.notes != "" ? exercise.notes : ""}
+          defaultValue={exercise.notes ?? ""}
         />
       </div>
       <table>

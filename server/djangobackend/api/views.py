@@ -1,11 +1,21 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from rest_framework import generics, status
+from django.db.models import Q
+
+from rest_framework import generics, status, filters
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer, WorkoutSerializer
-from .models import Workout_Hist
+
+from .serializers import (
+  UserSerializer,
+  WorkoutHistSerializer,
+  ExerciseSerializer,
+)
+from .models import (
+  Workout_Hist,
+  Exercise,
+)
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from django.conf import settings
@@ -130,7 +140,7 @@ class WorkoutListCreate(generics.ListCreateAPIView):
     serializer_class (Serializer): Serializer clss for validating and serializing Workout_Hist instances.
     permission_classes (list): List of permission classes that determine access; only authenticated users.
   """
-  serializer_class = WorkoutSerializer
+  serializer_class = WorkoutHistSerializer
   permission_classes = [IsAuthenticated]
 
   def get_queryset(self):
@@ -139,6 +149,50 @@ class WorkoutListCreate(generics.ListCreateAPIView):
   
   def perform_create(self, serializer):
     serializer.save(user=self.request.user)
+
+
+class WorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
+  """
+  /api/workouts/{pk}
+  """
+  serializer_class = WorkoutHistSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    user = self.request.user
+    return Workout_Hist.objects.filter(user=user)
+
+
+class ExerciseListCreate(generics.ListCreateAPIView):
+  """
+  List existing workouts or create a new one for an authenticated user.
+
+  GET:
+    Returns a list of all public exercises and those belonging to the user.
+
+  POST:
+    Creates a new exercise for the user.
+  """
+  serializer_class = ExerciseSerializer
+  permission_classes = [IsAuthenticated]
+  queryset = Exercise.objects.all()
+
+  filter_backends = [filters.SearchFilter]
+  search_fields = ["name"]
+
+  def filter_queryset(self, queryset):
+    queryset = super().filter_queryset(queryset)
+    user = self.request.user
+    return queryset.filter(
+      Q(user=user) | Q(user_added_flag="N")
+    )
+  
+  def perform_create(self, serializer):
+    d_log(f"serializer: {serializer}")
+    serializer.save(
+      user=self.request.user,
+      user_added_flag="Y"
+    )
 
 
 class WorkoutDelete(generics.DestroyAPIView):
@@ -153,7 +207,7 @@ class WorkoutDelete(generics.DestroyAPIView):
     permission_classes (list): List of permission classes that determine access; only authenticated users.
   """
 
-  serializer_class = WorkoutSerializer
+  serializer_class = WorkoutHistSerializer
   permission_classes = [IsAuthenticated]
 
   def get_queryset(self):

@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  width: max-content;
+}
+
+.sideBar {
+  justify-content:left;
+  margin: 10px;
+  text-align: left;
+}
+
+.homeContainer {
+  max-width: 800px;
+  min-width: 400px;
+  border: dotted black;
+}

@@ -1,33 +1,47 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import './App.css'
 import PageHeader from './components/PageHeader';
 import WorkoutForm from './WorkoutForm';
 import HomeScreen from './HomeScreen';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import RecentWorkouts from './components/RecentWorkouts';
+import ExerciseLibrary from './components/ExerciseLibrary';
 
-export default function App() {
-
-
+function MainLayout() {
   return (
     <>
       <PageHeader />
       <div>
-        
+        <Outlet />
       </div>
-      <Routes>
-        <Route
-          path="/"
-          element={
-          <ProtectedRoute>
-            <HomeScreen />
-          </ProtectedRoute>
-          }
-        />
-        <Route path="/workout" element={<WorkoutForm />} />
-        <Route path="/edit_test" element={<WorkoutForm editMode />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
     </>
+  )
+}
+
+
+export default function App() {
+  return (
+    <Routes>
+      {/* Public Routes: */}
+      <Route path="/login" element={<Login />} />
+
+      {/* Protected Routes: */}
+      <Route element={<ProtectedRoute />}>
+       <Route element={<MainLayout />}>
+        <Route path="/" element={<HomeScreen />}>
+          <Route path="recent" element={<RecentWorkouts />} />
+          <Route path="exercise_library" element={<ExerciseLibrary />} />
+          <Route path="" element={<Navigate to="recent" replace />} />
+          <Route path="workout" element={<WorkoutForm />} />
+          <Route path="workout/:workoutId/edit" element={<WorkoutForm editMode />} />
+          <Route path="edit_test" element={<WorkoutForm editMode />} />
+        </Route>
+
+       </Route>
+      </Route>
+    </Routes>
+
+
   )
 }

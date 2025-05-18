@@ -1,12 +1,9 @@
-import { Navigate } from "react-router-dom";
-import { ReactNode, useEffect, useState } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { refreshAccess} from "../api";
 
-interface ProtectedRouteProps {
-  children: ReactNode;
-}
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute() {
 
   const [status, setStatus] = useState<"loading" | "allowed" | "denied">("loading");
 
@@ -19,11 +16,10 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   if (status === "loading") {
     return <div>Authenticating...</div>;
-  }
-
-  if (status === "denied") {
+  } else if (status === "allowed") {
+    return <Outlet />
+  } else {
     return <Navigate to="/login" replace />
   }
-
-  return <>{children}</>;
+  ;
 }

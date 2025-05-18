@@ -1,30 +1,49 @@
-// @ts-check
-
 import styles from "./WorkoutForm.module.css";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { handleSubmitToLog } from "./utils";
 import ExerciseCard from "./ExerciseCard";
-import { EMPTY_EXERCISE, testWorkout } from "./constants";
+import { EMPTY_EXERCISE_HIST, testWorkout } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 import AddExerciseButton from "./AddExerciseButton";
-import { Workout } from "./types";
+import { Exercise, Exercise_Hist, Workout_Hist } from "./types";
+import { fetchWorkoutDetail } from "./api";
+import ExercisePickerModal from "./components/ExercisePickerModal";
+import { TextField } from "@mui/material";
 
+interface WorkoutFormProps {
+  editMode?: boolean;
+}
 /**
  * The form that handles entering, editting, and submitting workout data.
  */
-export default function WorkoutForm({editMode = false, workout = testWorkout}: {
-  editMode?: boolean,
-  workout?: Workout
-}) {
+export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
   const navigate = useNavigate();
+  const { workoutId } = useParams<{ workoutId: string }>();
 
-  // State for list of exercises on a workout.
-  const [exerciseList, setExerciseList] = useState(
-    editMode && workout.exercises
-      ? workout.exercises.slice()
-      : [{...EMPTY_EXERCISE, id: uuidv4()},]
-  );
+  const [workout, setWorkout] = useState<Workout_Hist | null>(null);
+  const [exerciseList, setExerciseList] = useState<Exercise_Hist[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  useEffect(() => {
+    if (editMode && workoutId) {
+      fetchWorkoutDetail(Number(workoutId)).then((data) => {
+        setWorkout(data);
+        if (data.exercises && Array.isArray(data.exercises)) {
+          setExerciseList(
+            data.exercises.map((ex) => ({ ...ex, id: ex.id ?? uuidv4() }))
+          );
+        }
+
+      });
+
+    } else if (editMode) {
+      setWorkout(testWorkout);
+      setExerciseList(
+        testWorkout.exercises!.map((ex) => ({ ...ex, id: ex.id ?? uuidv4() }))
+      );
+    }
+  }, [editMode, workoutId]);
 
   /**
    * Submit the form and then navigate to the home screen. 
@@ -35,20 +54,32 @@ export default function WorkoutForm({editMode = false, workout = testWorkout}: {
     navigate("/");
   }
 
-  const clickAddExercise = () => {
-    const nextExerciseList = exerciseList.slice();
-    nextExerciseList.push({...EMPTY_EXERCISE, id: uuidv4()});
-    setExerciseList(nextExerciseList);
+  const handleAddExerciseClick = () => {
+    setPickerOpen(true);
   }
 
-  const removeExerciseClick = (exerciseIDToDelete: string | number) => {
+  const handleExerciseConfirm = (ex: Exercise) => {
+    setExerciseList((prev) => [
+      ...prev,
+      {
+        ...EMPTY_EXERCISE_HIST,
+        exerciseId: ex.id!,
+        name: ex.name,
+        id: uuidv4(),
+        exSets: [{ ...EMPTY_EXERCISE_HIST.exSets![0], id: uuidv4() }],
+      },
+    ]);
+    setPickerOpen(false);
+  }
+
+  const removeExerciseClick = (exerciseIDToDelete: string | number | null | undefined) => {
     const nextExerciseList = exerciseList.filter(
       exercise => exercise.id !== exerciseIDToDelete
     );
     setExerciseList(nextExerciseList);
   }
 
-  const clickDiscard = (event) => {
+  const clickDiscard = (event: MouseEvent) => {
     event.preventDefault();
     navigate("/");
   }
@@ -59,15 +90,18 @@ export default function WorkoutForm({editMode = false, workout = testWorkout}: {
       {/* Workout Header Card*/}
       <div className={styles.card}>
         <input
+          type="hidden"
+          name="id"
+          value={editMode && workout?.id ? workout.id : ""}
+        />
+        <input
           className={styles.workoutNameInput}
           type="text"
           id="workoutNameInput"
           name="workoutName"
           placeholder="Workout name..."
           defaultValue={editMode && workout?.name ? workout.name : ""}
-          onKeyDown={(e) => {
-            e.key === "Enter" && e.preventDefault();
-          }}
+          onKeyDown={(e) => e.key === "Enter" ? e.preventDefault() : null}
         />
         <input
           type="date"
@@ -80,30 +114,34 @@ export default function WorkoutForm({editMode = false, workout = testWorkout}: {
             : ""
           }
         />
-        <textarea
+        <TextField
+          label="Workout Notes"
           name="workoutNotes"
           id="workoutNotes"
-          className={styles.workoutNotesInput}
-          placeholder="Workout notes..."
+          multiline
+          rows={4}
+          fullWidth
+          variant="filled"
+          sx={{ overflow: "visible" }}
           defaultValue={
-            editMode && workout.notes
+            editMode && workout?.notes
             ? workout.notes
             : ""
           }
-        ></textarea>
+        />
       </div>
       <div>
         {
-          exerciseList.map((exercise, index) => (
+          exerciseList.map((exHist, index) => (
             <ExerciseCard
-              key={exercise.id}
-              exercise={exercise}
+              key={exHist.id}
+              exercise={exHist}
               exerciseInputIndex={index}
             >
               <button
                 className={styles.removeExerciseButton}
                 disabled={exerciseList.length <= 1}
-                onClick={() => removeExerciseClick(exercise.id)}
+                onClick={() => removeExerciseClick(exHist.id)}
               >
                 Remove Exercise
               </button>
@@ -112,9 +150,14 @@ export default function WorkoutForm({editMode = false, workout = testWorkout}: {
         }
       </div>
       <div>
-        <AddExerciseButton onClick={clickAddExercise}>
+        <AddExerciseButton onClick={handleAddExerciseClick}>
           +
         </AddExerciseButton>
+        <ExercisePickerModal
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          onConfirm={handleExerciseConfirm}
+        />
       </div>
       <div>
         <button type="submit" className="submitWorkoutButton" >Submit</button>

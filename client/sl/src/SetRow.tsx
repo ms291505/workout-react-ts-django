@@ -19,7 +19,7 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
     exerciseInputIndex?: number;
     children?: ReactNode;
   }) {
-  const [setType, setSetType] = useState(exSet.setType ? exSet.setType : EX_SET_TYPE_LIST[0]);
+  const [setType, setSetType] = useState(exSet.type ? exSet.type : EX_SET_TYPE_LIST[0]);
 
   const handleSetTypeChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     setSetType(event.target.value);
@@ -40,7 +40,7 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
           type="number"
           name={ weightInputName }
           id={ weightInputName }
-          defaultValue={exSet?.weight ? exSet.weight : ""}
+          defaultValue={exSet?.weightLbs ? exSet.weightLbs : ""}
           required
         />
       </td>

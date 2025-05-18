@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import User
+from decimal import Decimal
 
 
 # python3 manage.py makemigrations api
@@ -206,7 +207,7 @@ class ExSet(models.Model):
     verbose_name="weight (lbs)",
     decimal_places=2,
     max_digits=6,
-    default=0,
+    default=Decimal("0.0"),
     help_text="Enter weight in pounds, up to two decimal places."
   )
   reps = models.PositiveSmallIntegerField()

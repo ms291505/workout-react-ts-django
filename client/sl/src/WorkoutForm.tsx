@@ -7,9 +7,11 @@ import { EMPTY_EXERCISE_HIST, testWorkout } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 import AddExerciseButton from "./AddExerciseButton";
 import { Exercise, Exercise_Hist, Workout_Hist } from "./types";
-import { fetchWorkoutDetail } from "./api";
+import { fetchWorkoutDetail, postWorkout } from "./api";
 import ExercisePickerModal from "./components/ExercisePickerModal";
 import { TextField } from "@mui/material";
+import { transformFormData } from "./library/transform";
+import { MouseEvent } from "react";
 
 interface WorkoutFormProps {
   editMode?: boolean;
@@ -51,6 +53,18 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     handleSubmitToLog(event);
+    
+    const form = event.currentTarget;
+    const raw = Object.fromEntries(
+      new FormData(form).entries()
+    ) as Record<string,string>;
+
+    const payload = transformFormData(raw);
+
+    if (!editMode) {
+      postWorkout(payload);
+    }
+
     navigate("/");
   }
 
@@ -79,7 +93,7 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
     setExerciseList(nextExerciseList);
   }
 
-  const clickDiscard = (event: MouseEvent) => {
+  const clickDiscard = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     navigate("/");
   }

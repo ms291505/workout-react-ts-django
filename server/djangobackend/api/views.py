@@ -15,6 +15,7 @@ from .serializers import (
 from .models import (
   Workout_Hist,
   Exercise,
+  ExSetType
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -218,6 +219,17 @@ class WorkoutDelete(generics.DestroyAPIView):
       QuerySet[Workout_Hist]: All workouts filtered by the current user.
     """
     return Workout_Hist.objects.filter(user=self.request.user)
+  
+
+class ExSetTypeList(APIView):
+  permission_classes = [IsAuthenticated]
+
+  def get(self, request):
+    choices = [
+      {"value": choice.value, "label": choice.label}
+      for choice in ExSetType
+    ]
+    return Response(choices)
 
 
 class CreateUserView(generics.CreateAPIView):

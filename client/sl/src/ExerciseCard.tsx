@@ -22,7 +22,8 @@ export default function ExerciseCard({
 }: ExerciseCardProps) {
   const exerciseInputName = `exerciseName[${ exerciseInputIndex }]`;
   const exerciseInputNotes = `exerciseNotes[${ exerciseInputIndex }]`;
-  const exerciseInputDBID = `exerciseId[${ exerciseInputIndex }]`;
+  const exerciseDBID = `exerciseId[${ exerciseInputIndex }]`;
+  const exerciseHistID = `exerciseHistId[${ exerciseInputIndex}]`;
   
   //pick up HERE
   const [setList, setSetList] = useState<ExSet[]>(
@@ -72,8 +73,14 @@ export default function ExerciseCard({
         <input
           type="hidden"
           readOnly
-          name={ exerciseInputDBID }
+          name={ exerciseDBID }
           value={exercise.exerciseId ?? ""}
+        />
+        <input
+          type="hidden"
+          readOnly
+          name={ exerciseHistID }
+          value={ exercise.id ?? ""}
         />
       </div>
       <div className={styles.row}>

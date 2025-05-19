@@ -1,5 +1,10 @@
 // types.ts
 
+export interface Choice {
+  value: string;
+  label: string;
+}
+
 export interface ExSet {
   id?: string | number | null;
   order: number | null;
@@ -13,7 +18,7 @@ export interface ExSet {
  */
 export interface Exercise_Hist {
   /** The name of the exercise performed. */
-  name: string | null;
+  name?: string | null;
 
   exerciseId?: string | number | null;
 
@@ -21,7 +26,7 @@ export interface Exercise_Hist {
   id?: string | number | null;
 
   /** User notes about the time this was performed. */
-  notes: string | null;
+  notes?: string | null;
 
   /** The sets performed. */
   exSets: ExSet[] | null;

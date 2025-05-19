@@ -9,7 +9,8 @@ from api.views import (
   WorkoutListCreate,
   WorkoutDelete,
   ExerciseListCreate,
-  WorkoutDetailView
+  WorkoutDetailView,
+  ExSetTypeList
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -25,5 +26,6 @@ urlpatterns = [
   path("logout/", DeleteCookiesView.as_view(), name="logout"),
   path("whoami/", views.WhoAmIView.as_view(), name="who-am-i"),
   path("exercises/", ExerciseListCreate.as_view(), name="exercise-list-create"),
+  path("exset-types/", ExSetTypeList.as_view(), name="exset-types"),
 
 ]

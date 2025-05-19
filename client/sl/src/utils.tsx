@@ -14,3 +14,8 @@ export const handleSubmitToLog: FormSubmitHandler = (event) => {
 export const handleKeyDownPD = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key === "Enter") e.preventDefault();
 };
+
+
+export const isIntId = (x: string | null | undefined) => {
+  if (x && /^\d+$/.test(x)) return true;
+}

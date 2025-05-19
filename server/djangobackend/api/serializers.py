@@ -60,27 +60,30 @@ class ExSetSerializer(serializers.ModelSerializer):
     ]
     read_only_fields = ("id",)
 
-
 class ExerciseHistSerializer(serializers.ModelSerializer):
-  ex_sets = ExSetSerializer(many=True)
-  exercise_id = serializers.PrimaryKeyRelatedField(
-    queryset=Exercise.objects.all()
-  )
-  name = serializers.CharField(
-    source="exercise.name",
-    read_only=True
-  )
+    # ← write-only field called "exercise_id" on the wire
+    exercise_id = serializers.PrimaryKeyRelatedField(
+        source="exercise",                
+        queryset=Exercise.objects.all(),
+        write_only=True
+    )
+    
+    name = serializers.CharField(
+        source="exercise.name",
+        read_only=True
+    )
+    ex_sets = ExSetSerializer(many=True)
 
-  class Meta:
-    model = Exercise_Hist
-    fields = [
-      "id",
-      "exercise_id",
-      "name",
-      "notes",
-      "ex_sets"
-    ]
-    read_only_fields = ("id",)
+    class Meta:
+        model = Exercise_Hist
+        fields = [
+            "id",
+            "exercise_id",   
+            "name",          
+            "notes",
+            "ex_sets",
+        ]
+        read_only_fields = ("id",)
 
 
 class WorkoutHistSerializer(serializers.ModelSerializer):

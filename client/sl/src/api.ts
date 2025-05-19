@@ -1,4 +1,4 @@
-import { Workout_Hist, User, Exercise } from "./types";
+import { Workout_Hist, User, Exercise, Choice } from "./types";
 
 const API_BASE = "http://localhost:8000/api";
 
@@ -41,6 +41,18 @@ export async function logout(): Promise<void> {
   if (!response.ok) throw new Error("Logout failed");
 }
 
+export async function fetchSetTypeChoice(): Promise<Choice[]> {
+  const response = await fetch(`${API_BASE}/exset-types`, {
+    credentials: "include",
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchSetTypeChoice();
+  }
+  await checkStatus(response);
+  return response.json();
+}
+
 export async function fetchWorkouts(): Promise<Workout_Hist[]> {
   const response = await fetch(`${API_BASE}/workouts/`, {
     credentials: "include",
@@ -81,7 +93,14 @@ export async function postWorkout(workout: Workout_Hist): Promise<void> {
     await refreshAccess();
     return postWorkout(workout);
   }
-  await checkStatus(response);
+  if (!response.ok) {
+    console.error("Submit failed:", response.status);
+
+    const errors = await response.json();
+    console.error("Validation errors:", errors)
+
+    return;
+  }
 }
 
 export async function fetchExercises(): Promise<Exercise[]> {

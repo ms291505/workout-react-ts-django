@@ -1,6 +1,7 @@
-import { useState, ReactNode, ChangeEvent } from "react";
-import { EX_SET_TYPE_LIST } from "./constants.ts";
+import { ReactNode,  } from "react";
 import type { ExSet } from "./types.ts";
+import { useSetTypeChoices } from "./hooks/useSetTypeChoices.ts";
+import { Select, MenuItem } from "@mui/material";
 
 /**
  * Row for an Exercise Set.
@@ -19,16 +20,18 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
     exerciseInputIndex?: number;
     children?: ReactNode;
   }) {
-  const [setType, setSetType] = useState(exSet.type ? exSet.type : EX_SET_TYPE_LIST[0]);
+  
+  const { choices: exSetTypeChoices, loading } = useSetTypeChoices();
 
-  const handleSetTypeChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-    setSetType(event.target.value);
-  }
+  const defaultType =
+    exSet.type ??
+    (exSetTypeChoices.length > 0 ? exSetTypeChoices[0].value : "");
 
   const exSetIndices = `[${exerciseInputIndex}][${setOrder - 1}]`;
   const weightInputName = `weight${exSetIndices}`;
   const repsInputName = `reps${exSetIndices}`;
   const setTypeInputName = `setType${exSetIndices}`;
+  const exSetIdName = `exSetId${exSetIndices}`;
 
   return (
     <tr>
@@ -43,6 +46,11 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
           defaultValue={exSet?.weightLbs ? exSet.weightLbs : ""}
           required
         />
+        <input
+          type="hidden"
+          name={ exSetIdName }
+          value={ exSet.id ? exSet.id : "" }
+        />
       </td>
       <td>
         <input
@@ -54,18 +62,20 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
         />
       </td>
       <td>
-        <select
+        {loading ? (
+          "Loading types..."
+        ) : (
+        <Select
           name={ setTypeInputName }
-          id={ setTypeInputName }
-          value={ setType }
-          onChange={ handleSetTypeChange }
+          defaultValue={ defaultType }
         >
           {
-            EX_SET_TYPE_LIST.map(type => (
-              <option value={ type } key={ type } >{ type }</option>
+            exSetTypeChoices.map(({ value, label }) => (
+              <MenuItem value={ value } key={ value } >{ label }</MenuItem>
             ))
           }
-        </select>
+        </Select>
+        )}
       </td>
       <td>
         { children }

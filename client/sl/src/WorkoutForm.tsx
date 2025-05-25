@@ -112,26 +112,31 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
           name="id"
           value={editMode && workout?.id ? workout.id : ""}
         />
-        <input
-          className={styles.workoutNameInput}
-          type="text"
-          id="workoutNameInput"
-          name="workoutName"
-          placeholder="Workout name..."
-          defaultValue={editMode && workout?.name ? workout.name : ""}
-          onKeyDown={(e) => e.key === "Enter" ? e.preventDefault() : null}
-        />
-        <input
-          type="datetime-local"
-          name="workoutDate"
-          id="workoutDate"
-          className={styles.workoutDateInput}
-          defaultValue={
-            editMode && workout?.date
-            ? toDateTimeLocal(workout.date)
-            : getLocalDateTimeString()
-          }
-        />
+        <div className={styles.headerRow}>
+          <TextField
+            type="text"
+            sx={{ mb: 2, width: 400 }}
+            id="workoutNameInput"
+            name="workoutName"
+            label="Workout Name"
+            defaultValue={editMode && workout?.name ? workout.name : ""}
+            onKeyDown={(e) => e.key === "Enter" ? e.preventDefault() : null}
+          />
+          {" "}
+          <TextField
+            type="datetime-local"
+            sx={{ mb: 2 }}
+            name="workoutDate"
+            label="Workout Date"
+            id="workoutDate"
+            className={styles.workoutDateInput}
+            defaultValue={
+              editMode && workout?.date
+              ? toDateTimeLocal(workout.date)
+              : getLocalDateTimeString()
+            }
+          />
+        </div>
         <TextField
           label="Workout Notes"
           name="workoutNotes"
@@ -139,7 +144,6 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
           multiline
           rows={4}
           fullWidth
-          variant="filled"
           sx={{ overflow: "visible" }}
           defaultValue={
             editMode && workout?.notes

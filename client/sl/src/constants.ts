@@ -15,13 +15,17 @@ export const testSet: ExSet = {
   type: "Working",
 };
 
-
+/**
+ * @deprecated pull it from the api like a hero.
+ */
 export const EX_SET_TYPE_LIST: Array<string> = [
   "Warm-up",
   "Working",
   "MyoRep",
   "Drop"
 ]
+
+export const DEFAULT_EX_SET_TYPE: string = "WK";
 
 export const EMPTY_EXERCISE_HIST: Exercise_Hist = {
   name: null,

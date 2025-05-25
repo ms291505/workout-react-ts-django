@@ -3,6 +3,7 @@ import type { ExSet } from "./types.ts";
 import { useSetTypeChoices } from "./hooks/useSetTypeChoices.ts";
 import { MenuItem, TextField } from "@mui/material";
 import styles from "./SetRow.module.css";
+import { DEFAULT_EX_SET_TYPE } from "./constants.ts";
 
 /**
  * Row for an Exercise Set.
@@ -24,9 +25,13 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
   
   const { choices: exSetTypeChoices, loading } = useSetTypeChoices();
 
-  const defaultType =
-    exSet.type ??
-    (exSetTypeChoices.length > 0 ? String(exSetTypeChoices[0].value) : "");
+  const defaultType = () => {
+    if (exSet.type && exSet.type !== "") {
+      return exSet.type;
+    } else {
+      return DEFAULT_EX_SET_TYPE;
+    }
+  }
 
   const exSetIndices = `[${exerciseInputIndex}][${setOrder - 1}]`;
   const weightInputName = `weight${exSetIndices}`;
@@ -42,6 +47,7 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
       </td>
       <td>
         <TextField
+          required
           type="text"
           className={styles.weightInput}
           name={ weightInputName }
@@ -66,6 +72,7 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
       </td>
       <td>
         <TextField
+          required
           type="number"
           name={ repsInputName }
           id={ repsInputName }

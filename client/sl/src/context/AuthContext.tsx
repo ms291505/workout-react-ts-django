@@ -8,6 +8,7 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   error: string | null;
+  fromLogout: boolean;
   refreshUser: () => Promise<void>;
   handleLogout: () => Promise<void>;
 }
@@ -16,6 +17,7 @@ export const AuthContext = createContext<AuthContextValue>({
   user: null,
   loading: true,
   error: null,
+  fromLogout: true,
   refreshUser: async () => {},
   handleLogout: async () => {},
 });
@@ -25,6 +27,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fromLogout, setFromLogout] = useState(false);
 
   const refreshUser = async () => {
     setLoading(true);
@@ -32,7 +35,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     try {
       const u = await whoAmI();
       setUser(u);
-      console.log(`The user is ${u.username}`)
     } catch (err: unknown) {
       const msg = err instanceof Error
         ? err.message
@@ -45,6 +47,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const handleLogout = async () => {
+      setFromLogout(true);
       try {
       await logout();
       navigate("/login", { replace: true });
@@ -60,7 +63,16 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, error, refreshUser, handleLogout }}>
+    <AuthContext.Provider value=
+      {{
+        user,
+        loading,
+        error,
+        fromLogout,
+        refreshUser,
+        handleLogout
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

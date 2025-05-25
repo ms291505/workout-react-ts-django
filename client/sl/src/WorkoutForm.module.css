@@ -1,12 +1,9 @@
 .card {
-  background-color: #000000;
+  background-color: #151515;
   border-radius: 12px;       /* rounded corners */
   padding: 16px;             /* some spacing inside */
   margin: 12px;            /* space around the card */
   box-shadow: 0 2px 4px #1a1a1a; /* soft shadow for depth */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .removeExerciseButton {
@@ -37,16 +34,14 @@
   outline: none;
 }
 
-.workoutDateInput {
-  background-color: #000000;
-  border: none;
-  text-align: center;
-  font-size: medium;
-  margin-top: 12px;
-}
-
 .workoutNotesInput {
   width: 80%;
   height: 2rem;
   margin: 12px;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

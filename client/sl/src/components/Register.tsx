@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { AuthContext } from "../context/AuthContext";
 import LogoutModal from "./LogoutModal";
+import Link from "@mui/material/Link";
 
 export default function Register() {
   const { user } = useContext(AuthContext);
@@ -61,31 +62,13 @@ export default function Register() {
             {error}
           </div>
         )}
+        <p>Enter your contact info:</p>
         <TextField
           label="email"
           sx={{ mb: 2 }}
           type="email"
           name="email"
           value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <TextField
-          label="username"
-          sx ={{ mb: 2 }}
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <br />
-        <TextField
-          label="password"
-          sx={{ mb: 2 }}
-          type="password"
-          name="password"
-          value={formData.password}
           onChange={handleChange}
           required
         />
@@ -108,10 +91,31 @@ export default function Register() {
           required
         />
         <br />
+        <p>Create your credentials:</p>
+        <TextField
+          label="username"
+          sx ={{ mb: 2 }}
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          required
+        />
+        <br />
+        <TextField
+          label="password"
+          sx={{ mb: 2 }}
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <br />
         <Button
           type="submit"
           variant="contained"
           disabled={loading}
+          sx={{ m: 2 }}
         >
           {loading ? "Registering user..." : "Register"}
         </Button>
@@ -119,12 +123,17 @@ export default function Register() {
       </form>
       <p>
         Already registered? Proceed to 
-        <Button
-        variant="text"
-        type="button"
-        onClick={() => navigate("/login")}>
-          Log In
-        </Button>
+        <Link
+        onClick={() => navigate("/login")}
+        sx={{
+          cursor: "pointer",
+          display: "inline-block",
+          px: 1,
+          py: 0.5
+        }}
+        >
+          Login Page
+        </Link>
       </p>
     </Box>
   )

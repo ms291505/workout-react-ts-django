@@ -76,10 +76,9 @@ export default function ExercisePickerModal({
     <Dialog
       open={open}
       onClose={onClose}
-      fullWidth
       maxWidth="xs"
     >
-      <DialogTitle>Select or Create and Exercise</DialogTitle>
+      <DialogTitle>Select or create an exercise</DialogTitle>
       <DialogContent sx={{ overflow: "visible" }}>
         <Autocomplete<Exercise, false, false, true>
           freeSolo

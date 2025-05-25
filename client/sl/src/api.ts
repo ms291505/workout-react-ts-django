@@ -1,4 +1,9 @@
-import { Workout_Hist, User, Exercise, Choice } from "./types";
+import {
+  Workout_Hist,
+  User,
+  Exercise,
+  UserRegisterDto,
+  Choice } from "./types";
 
 const API_BASE = "http://localhost:8000/api";
 
@@ -41,6 +46,27 @@ export async function logout(): Promise<void> {
   if (!response.ok) throw new Error("Logout failed");
 }
 
+export async function register(payload: UserRegisterDto): Promise<void | Response> {
+  const response = await fetch(`${API_BASE}/user/register/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "Application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    console.error("Submit failed:", response.status);
+
+    const errors = await response.json();
+    console.error("Validation errors:", errors)
+
+    return response;
+  } else {
+    return response;
+  }
+}
+
 export async function fetchSetTypeChoice(): Promise<Choice[]> {
   const response = await fetch(`${API_BASE}/exset-types`, {
     credentials: "include",
@@ -65,9 +91,7 @@ export async function fetchWorkouts(): Promise<Workout_Hist[]> {
   return response.json();
 }
 
-export async function fetchWorkoutDetail(
-  workoutID: number
-): Promise<Workout_Hist> {
+export async function fetchWorkoutDetail( workoutID: number): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/${workoutID}/`, {
     credentials: "include",
     headers: {
@@ -92,6 +116,29 @@ export async function postWorkout(workout: Workout_Hist): Promise<void> {
   if (response.status === 401) {
     await refreshAccess();
     return postWorkout(workout);
+  }
+  if (!response.ok) {
+    console.error("Submit failed:", response.status);
+
+    const errors = await response.json();
+    console.error("Validation errors:", errors)
+
+    return;
+  }
+}
+
+export async function updateWorkout(workout: Workout_Hist): Promise<void> {
+  const response = await fetch(`${API_BASE}/workouts/${workout.id!}/`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "Application/json",
+    },
+    body: JSON.stringify(workout),
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return updateWorkout(workout);
   }
   if (!response.ok) {
     console.error("Submit failed:", response.status);

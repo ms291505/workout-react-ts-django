@@ -41,9 +41,9 @@ export const testWorkout: Workout_Hist = {
       notes: "Keep knees tracking over toes; hit parallel depth.",
       exerciseId: 1,
       exSets: [
-        { order: 1, weightLbs: 95,  reps: 8, type: "Warm-up", id: 1 },
-        { order: 2, weightLbs: 135, reps: 5, type: "Working", id: 2 },
-        { order: 3, weightLbs: 185, reps: 5, type: "Working", id: 3 },
+        { order: 1, weightLbs: 95,  reps: 8, type: "WU", id: 1 },
+        { order: 2, weightLbs: 135, reps: 5, type: "WK", id: 2 },
+        { order: 3, weightLbs: 185, reps: 5, type: "WK", id: 3 },
       ]
     },
     {
@@ -52,9 +52,9 @@ export const testWorkout: Workout_Hist = {
       notes: "Tuck elbows, drive feet into floor.",
       exerciseId: 2,
       exSets: [
-        { order: 1, weightLbs: 65,  reps: 10, type: "Warm-up", id: 4 },
-        { order: 2, weightLbs: 95,  reps: 5,  type: "Working", id: 5 },
-        { order: 3, weightLbs: 115, reps: 3,  type: "Working", id: 6 }
+        { order: 1, weightLbs: 65,  reps: 10, type: "WU", id: 4 },
+        { order: 2, weightLbs: 95,  reps: 5,  type: "WK", id: 5 },
+        { order: 3, weightLbs: 115, reps: 3,  type: "MX", id: 6 }
       ]
     },
     {
@@ -63,9 +63,9 @@ export const testWorkout: Workout_Hist = {
       notes: null,
       exerciseId: 3,
       exSets: [
-        { order: 1, weightLbs: 135, reps: 5, type: "Warm-up", id: 7 },
-        { order: 2, weightLbs: 225, reps: 3, type: "Working", id: 8 },
-        { order: 3, weightLbs: 265, reps: 1, type: "Working", id: 9 }
+        { order: 1, weightLbs: 135, reps: 5, type: "WU", id: 7 },
+        { order: 2, weightLbs: 225, reps: 3, type: "WK", id: 8 },
+        { order: 3, weightLbs: 265, reps: 1, type: "WK", id: 9 }
       ]
     },
   ]

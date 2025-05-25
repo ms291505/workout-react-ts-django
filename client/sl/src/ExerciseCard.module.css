@@ -37,3 +37,9 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+.exSetTable {
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 5px 10px;
+}

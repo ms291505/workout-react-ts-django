@@ -1,17 +1,16 @@
 import styles from "./WorkoutForm.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { handleSubmitToLog } from "./utils";
+import { getLocalDateTimeString, handleSubmitToLog, toDateTimeLocal } from "./utils";
 import ExerciseCard from "./ExerciseCard";
 import { EMPTY_EXERCISE_HIST, testWorkout } from "./constants";
 import { v4 as uuidv4 } from "uuid";
 import AddExerciseButton from "./AddExerciseButton";
 import { Exercise, Exercise_Hist, Workout_Hist } from "./types";
-import { fetchWorkoutDetail, postWorkout } from "./api";
+import { fetchWorkoutDetail, postWorkout, updateWorkout } from "./api";
 import ExercisePickerModal from "./components/ExercisePickerModal";
-import { TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { transformFormData } from "./library/transform";
-import { MouseEvent } from "react";
 
 interface WorkoutFormProps {
   editMode?: boolean;
@@ -29,15 +28,16 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
 
   useEffect(() => {
     if (editMode && workoutId) {
-      fetchWorkoutDetail(Number(workoutId)).then((data) => {
-        setWorkout(data);
-        if (data.exercises && Array.isArray(data.exercises)) {
-          setExerciseList(
-            data.exercises.map((ex) => ({ ...ex, id: ex.id ?? uuidv4() }))
-          );
-        }
-
-      });
+      fetchWorkoutDetail(Number(workoutId))
+        .then((data) => {
+          setWorkout(data);
+          console.log(data);
+          if (data.exercises && Array.isArray(data.exercises)) {
+            setExerciseList(
+              data.exercises.map((ex) => ({ ...ex, id: ex.id ?? uuidv4() }))
+            );
+          }}
+        );
 
     } else if (editMode) {
       setWorkout(testWorkout);
@@ -63,6 +63,10 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
 
     if (!editMode) {
       postWorkout(payload);
+    }
+
+    if (editMode) {
+      updateWorkout(payload);
     }
 
     navigate("/");
@@ -118,14 +122,14 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
           onKeyDown={(e) => e.key === "Enter" ? e.preventDefault() : null}
         />
         <input
-          type="date"
+          type="datetime-local"
           name="workoutDate"
           id="workoutDate"
           className={styles.workoutDateInput}
           defaultValue={
             editMode && workout?.date
-            ? workout.date
-            : ""
+            ? toDateTimeLocal(workout.date)
+            : getLocalDateTimeString()
           }
         />
         <TextField

@@ -8,11 +8,11 @@ class UserSerializer(serializers.ModelSerializer):
     required=True
   )
   first_name = serializers.CharField(
-    required = True,
+    required = False,
     max_length = 30
   )
   last_name = serializers.CharField(
-    required = True,
+    required = False,
     max_length = 30
   )
 
@@ -65,7 +65,6 @@ class ExerciseHistSerializer(serializers.ModelSerializer):
     exercise_id = serializers.PrimaryKeyRelatedField(
         source="exercise",                
         queryset=Exercise.objects.all(),
-        write_only=True
     )
     
     name = serializers.CharField(

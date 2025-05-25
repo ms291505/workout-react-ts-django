@@ -61,9 +61,16 @@ export interface Exercise {
 }
 
 export interface User {
+  /* Extends below, may need to update the Omit if you add anything. */
   id: number | string;
   username: string;
   email: string | null;
   firstName: string | null;
   lastName: string | null;
 }
+
+export interface UserRegisterDto extends Omit<User, "id"> {
+  password: string;
+}
+
+export type UserRegisterFormData = UserRegisterDto;

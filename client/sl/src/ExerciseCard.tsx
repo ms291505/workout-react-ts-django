@@ -8,6 +8,8 @@ import SetTableHeader from "./SetTableHeader.tsx";
 import { v4 as uuidv4 } from "uuid";
 import { Exercise_Hist, ExSet } from "./types.ts";
 import { handleKeyDownPD } from "./utils.tsx";
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ExerciseCardProps {
   exercise: Exercise_Hist;
@@ -92,7 +94,7 @@ export default function ExerciseCard({
           defaultValue={exercise.notes ?? ""}
         />
       </div>
-      <table>
+      <table className={styles.exSetTable}>
         <SetTableHeader />
         <tbody>
           {
@@ -103,13 +105,14 @@ export default function ExerciseCard({
                 setOrder={index + 1}
                 exerciseInputIndex={exerciseInputIndex}
               >
-                <button
+                <IconButton
                   className={styles.removeSetButton}
                   disabled={setList.length <= 1}
                   onClick={() => removeSetClick(exSet.id)}
+                  aria-label="delete the set"
                 >
-                  Remove
-                </button>
+                  <DeleteIcon />
+                </IconButton>
               </SetRow>
             ))
           }

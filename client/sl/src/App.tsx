@@ -7,6 +7,7 @@ import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import RecentWorkouts from './components/RecentWorkouts';
 import ExerciseLibrary from './components/ExerciseLibrary';
+import Register from './components/Register';
 
 function MainLayout() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
     <Routes>
       {/* Public Routes: */}
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
       {/* Protected Routes: */}
       <Route element={<ProtectedRoute />}>

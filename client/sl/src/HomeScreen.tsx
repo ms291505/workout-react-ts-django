@@ -1,5 +1,7 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import styles from "./styles/HomeScreen.module.css";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 
 export default function HomeScreen() {
   const navigate = useNavigate();
@@ -17,9 +19,11 @@ export default function HomeScreen() {
           <br />
           <button onClick={() => navigate("/edit_test")}>Edit Workout</button>
         </div>
-        <div className={styles.homeContainer}>
-          <Outlet />
-        </div>
+        <Box className={styles.homeContainer}>
+          <Paper className={styles.homePaper}>
+            <Outlet />
+          </Paper>
+        </Box>
       </div>
     </>
   )

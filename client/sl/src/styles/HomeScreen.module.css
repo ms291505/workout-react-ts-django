@@ -12,5 +12,5 @@
 .homeContainer {
   max-width: 800px;
   min-width: 400px;
-  border: dotted black;
+  width: var(--base-homescreen-width);
 }

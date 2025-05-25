@@ -1,7 +1,8 @@
 import { ReactNode,  } from "react";
 import type { ExSet } from "./types.ts";
 import { useSetTypeChoices } from "./hooks/useSetTypeChoices.ts";
-import { Select, MenuItem } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
+import styles from "./SetRow.module.css";
 
 /**
  * Row for an Exercise Set.
@@ -25,13 +26,14 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
 
   const defaultType =
     exSet.type ??
-    (exSetTypeChoices.length > 0 ? exSetTypeChoices[0].value : "");
+    (exSetTypeChoices.length > 0 ? String(exSetTypeChoices[0].value) : "");
 
   const exSetIndices = `[${exerciseInputIndex}][${setOrder - 1}]`;
   const weightInputName = `weight${exSetIndices}`;
   const repsInputName = `reps${exSetIndices}`;
   const setTypeInputName = `setType${exSetIndices}`;
   const exSetIdName = `exSetId${exSetIndices}`;
+  const weightLabel = "lbs";
 
   return (
     <tr>
@@ -39,12 +41,22 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
         {setOrder} {/* Showing the prop that is passed through always. */}
       </td>
       <td>
-        <input
-          type="number"
+        <TextField
+          type="text"
+          className={styles.weightInput}
           name={ weightInputName }
           id={ weightInputName }
           defaultValue={exSet?.weightLbs ? exSet.weightLbs : ""}
-          required
+          label={ weightLabel }
+          aria-label="Weight"
+          slotProps={{
+            input: {
+              inputMode: "decimal",
+              inputProps: {
+                pattern: "\\d+(\\.\\d+)?"
+              },
+            },
+          }}
         />
         <input
           type="hidden"
@@ -53,28 +65,33 @@ export default function SetRow({ exSet, setOrder = 0, exerciseInputIndex = -1, c
         />
       </td>
       <td>
-        <input
+        <TextField
           type="number"
           name={ repsInputName }
           id={ repsInputName }
           defaultValue={exSet?.reps ? exSet.reps : ""}
-          required
+          label="Reps"
+          aria-label="Reps"
+          className={styles.repsInput}
         />
       </td>
       <td>
         {loading ? (
           "Loading types..."
         ) : (
-        <Select
-          name={ setTypeInputName }
-          defaultValue={ defaultType }
-        >
-          {
-            exSetTypeChoices.map(({ value, label }) => (
-              <MenuItem value={ value } key={ value } >{ label }</MenuItem>
-            ))
-          }
-        </Select>
+            <TextField
+              select
+              name={ setTypeInputName }
+              defaultValue={ defaultType }
+              className={styles.typeInput}
+              label="Set Type"
+            >
+              {
+                exSetTypeChoices.map(({ value, label }) => (
+                  <MenuItem value={ value } key={ value } >{ label }</MenuItem>
+                ))
+              }
+            </TextField>
         )}
       </td>
       <td>

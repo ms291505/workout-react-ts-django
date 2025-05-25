@@ -10,10 +10,19 @@ import { ThemeProvider, createTheme } from '@mui/material';
 const theme = createTheme({
   palette: {
     mode: "dark"
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          padding: "1rem"
+        }
+      }
+    }
   }
 });
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
@@ -22,5 +31,5 @@ createRoot(document.getElementById('root')).render(
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )

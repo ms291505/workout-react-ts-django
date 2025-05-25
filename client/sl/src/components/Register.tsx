@@ -1,12 +1,16 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import { UserRegisterDto, UserRegisterFormData } from "../types";
 import { register } from "../api";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { AuthContext } from "../context/AuthContext";
+import LogoutModal from "./LogoutModal";
 
 export default function Register() {
+  const { user } = useContext(AuthContext);
+  
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<UserRegisterFormData>({
@@ -49,6 +53,7 @@ export default function Register() {
 
   return (
     <Box sx={{mb:5}}>
+      {user && <LogoutModal open />}
       <form onSubmit={ handleSubmit }>
         <h2>Register</h2>
         {error && (
@@ -105,6 +110,7 @@ export default function Register() {
         <br />
         <Button
           type="submit"
+          variant="contained"
           disabled={loading}
         >
           {loading ? "Registering user..." : "Register"}

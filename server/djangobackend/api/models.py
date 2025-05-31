@@ -227,3 +227,54 @@ class ExSet(models.Model):
     verbose_name="ceated date",
     auto_now_add=True
   )
+
+
+class Cardio_Type(models.TextChoices):
+  """
+  The allowable cardio types.
+  """
+  RUN_INDOOR = "RI", "Indoor Run"
+  RUN_OUTDOOR = "RO", "Outdoor Run"
+  BIKE_INDOOR = "BI", "Indoor Bike"
+  BIKE_OUTDOOR = "BO", "Outdoor Bike"
+  WALK_INDOOR = "WI", "Indoor Walk"
+  WALK_OUTDOOR = "WO", "Outdoor Walk"
+  ROW_INDOOR = "RI", "Indoor Row"
+  ROW_OUTDOOR = "RO", "Outdoor Row"
+  MIXED = "MI", "Mixed Cardio"
+
+
+class Cardio_Workout_Hist(models.Model):
+  """
+  Contains information about a running session.
+
+  Attributes:
+
+  """
+  name = models.CharField(
+    verbose_name="workout name",
+    max_length=200
+  )
+  cardio_type = models.CharField(
+    verbose_name="cardio type",
+    max_length=2,
+    choices=Cardio_Type.choices,
+    help_text="Select the type of cardio."
+  )
+  date = models.DateTimeField("workout date")
+  notes = models.TextField(
+    verbose_name="workout notes",
+    blank=True,
+    help_text="Notes for the workout for reference later."
+  )
+  created = models.DateTimeField(
+    verbose_name="created date",
+    auto_now_add=True)
+  user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="workouts",
+    blank=True,
+    null=True,
+    default=None
+  )

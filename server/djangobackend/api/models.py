@@ -13,7 +13,7 @@ from decimal import Decimal
 
 class Workout_Hist(models.Model):
   """
-  Basic information about a user's workout.
+  Basic information about a strength training workout.
 
   Attributes:
     name (CharField): workout name
@@ -233,20 +233,19 @@ class Cardio_Type(models.TextChoices):
   """
   The allowable cardio types.
   """
-  RUN_INDOOR = "RI", "Indoor Run"
-  RUN_OUTDOOR = "RO", "Outdoor Run"
-  BIKE_INDOOR = "BI", "Indoor Bike"
-  BIKE_OUTDOOR = "BO", "Outdoor Bike"
-  WALK_INDOOR = "WI", "Indoor Walk"
-  WALK_OUTDOOR = "WO", "Outdoor Walk"
-  ROW_INDOOR = "RI", "Indoor Row"
-  ROW_OUTDOOR = "RO", "Outdoor Row"
-  MIXED = "MI", "Mixed Cardio"
+  RUN = "RN", "Run"
+  BIKE = "BK", "Bike"
+  ROW = "RW", "Row"
+  MIXED = "MX", "Mixed Cardio"
+  RUCK = "RK", "Ruck"
+  STAIR = "SR", "Stair Machine"
+  ELLIPTICAL = "EL", "Elliptical Machine"
+  OTHER = "OR", "Other"
 
 
 class Cardio_Workout_Hist(models.Model):
   """
-  Contains information about a running session.
+  Contains information about a cardio workout.
 
   Attributes:
 
@@ -273,8 +272,48 @@ class Cardio_Workout_Hist(models.Model):
   user = models.ForeignKey(
     User,
     on_delete=models.CASCADE,
-    related_name="workouts",
+    related_name="cardio_workouts",
     blank=True,
     null=True,
     default=None
+  )
+  
+  @property
+  def long_workout_date_str(self) -> str:
+    """
+    Returns:
+      str: The workout date in 'May 3, 2025 at 19:53' format.
+    """
+    if not self.date:
+      return "No date"
+    try:
+      return self.date.strftime("%B %-d, %Y at %H:%M")
+    except ValueError:
+      return self.date.strftime("%B %#d, %Y at %H:%M")
+    def __str__(self) -> str:
+      """
+      Returns:
+        str: The workout name and date.
+      """
+      if self.date:
+        return f"'{self.name}' on {self.long_workout_date_str}"
+      else:
+        return self.name
+
+
+class Run_Hist_Details(models.Model):
+  """
+  Contains information about a running workout.
+  """
+  cardio_workout_hist = models.ForeignKey(
+    Cardio_Workout_Hist,
+    on_delete=models.CASCADE,
+    related_name="runs"
+  )
+  distance_mi = models.DecimalField(
+    verbose_name="distance (miles)",
+    decimal_places=2,
+    max_digits=6,
+    default=Decimal("0.0"),
+    help_text="Enter the distance in miles, up to two decimal places."
   )

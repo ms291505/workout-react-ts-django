@@ -3,7 +3,7 @@ import {
   User,
   Exercise,
   UserRegisterDto,
-  Choice } from "./types";
+  Choice } from "./library/types";
 
 const API_BASE = "http://localhost:8000/api";
 

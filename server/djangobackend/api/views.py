@@ -1,7 +1,9 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from rest_framework import generics, status, filters
 from rest_framework.views import APIView
@@ -184,8 +186,20 @@ class ExerciseListCreate(generics.ListCreateAPIView):
   def filter_queryset(self, queryset):
     queryset = super().filter_queryset(queryset)
     user = self.request.user
-    return queryset.filter(
+    queryset = queryset.filter(
       Q(user=user) | Q(user_added_flag="N")
+    )
+
+    cutoff = timezone.now() - timedelta(days=180)
+
+    return queryset.annotate(
+      count_180_days=Count(
+        "exercise_hist",
+        filter=Q(
+          exercise_hist__workout_hist__user=user,
+          exercise_hist__workout_hist__date__gte=cutoff,
+        ),
+      )
     )
   
   def perform_create(self, serializer):

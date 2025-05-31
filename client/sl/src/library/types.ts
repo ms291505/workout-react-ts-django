@@ -41,9 +41,6 @@ export interface Workout_Hist {
 }
 /**
  * Represents information about an exercise.
- * 
- * Attributes:
- *  name (string | null): The name of the exercise.
  */
 export interface Exercise {
   /** The name of the exercise. */
@@ -57,7 +54,7 @@ export interface Exercise {
    * Users cannot see exercises created by other users.
    */
   userAddedFlag?: string | null;
-
+  count_180_days?: number | null;
 }
 
 export interface User {

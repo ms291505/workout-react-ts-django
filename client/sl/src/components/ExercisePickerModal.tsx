@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import { fetchExercisesByName, postExercise } from "../api";
-import type { Exercise } from "../types";
+import type { Exercise } from "../library/types";
 
 interface Props {
   open: boolean;

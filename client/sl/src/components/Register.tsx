@@ -1,12 +1,12 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import { UserRegisterDto, UserRegisterFormData } from "../types";
+import { UserRegisterDto, UserRegisterFormData } from "../library/types";
 import { register } from "../api";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { AuthContext } from "../context/AuthContext";
-import LogoutModal from "./LogoutModal";
+import LogoutModal from "./dialog/LogoutModal";
 import Link from "@mui/material/Link";
 
 export default function Register() {

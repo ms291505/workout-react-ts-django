@@ -1,4 +1,4 @@
-import type { Workout_Hist, Exercise_Hist, ExSet } from "../types";
+import type { Workout_Hist, Exercise_Hist, ExSet } from "./types";
 import { isIntId } from "../utils";
 
 export function transformFormData(raw: Record<string, string>): Workout_Hist {

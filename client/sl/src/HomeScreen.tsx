@@ -1,30 +1,22 @@
-import { useNavigate, Outlet } from "react-router-dom";
-import styles from "./styles/HomeScreen.module.css";
+import { Outlet } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import Toolbar from "@mui/material/Toolbar";
 
 export default function HomeScreen() {
-  const navigate = useNavigate();
-
   return (
     <>
-      <p>Home Screen</p>
-      <div className={styles.container}>
-        <div className={styles.sideBar}>
-          <button onClick={() => navigate("/")}>Home</button>
-          <br />
-          <button onClick={() => navigate("/exercise_library")}>Exercise Library</button>
-          <br />
-          <button onClick={() => navigate("/workout")}>Enter Workout</button>
-          <br />
-          <button onClick={() => navigate("/edit_test")}>Edit Workout</button>
-        </div>
-        <Box className={styles.homeContainer}>
-          <Paper className={styles.homePaper}>
+        <Box>
+          <Toolbar variant="dense" sx={{ mb: 2}}/>
+          <Paper
+            sx={{
+              p: 2,
+              m: 2
+            }}
+          >
             <Outlet />
           </Paper>
         </Box>
-      </div>
     </>
   )
 }

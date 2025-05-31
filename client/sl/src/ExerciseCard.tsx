@@ -3,10 +3,10 @@
 import styles from "./ExerciseCard.module.css";
 import { ReactNode, useEffect, useState } from "react";
 import SetRow from "./SetRow.js";
-import { EMPTY_EX_SET } from "./constants.ts";
+import { EMPTY_EX_SET } from "./library/constants.ts";
 import SetTableHeader from "./SetTableHeader.tsx";
 import { v4 as uuidv4 } from "uuid";
-import { Exercise_Hist, ExSet } from "./types.ts";
+import { Exercise_Hist, ExSet } from "./library/types.ts";
 import { handleKeyDownPD } from "./utils.tsx";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";

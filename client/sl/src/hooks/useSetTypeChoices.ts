@@ -1,4 +1,4 @@
-import { Choice } from "../types";
+import { Choice } from "../library/types";
 import { fetchSetTypeChoice } from "../api";
 import { useEffect, useState } from "react";
 

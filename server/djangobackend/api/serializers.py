@@ -34,9 +34,19 @@ class UserSerializer(serializers.ModelSerializer):
   
 
 class ExerciseSerializer(serializers.ModelSerializer):
+
+  count_180_days = serializers.IntegerField(read_only=True)
+
   class Meta:
     model = Exercise
-    fields = "__all__"
+    fields = [
+      "id",
+      "name",
+      "user_added_flag",
+      "created",
+      "user",
+      "count_180_days",
+    ]
     extra_kwargs = {
       "created": {"read_only": True},
       "id": {"read_only": True}

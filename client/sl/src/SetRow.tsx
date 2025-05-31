@@ -1,9 +1,9 @@
 import { ReactNode,  } from "react";
-import type { ExSet } from "./types.ts";
+import type { ExSet } from "./library/types.ts";
 import { useSetTypeChoices } from "./hooks/useSetTypeChoices.ts";
 import { MenuItem, TextField } from "@mui/material";
 import styles from "./SetRow.module.css";
-import { DEFAULT_EX_SET_TYPE } from "./constants.ts";
+import { DEFAULT_EX_SET_TYPE } from "./library/constants.ts";
 
 /**
  * Row for an Exercise Set.

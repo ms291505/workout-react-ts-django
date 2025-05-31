@@ -1,34 +1,19 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from "react-router-dom";
-import './index.css'
+import { BrowserRouter } from 'react-router';
 import App from './App.tsx'
 import "./global.css"
 import { AuthProvider } from './context/AuthContext.tsx';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { AppThemeProvider } from './context/ThemeContext.tsx';
 
-const theme = createTheme({
-  palette: {
-    mode: "dark"
-  },
-  components: {
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          padding: "1rem"
-        }
-      }
-    }
-  }
-});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <ThemeProvider theme={theme}>
+        <AppThemeProvider>
           <App />
-        </ThemeProvider>
+        </AppThemeProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>

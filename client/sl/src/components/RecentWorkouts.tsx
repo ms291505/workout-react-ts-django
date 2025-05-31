@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchWorkouts } from "../api";
-import { Workout_Hist } from "../types";
+import { Workout_Hist } from "../library/types";
 import Link from "@mui/material/Link";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";

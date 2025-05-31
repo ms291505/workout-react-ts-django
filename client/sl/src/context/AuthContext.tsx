@@ -1,7 +1,6 @@
 import { createContext, FC, ReactNode, useEffect, useState } from "react";
-import { whoAmI } from "../api";
-import { User } from "../types";
-import { logout } from "../api";
+import { whoAmI, logout } from "../api";
+import { User } from "../library/types";
 import { useNavigate } from "react-router";
 
 interface AuthContextValue {

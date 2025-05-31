@@ -7,6 +7,11 @@ import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import LoggedOutAlert from "./dialog/LoggedOutAlert";
 import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
+import LoginIcon from "@mui/icons-material/Login";
+import AuthAppBar from "./AuthAppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Divider from "@mui/material/Divider";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -40,9 +45,32 @@ export default function Login() {
     }
   };
 
+  const centerColFlexBox = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  }
+
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <>
+    <AuthAppBar/>
+    <Box
+      sx={{
+        ...centerColFlexBox,
+        width: "100vw"
+      }}
+    >
+      <Toolbar
+        variant="dense"
+      />
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          ...centerColFlexBox,
+        }}
+      >
         <h2>Login</h2>
         {
           fromLogout
@@ -58,7 +86,6 @@ export default function Login() {
           onChange={e => setUsername(e.target.value)}
           required
         />
-        <br />
         <TextField
           type="password"
           label="password"
@@ -67,15 +94,19 @@ export default function Login() {
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <br />
         <Button
           variant="contained"
           type="submit"
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Log In"}
+          {loading ? "Logging in..." : "Log In" }
+          <LoginIcon
+            sx={{
+              ml: 1
+            }}
+          />
         </Button>
-      </form>
+      </Box>
       {error && (
         <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
           {error === "Unauthorized"
@@ -84,22 +115,18 @@ export default function Login() {
           }
         </Alert>
       )}
-      <p>Are you a new user? Proceed to
-        <Link
+      <Divider />
+      <p>Are you a new user?</p>
+      <Link
         onClick={() => navigate("/register")}
         sx={{
           cursor: "pointer",
-          display: "inline-block",
-          px: 1,
-          py: 0.5
         }}
-        >
-          Registration Page
-        </Link>
-
-      </p>
-        
-    </div>
+      >
+        Registration Page
+      </Link>
+    </Box>
+    </>
   );
 
 };

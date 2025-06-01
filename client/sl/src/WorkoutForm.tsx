@@ -1,7 +1,7 @@
 import styles from "./WorkoutForm.module.css";
 import { useEffect, useState, MouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getLocalDateTimeString, handleSubmitToLog, toDateTimeLocal } from "./utils";
+import { createDefaultWorkoutName, getLocalDateTimeString, handleSubmitToLog, toDateTimeLocal } from "./utils";
 import ExerciseCard from "./ExerciseCard";
 import { EMPTY_EXERCISE_HIST, testWorkout } from "./library/constants";
 import { v4 as uuidv4 } from "uuid";
@@ -105,6 +105,7 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
   return (
     <>
     <form id="workoutForm" onSubmit={handleSubmit}>
+
       {/* Workout Header Card*/}
       <div className={styles.card}>
         <input
@@ -119,7 +120,7 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
             id="workoutNameInput"
             name="workoutName"
             label="Workout Name"
-            defaultValue={editMode && workout?.name ? workout.name : ""}
+            defaultValue={editMode && workout?.name ? workout.name : createDefaultWorkoutName()}
             onKeyDown={(e) => e.key === "Enter" ? e.preventDefault() : null}
           />
           {" "}

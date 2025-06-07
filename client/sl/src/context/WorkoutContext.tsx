@@ -7,24 +7,28 @@ import {
   useContext,
   useState
 } from "react";
-import { Cardio_Workout_Hist } from "../library/cardioTypes";
-import { Workout_Hist } from "../library/types";
+import { MaybeWorkout, Workout_Hist } from "../library/types";
 
 
 interface WorkoutContextValue {
-  workout: Workout_Hist | Cardio_Workout_Hist | null;
+  workout: Workout_Hist | null;
+  workoutContextMode: string;
   clearWorkout: () => void;
-  setWorkout: Dispatch<SetStateAction<null>>;
+  setWorkout: Dispatch<SetStateAction<MaybeWorkout>>;
+  setWorkoutContextMode: Dispatch<SetStateAction<string>>;
 }
 
 const WorkoutContext = createContext<WorkoutContextValue>({
   workout: null,
+  workoutContextMode: "",
   clearWorkout: () => {},
   setWorkout: () => {},
+  setWorkoutContextMode: () => {},
 })
 
 export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
-  const [workout, setWorkout] = useState(null);
+  const [workout, setWorkout] = useState<MaybeWorkout>(null);
+  const [workoutContextMode, setWorkoutContextMode] = useState("");
 
   const clearWorkout = () => {
     setWorkout(null);
@@ -33,8 +37,10 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
   return (
     <WorkoutContext.Provider value={{
       workout,
+      workoutContextMode,
       clearWorkout,
-      setWorkout
+      setWorkout,
+      setWorkoutContextMode,
     }}>
       {children}
     </WorkoutContext.Provider>

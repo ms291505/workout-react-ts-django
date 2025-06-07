@@ -1,6 +1,13 @@
 import { Exercise_Hist, ExSet } from "./types";
 import { Workout_Hist } from "./types";
 
+export const EMPTY_WORKOUT_HIST: Workout_Hist = {
+  name: "",
+  notes: "",
+  date: "",
+  exercises: [],
+}
+
 export const EMPTY_EX_SET: ExSet = {
   order: null,
   weightLbs: null,

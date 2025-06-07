@@ -1,3 +1,5 @@
+import { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction } from "react";
+
 type FormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => void;
 /**
  * Handles a button click by printing form data to the console log.
@@ -59,4 +61,34 @@ export function createDefaultWorkoutName() {
   } else {
     return "Evening workout";
   }
+}
+
+/**
+ * Event handler for controlling an object with a form.
+ * @param event Changes on an input.
+ * @param setter State setter to be used.
+ */
+export const handleControlledChange = (
+  event: ChangeEvent<HTMLInputElement>,
+  setter: Dispatch<SetStateAction<any>>
+) => {
+  const { name, value } = event.target;
+  setter((previous: any) => ({ ...previous, [name]: value }));
+}
+
+/**
+ * Creates an onChange handler for any object-shaped state.
+ * @param setState The React setState function for your object T
+ * @returns An input change handler.
+ */
+export function makeChangeHandler<T extends Record<string, any>>(
+  setState: Dispatch<SetStateAction<T>>
+): ChangeEventHandler<HTMLInputElement> {
+  return (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setState(prev => ({
+      ...prev,
+      [name]: value
+    } as T));
+  };
 }

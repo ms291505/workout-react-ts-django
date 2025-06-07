@@ -31,7 +31,6 @@ export default function WorkoutForm({ editMode = false }: WorkoutFormProps) {
       fetchWorkoutDetail(Number(workoutId))
         .then((data) => {
           setWorkout(data);
-          console.log(data);
           if (data.exercises && Array.isArray(data.exercises)) {
             setExerciseList(
               data.exercises.map((ex) => ({ ...ex, id: ex.id ?? uuidv4() }))

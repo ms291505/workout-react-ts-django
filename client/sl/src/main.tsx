@@ -5,6 +5,7 @@ import App from './App.tsx'
 import "./global.css"
 import { AuthProvider } from './context/AuthContext.tsx';
 import { AppThemeProvider } from './context/ThemeContext.tsx';
+import { WorkoutProvider } from './context/WorkoutContext.tsx';
 
 
 createRoot(document.getElementById("root")!).render(
@@ -12,7 +13,9 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <AuthProvider>
         <AppThemeProvider>
-          <App />
+          <WorkoutProvider>
+            <App />
+          </WorkoutProvider>
         </AppThemeProvider>
       </AuthProvider>
     </BrowserRouter>

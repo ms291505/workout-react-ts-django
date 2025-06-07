@@ -12,6 +12,7 @@ import Container from "@mui/material/Container";
 import MainLayout from './components/MainLayout';
 import { useAppThemeContext } from './context/ThemeContext.tsx';
 import { ThemeProvider } from '@mui/material';
+import StrengthWorkoutEntry from './components/StrengthWorkoutEntry.tsx';
 
 
 export default function App() {
@@ -45,7 +46,7 @@ export default function App() {
                 <Route path="" element={<Navigate to="recent" replace />} />
                 <Route path="workout" element={<WorkoutForm />} />
                 <Route path="workout/:workoutId/edit" element={<WorkoutForm editMode />} />
-                <Route path="edit_test" element={<WorkoutForm editMode />} />
+                <Route path="workout_crud/:workoutId/:accessMode" element={<StrengthWorkoutEntry />} />
               </Route>
             </Route>
           </Route>

@@ -6,14 +6,20 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography"
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { parseToDate } from "../utils";
+import { useWorkoutContext } from "../context/WorkoutContext";
+import { useNavigate } from "react-router";
 
 
 export default function RecentWorkouts() {
+  const navigate = useNavigate();
 
   const [workouts, setWorkouts] = useState<Workout_Hist[] | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const { setWorkout } = useWorkoutContext();
 
   const getWorkouts = async () => {
     const newWorkouts = await fetchWorkouts();
@@ -26,14 +32,19 @@ export default function RecentWorkouts() {
     getWorkouts();
     }, []);
 
+  const handleWorkoutEdit = (w: Workout_Hist) => {
+    setWorkout(w as Workout_Hist);
+    navigate(`/workout_crud/${w.id}/edit`);
+  }
+
   if (loading) {
     return <p>Your workouts are loading...</p>
   }
 
   return(
   <Grid container component="div" spacing={2} justifyContent="flex-start" alignItems="flex-start">
-        {workouts?.map((workout) => (
-          <Grid key={workout.id} size={{ xs: 12, sm: 6, md: 4 }}>
+        {workouts?.map((w) => (
+          <Grid key={w.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ p: 0 }} raised>
               <CardContent>
                 <Typography
@@ -43,7 +54,7 @@ export default function RecentWorkouts() {
                     lineHeight: 1
                   }}
                 >
-                  {workout.name}
+                  {w.name}
                 </Typography>
                 <Typography
                   variant="body2"
@@ -55,19 +66,24 @@ export default function RecentWorkouts() {
                   }}
 
                 >
-                  Date: {workout.date && parseToDate(workout.date)}
+                  Date: {w.date && parseToDate(w.date)}
                 </Typography>
-                {workout.notes 
-                  ? <p>Notes: {workout.notes}</p>
+                {w.notes 
+                  ? <p>Notes: {w.notes}</p>
                   : <p>Notes: ...</p>
                 }
               </CardContent>
               <CardActions
                 sx={{pt: 0, pb: 1, px: 1}}
               >
-                <Link href={`/workout/${workout.id}/edit`} underline="hover">
+                <Link href={`/workout/${w.id}/edit`} underline="hover">
                   Edit
                 </Link>
+                <Button
+                  onClick={() => handleWorkoutEdit(w)}
+                >
+                  Edit
+                </Button>
               </CardActions>
             </Card>
           </Grid>

@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import { ChangeEvent, ReactNode } from "react";
 import { useWorkoutContext } from "../../context/WorkoutContext";
 import { Exercise_Hist } from "../../library/types";
+import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 
 interface ExerciseCardProps {
   exHist: Exercise_Hist,
@@ -42,10 +43,15 @@ export default function ExerciseCard(
   return(
     <Paper
       elevation={3}
-      sx={{ p: 1 }}
+      sx={{ p: 2 }}
     >
       <Box
-        sx={{ mb:2 }}
+        sx={{ 
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          mb: 2
+         }}
       >
         <TextField
           label="Exercise Name"
@@ -59,6 +65,13 @@ export default function ExerciseCard(
           value={exHist.notes ?? ""}
           onChange={handleChange}
         />
+        <Box component="span"
+          sx={{
+            ...CENTER_COL_FLEX_BOX,
+          }}
+        >
+          - Sets -
+        </Box>
       </Box>
       { children }
     </Paper>

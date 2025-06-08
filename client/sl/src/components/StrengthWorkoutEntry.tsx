@@ -59,21 +59,27 @@ export default function StrengthWorkoutEntry() {
       component="form"
     >
       <StrengthWorkoutHeader />
-      {
-        workout.exercises?.length
-        ? workout.exercises.map((exHist) => (
-            <ExerciseCard exHist={exHist} key={exHist.id}>
-            {
-              exHist.exSets?.length
-              ? exHist.exSets.map((exSet, idx) => (
-                  <ExSetEditor key={exSet.id} exSet={exSet} order={idx + 1} />
-                ))
-              : null
-            }
-            </ExerciseCard>
-          ))
-        : null
-      }
+      <Box
+        display="flex"
+        flexDirection="column"
+        gap={2}
+      >
+        {
+          workout.exercises?.length
+          ? workout.exercises.map((exHist) => (
+              <ExerciseCard exHist={exHist} key={exHist.id}>
+              {
+                exHist.exSets?.length
+                ? exHist.exSets.map((exSet, idx) => (
+                    <ExSetEditor key={exSet.id} exSet={exSet} order={idx + 1} />
+                  ))
+                : null
+              }
+              </ExerciseCard>
+            ))
+          : null
+        }
+      </Box>
       <Box component="div">
         <Button onClick={() => console.log(workout)}>Print</Button>
       </Box>

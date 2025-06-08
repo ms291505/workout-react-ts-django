@@ -98,6 +98,9 @@ export default function Login() {
           variant="contained"
           type="submit"
           disabled={loading}
+          sx={{
+            m:2
+          }}
         >
           {loading ? "Logging in..." : "Log In" }
           <LoginIcon

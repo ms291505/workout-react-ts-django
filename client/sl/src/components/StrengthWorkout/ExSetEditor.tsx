@@ -56,7 +56,12 @@ export default function ExSetEditor({
     }, [order]);
 
   return (
-    <Box>
+    <Box
+      display="flex"
+      flexDirection="row"
+      alignItems="center"
+      gap={2}
+    >
       <Chip label={order} variant="outlined" />
       <TextField
         label="Weight (lbs)"

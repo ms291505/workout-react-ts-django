@@ -4,10 +4,15 @@ import { UserRegisterDto, UserRegisterFormData } from "../library/types";
 import { register } from "../api";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import { AuthContext } from "../context/AuthContext";
 import LogoutModal from "./dialog/LogoutModal";
 import Link from "@mui/material/Link";
+import AuthAppBar from "./AuthAppBar";
+import { CENTER_COL_FLEX_BOX } from "../styles/StyleOverrides";
 
 export default function Register() {
   const { user } = useContext(AuthContext);
@@ -53,9 +58,25 @@ export default function Register() {
   };
 
   return (
-    <Box sx={{mb:5}}>
+    <>
+    <AuthAppBar />
+    <Box
+      sx={{
+        ...CENTER_COL_FLEX_BOX,
+        width: "100vw",
+        mb:5
+      }}>
+      <Toolbar
+        variant="dense"
+      />
       {user && <LogoutModal open />}
-      <form onSubmit={ handleSubmit }>
+      <Box
+        component="form"
+        onSubmit={ handleSubmit }
+        sx={{
+          ...CENTER_COL_FLEX_BOX,
+        }}
+      >
         <h2>Register</h2>
         {error && (
           <div>
@@ -115,27 +136,40 @@ export default function Register() {
           type="submit"
           variant="contained"
           disabled={loading}
-          sx={{ m: 2 }}
+          sx={{
+            m: 2,
+            display: "flex",
+            alignItems: "center"
+          }}
         >
           {loading ? "Registering user..." : "Register"}
+          <HowToRegIcon
+            sx={{
+              ml: 1,
+              verticalAlign: "middle",
+            }}
+          />
         </Button>
         <br />
-      </form>
-      <p>
-        Already registered? Proceed to 
+      </Box>
+      <Box
+        sx={{
+          ...CENTER_COL_FLEX_BOX,
+        }}
+      >
+        <Divider />
+        <p>Already registered?</p>
         <Link
         onClick={() => navigate("/login")}
         sx={{
           cursor: "pointer",
-          display: "inline-block",
-          px: 1,
-          py: 0.5
         }}
         >
           Login Page
         </Link>
-      </p>
+      </Box>
     </Box>
+    </>
   )
 
 }

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.request import Request
 from .models import Workout_Hist, ExSet, Exercise_Hist, Exercise
+from django.db.models import Q
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -51,6 +53,17 @@ class ExerciseSerializer(serializers.ModelSerializer):
       "created": {"read_only": True},
       "id": {"read_only": True}
     }
+
+  def validate_name(self, value):
+    user = self.context["request"].user
+
+    if Exercise.objects.filter(
+      name__iexact=value,
+    ).filter(Q(user=user) | Q(user__isnull=True)).exists():
+      raise serializers.ValidationError("You already have an exercise with this name.")
+    
+    return value
+
 
   
 

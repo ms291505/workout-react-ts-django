@@ -1,7 +1,6 @@
 import { createContext, useState, ReactNode, FC, useContext } from "react";
 import { createTheme, Theme, useMediaQuery } from "@mui/material";
 import { cyan, yellow } from '@mui/material/colors';
-import useSystemDarkMode from "../hooks/useSystemDarkMode";
 
 interface AppThemeContextValue {
   darkMode: boolean;
@@ -18,7 +17,11 @@ const AppThemeContext = createContext<AppThemeContextValue>({
 });
 
 export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
-  const [darkMode, setDarkMode] = useState(useSystemDarkMode());
+  
+  //Testing something here:
+  const [darkMode, setDarkMode] = useState(
+    useMediaQuery("(prefers-color-scheme: dark)")
+  );
 
   const toggleDarkMode = () => {
     setDarkMode((prev) => {

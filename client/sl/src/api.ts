@@ -127,7 +127,7 @@ export async function postWorkout(workout: Workout_Hist): Promise<void> {
   }
 }
 
-export async function updateWorkout(workout: Workout_Hist): Promise<void> {
+export async function updateWorkout(workout: Workout_Hist): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/${workout.id!}/`, {
     method: "PUT",
     credentials: "include",
@@ -143,11 +143,13 @@ export async function updateWorkout(workout: Workout_Hist): Promise<void> {
   if (!response.ok) {
     console.error("Submit failed:", response.status);
 
-    const errors = await response.json();
-    console.error("Validation errors:", errors)
+    const errorData = await response.json();
+    console.error("Validation errors:", errorData)
 
-    return;
+    throw errorData;
   }
+  await checkStatus(response);
+  return response.json();
 }
 
 export async function fetchExercises(): Promise<Exercise[]> {
@@ -185,6 +187,9 @@ export async function postExercise(inputValue: string): Promise<Exercise> {
   if (response.status === 401) {
     await refreshAccess();
     return postExercise(inputValue);
+  } else if (!response.ok) {
+    const errorData = await response.json();
+    throw errorData;
   }
   await checkStatus(response);
   return response.json();

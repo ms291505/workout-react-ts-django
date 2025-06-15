@@ -83,3 +83,7 @@ export const testWorkout: Workout_Hist = {
 };
 
 export const ISO_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+export const NOTISTACK_DURATION = 6000;
+
+export const MAX_SNACK = 3;

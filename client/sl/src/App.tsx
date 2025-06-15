@@ -12,8 +12,9 @@ import Container from "@mui/material/Container";
 import MainLayout from './components/MainLayout';
 import { useAppThemeContext } from './context/ThemeContext.tsx';
 import { ThemeProvider } from '@mui/material';
-import StrengthWorkoutEntry from './components/StrengthWorkoutEntry.tsx';
-
+import StrengthWorkoutEntry from './components/StrengthWorkout/StrengthWorkoutEntry.tsx';
+import { SnackbarProvider, closeSnackbar } from "notistack";
+import { MAX_SNACK, NOTISTACK_DURATION } from './library/constants.ts';
 
 export default function App() {
 
@@ -30,27 +31,48 @@ export default function App() {
         sx={{ display: "flex" }}
       >
         <CssBaseline />
-        <Routes>
-          {/* Public Routes: */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <SnackbarProvider
+          maxSnack={MAX_SNACK}
+          autoHideDuration={NOTISTACK_DURATION}
+          action={(snackbarId) => (
+            <button 
+              onClick={() => closeSnackbar(snackbarId)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "inherit",
+                textDecoration: "underline",
+                cursor: "pointer",
+                padding: 0,
+                font: "inherit",
+              }}
+            >
+              {" close "}
+            </button>
+          )}  
+        >
+          <Routes>
+            {/* Public Routes: */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          {/* Protected Routes: */}
-          <Route element={<ProtectedRoute />}>
+            {/* Protected Routes: */}
+            <Route element={<ProtectedRoute />}>
 
-            {/* Begin Main Latout: */}
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<HomeScreen />}>
-                <Route path="recent" element={<RecentWorkouts />} />
-                <Route path="exercise_library" element={<ExerciseLibrary />} />
-                <Route path="" element={<Navigate to="recent" replace />} />
-                <Route path="workout" element={<WorkoutForm />} />
-                <Route path="workout/:workoutId/edit" element={<WorkoutForm editMode />} />
-                <Route path="workout_crud/:workoutId/:accessMode" element={<StrengthWorkoutEntry />} />
+              {/* Begin Main Latout: */}
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<HomeScreen />}>
+                  <Route path="recent" element={<RecentWorkouts />} />
+                  <Route path="exercise_library" element={<ExerciseLibrary />} />
+                  <Route path="" element={<Navigate to="recent" replace />} />
+                  <Route path="workout" element={<WorkoutForm />} />
+                  <Route path="workout/:workoutId/edit" element={<WorkoutForm editMode />} />
+                  <Route path="workout_crud/:workoutId/:accessMode" element={<StrengthWorkoutEntry />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </SnackbarProvider>
       </Box>
       </Container>
     </ThemeProvider>

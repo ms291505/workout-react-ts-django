@@ -7,10 +7,10 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { parseToDate } from "../utils";
+import { parseToWeekdayDate } from "../utils";
 import { useWorkoutContext } from "../context/WorkoutContext";
 import { useNavigate } from "react-router";
-
+import Divider from "@mui/material/Divider";
 
 export default function RecentWorkouts() {
   const navigate = useNavigate();
@@ -22,9 +22,13 @@ export default function RecentWorkouts() {
 
   const getWorkouts = async () => {
     const newWorkouts = await fetchWorkouts();
+    newWorkouts.sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateB - dateA;
+    });
     setWorkouts(newWorkouts);
     setLoading(false);
-    console.log(newWorkouts);
   }
 
   useEffect(() => {
@@ -49,7 +53,7 @@ export default function RecentWorkouts() {
                 <Typography
                   variant="h6"
                   sx={{
-                    mb: 3,
+                    mb: 1,
                     lineHeight: 1
                   }}
                 >
@@ -59,18 +63,32 @@ export default function RecentWorkouts() {
                   variant="body2"
                   component="p"
                   sx={{
-                    mb:0,
-                    mt:0,
-                    lineHeight:0
                   }}
-
                 >
-                  Date: {w.date && parseToDate(w.date)}
+                  {w.date && parseToWeekdayDate(w.date)}
                 </Typography>
-                {w.notes 
-                  ? <p>Notes: {w.notes}</p>
-                  : <p>Notes: ...</p>
-                }
+                <Divider
+                  sx={{
+                    mb: 1,
+                    borderColor: "primary.main",
+                    borderBottomWidth: 2
+                  }}
+                />
+                <Typography
+                  variant="body2"
+                  component="p"
+                  sx={{
+                    display: '-webkit-box',
+                    overflow: 'hidden',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 3,
+                  }}
+                >
+                  {w.notes 
+                    ? <><strong>Notes:</strong>{" "} {w.notes}</>
+                    : "Notes: ..."
+                  }
+                </Typography>
               </CardContent>
               <CardActions
                 sx={{pt: 0, pb: 1, px: 1}}

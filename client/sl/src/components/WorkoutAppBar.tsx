@@ -19,7 +19,7 @@ export default function WorkoutAppBar() {
   const { toggleDarkMode, isMobile } = useAppThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
 
-  const drawerWidth = 200;
+  const drawerWidth = 175;
 
   return (
     

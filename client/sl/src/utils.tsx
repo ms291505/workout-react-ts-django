@@ -28,6 +28,19 @@ export const parseToDate = (x: string) => {
   return localDate;
 }
 
+export const parseToWeekdayDate = (x: string) => {
+  const date = new Date(parseToDate(x));
+
+  const formatted = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  }).format(date);
+
+  return formatted;
+}
+
 export function toDateTimeLocal(iso: string) {
   const d = new Date(iso);
   const pad = (n: number) => n.toString().padStart(2, "0");

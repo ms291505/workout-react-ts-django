@@ -34,15 +34,13 @@ export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
       mode: darkMode ? "dark" : "light",
       primary: cyan,
       secondary: yellow,
-    },
-    components: {
-      MuiPaper: {
-        styleOverrides: {
-          root: {
+      background: darkMode
+        ? {
+          default: "#2a2a2a",
+          paper: "#333"
           }
-        }
-      }
-    }
+        : {},
+    },
   });
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));

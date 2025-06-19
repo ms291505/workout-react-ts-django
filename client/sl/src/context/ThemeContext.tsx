@@ -18,7 +18,6 @@ const AppThemeContext = createContext<AppThemeContextValue>({
 
 export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
   
-  //Testing something here:
   const [darkMode, setDarkMode] = useState(
     useMediaQuery("(prefers-color-scheme: dark)")
   );

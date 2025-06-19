@@ -1,29 +1,42 @@
 import { useWorkoutContext } from "../../context/WorkoutContext";
-import { EMPTY_EXERCISE_HIST, EMPTY_WORKOUT_HIST } from "../../library/constants";
+import { EMPTY_EXERCISE_HIST } from "../../library/constants";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Exercise_Hist, Workout_Hist } from "../../library/types";
-import { createDefaultWorkoutName, getLocalDateTimeString } from "../../utils";
 import StrengthWorkoutHeader from "./SrengthWorkoutHeader";
 import { useNavigate, useParams } from "react-router";
-import { fetchWorkoutDetail, updateWorkout } from "../../api";
+import { fetchWorkoutDetail, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
 import ExPickerModal from "../ExPickerModal";
-import { createEmptyExHist } from "../../library/factories";
+import { createEmptyExHist, createEmptyWorkout } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
+import AddIcon from "@mui/icons-material/Add";
+import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 
-export default function StrengthWorkoutEntry() {
+interface Props {
+  accessMode: string;
+};
+
+export default function StrengthWorkoutEntry({
+  accessMode
+}: Props) {
   const navigate = useNavigate();
-  const { workout, setWorkout, exSelections, setExSelections } = useWorkoutContext();
-  const { workoutId, accessMode } = useParams<{
-    workoutId: string,
-    accessMode: string,
-  }>();
+  const {
+    workout,
+    setWorkout,
+    exSelections,
+    setExSelections,
+    clearWorkout,
+   } = useWorkoutContext();
   const [exPickerOpen, setExPickerOpen] = useState(false);
   
-  // Fallback in case of browser refresh:
+  const { workoutId } = useParams<{
+    workoutId?: string,
+  }>();
+  
+  // Edit mode fallback in case of browser refresh:
   useEffect(() => {
     if (accessMode?.toLowerCase() === "edit" && !workout?.id) {
       fetchWorkoutDetail(Number(workoutId))
@@ -31,19 +44,13 @@ export default function StrengthWorkoutEntry() {
           setWorkout(data);
         })
     }
+    if (accessMode === "new") {
+      setWorkout(createEmptyWorkout());
+    }
   }, []);
 
   if (workout === null) {
     return "Loading workout...";
-  }
-
-  if (accessMode === "create") {
-    const newWorkout: Workout_Hist = {
-      ...EMPTY_WORKOUT_HIST,
-      name: createDefaultWorkoutName(),
-      date: getLocalDateTimeString(),
-    };
-    setWorkout(newWorkout);
   }
 
   if (workout.exercises === null) {
@@ -83,17 +90,58 @@ export default function StrengthWorkoutEntry() {
 
     setWorkout(newWorkout);
     setExSelections([]);
-  }
+  };
+
+  const onSave = async () => {
+          function describeError(err: any) {
+            if (err && typeof err === "object" && "name" in err) {
+              const nameErrors = (err as any).name;
+              const message = Array.isArray(nameErrors) ? nameErrors[0] : "An unkown Exercise Name error.";
+              enqueueSnackbar(message, { variant: "error" });
+            }
+          };
+
+          if (accessMode?.toLowerCase() === "edit") {
+            try {
+              const w = await updateWorkout(workout);
+              enqueueSnackbar(`'${w.name}' updated.`, { variant: "success" });
+              navigate("/");
+            }  catch (err) {
+              describeError(err);
+            }
+          };
+          
+          if (accessMode?.toLowerCase() === "new") {
+            try {
+              const w = await postWorkout(workout);
+              enqueueSnackbar(`'${w.name}' created.`, { variant: "success" });
+              navigate("/");
+            } catch (err) {
+              describeError(err);
+            }
+          };
+          };
+
+    const onCancel = () => {
+      clearWorkout();
+      navigate("/");
+    }
 
   return(
     <Box
       component="form"
     >
+      {
+        accessMode
+        ? <h1>{accessMode}</h1>
+        : null
+      }
       <StrengthWorkoutHeader />
       <Box
         display="flex"
         flexDirection="column"
         gap={2}
+        alignItems="center"
       >
         {
           workout.exercises?.length
@@ -110,29 +158,43 @@ export default function StrengthWorkoutEntry() {
             ))
           : null
         }
+      <Button
+        variant="outlined"
+        sx={{
+          width: 200,
+          height: 100
+        }}
+        onClick={() => setExPickerOpen(true)}
+      >
+        <Box
+          sx={{
+            ...CENTER_COL_FLEX_BOX,
+            gap: 1
+          }}
+        >
+          <AddIcon fontSize="large"/>
+          Add Exercise
+        </Box>
+      </Button>
       </Box>
-      <Box component="div">
-        <Button onClick={async () => {
-          console.log(workout)
-          if (accessMode?.toLowerCase() === "edit") {
-            try {
-              const w = await updateWorkout(workout);
-              enqueueSnackbar(w.name + " updated.", { variant: "success" })
-              navigate("/");
-            }  catch (err) {
-              if (err && typeof err === "object" && "name" in err) {
-                const nameErrors = (err as any).name;
-                const message = Array.isArray(nameErrors) ? nameErrors[0] : "An unkown Exercise Name error.";
-                enqueueSnackbar(message, { variant: "error" });
-              }
-            }}}}
+
+      {/* Actions */}
+      <Box
+        component="div"
+        sx={{
+          mt: 2
+        }}
+      >
+        <Button
+          onClick={onCancel}
+        >
+          Cancel
+        </Button>
+        <Button 
+          onClick={onSave}
+          variant="contained"
         >
           Save
-        </Button>
-        <Button
-          onClick={() => setExPickerOpen(true)}
-        >
-          Add Exercise
         </Button>
         <ExPickerModal
           open={exPickerOpen}

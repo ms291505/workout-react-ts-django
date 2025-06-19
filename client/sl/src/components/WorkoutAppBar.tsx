@@ -16,8 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 export default function WorkoutAppBar() {
 
   const [open, setOpen] = useState(false);
-
-  const { toggleDarkMode } = useAppThemeContext();
+  const { toggleDarkMode, isMobile } = useAppThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
 
   const drawerWidth = 200;
@@ -88,11 +87,11 @@ export default function WorkoutAppBar() {
           }}
           slotProps={{
             root: {
-              keepMounted: true, // Better open performance on mobile.
+              keepMounted: true,
             },
           }}
         >
-          <DrawerContent />
+          <DrawerContent onClose={isMobile? () => setOpen(false) : undefined} />
         </Drawer>
         <Drawer
           variant="permanent"

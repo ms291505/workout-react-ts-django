@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import WorkoutForm from './WorkoutForm';
 import HomeScreen from './HomeScreen';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -15,6 +14,8 @@ import { ThemeProvider } from '@mui/material';
 import StrengthWorkoutEntry from './components/StrengthWorkout/StrengthWorkoutEntry.tsx';
 import { SnackbarProvider, closeSnackbar } from "notistack";
 import { MAX_SNACK, NOTISTACK_DURATION } from './library/constants.ts';
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
 export default function App() {
 
@@ -32,23 +33,18 @@ export default function App() {
       >
         <CssBaseline />
         <SnackbarProvider
+          hideIconVariant
           maxSnack={MAX_SNACK}
           autoHideDuration={NOTISTACK_DURATION}
           action={(snackbarId) => (
-            <button 
+            <IconButton
+              size="small"
               onClick={() => closeSnackbar(snackbarId)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "inherit",
-                textDecoration: "underline",
-                cursor: "pointer",
-                padding: 0,
-                font: "inherit",
-              }}
             >
-              {" close "}
-            </button>
+              <CloseIcon
+                fontSize="small"
+              />
+            </IconButton>
           )}  
         >
           <Routes>
@@ -63,11 +59,10 @@ export default function App() {
               <Route element={<MainLayout />}>
                 <Route path="/" element={<HomeScreen />}>
                   <Route path="recent" element={<RecentWorkouts />} />
-                  <Route path="exercise_library" element={<ExerciseLibrary />} />
                   <Route path="" element={<Navigate to="recent" replace />} />
-                  <Route path="workout" element={<WorkoutForm />} />
-                  <Route path="workout/:workoutId/edit" element={<WorkoutForm editMode />} />
-                  <Route path="workout_crud/:workoutId/:accessMode" element={<StrengthWorkoutEntry />} />
+                  <Route path="exercise_library" element={<ExerciseLibrary />} />
+                  <Route path="workout/new" element={<StrengthWorkoutEntry accessMode="new" />} />
+                  <Route path="workout/edit/:workoutId" element={<StrengthWorkoutEntry accessMode="edit"/>} />
                 </Route>
               </Route>
             </Route>

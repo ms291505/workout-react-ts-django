@@ -59,6 +59,7 @@ export default function StrengthWorkoutHeader(
         rows={3}
         fullWidth
         value={workout.notes}
+        onChange={handleChange}
       />
       { children }
     </Box>

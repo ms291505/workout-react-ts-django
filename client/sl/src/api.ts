@@ -106,7 +106,7 @@ export async function fetchWorkoutDetail( workoutID: number): Promise<Workout_Hi
   return response.json();
 }
 
-export async function postWorkout(workout: Workout_Hist): Promise<void> {
+export async function postWorkout(workout: Workout_Hist): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/`, {
     method: "POST",
     credentials: "include",
@@ -123,8 +123,10 @@ export async function postWorkout(workout: Workout_Hist): Promise<void> {
     const errors = await response.json();
     console.error("Validation errors:", errors)
 
-    return;
+    throw errors;
   }
+  await checkStatus(response);
+  return response.json();
 }
 
 export async function updateWorkout(workout: Workout_Hist): Promise<Workout_Hist> {

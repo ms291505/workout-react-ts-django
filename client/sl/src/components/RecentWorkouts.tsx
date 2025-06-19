@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchWorkouts } from "../api";
 import { Workout_Hist } from "../library/types";
-import Link from "@mui/material/Link";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Card from "@mui/material/Card";
@@ -34,7 +33,7 @@ export default function RecentWorkouts() {
 
   const handleWorkoutEdit = (w: Workout_Hist) => {
     setWorkout(w as Workout_Hist);
-    navigate(`/workout_crud/${w.id}/edit`);
+    navigate(`/workout/edit/${w.id}`);
   }
 
   if (loading) {
@@ -76,9 +75,6 @@ export default function RecentWorkouts() {
               <CardActions
                 sx={{pt: 0, pb: 1, px: 1}}
               >
-                <Link href={`/workout/${w.id}/edit`} underline="hover">
-                  Edit
-                </Link>
                 <Button
                   onClick={() => handleWorkoutEdit(w)}
                 >

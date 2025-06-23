@@ -1,5 +1,6 @@
-import DrawerContent from "./DrawerContent";
+//WorkoutAppBar.tsx
 
+import DrawerContent from "./DrawerContent";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,6 +13,8 @@ import { useAppThemeContext } from "../context/ThemeContext";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AuthContext } from "../context/AuthContext";
+import { DRAWER_WIDTH } from "../library/constants";
+import Container from "@mui/material/Container";
 
 export default function WorkoutAppBar() {
 
@@ -19,11 +22,10 @@ export default function WorkoutAppBar() {
   const { toggleDarkMode, isMobile } = useAppThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
 
-  const drawerWidth = 175;
+  const drawerWidth = DRAWER_WIDTH;
 
   return (
-    
-    <Box>
+   <> 
       <AppBar
         position="fixed"
         sx={{
@@ -31,6 +33,16 @@ export default function WorkoutAppBar() {
         }}
       >
         <Toolbar variant="dense">
+          <Container
+            maxWidth="lg"
+          >
+          <Box
+            sx={{
+              display:"flex",
+              flexDirection:"row",
+              alignItems:"center"
+            }}
+          >
           <IconButton
             size="large"
             edge="start"
@@ -66,6 +78,8 @@ export default function WorkoutAppBar() {
               </IconButton>
             )
           }
+          </Box>
+          </Container>
         </Toolbar>
       </AppBar>
 
@@ -96,16 +110,17 @@ export default function WorkoutAppBar() {
         <Drawer
           variant="permanent"
           sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          display: { xs: "none", sm: "block" },
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+            width: drawerWidth,
+            flexShrink: 0,
+            position: "fixed",
+            display: { xs: "none", sm: "block" },
+            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box'},
           }}
           open
         >
           <DrawerContent />
         </Drawer>
       </Box>
-    </Box>
+    </>
   )
 }

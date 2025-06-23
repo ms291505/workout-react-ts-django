@@ -4,8 +4,7 @@ import {
   Exercise,
   UserRegisterDto,
   Choice } from "./library/types";
-
-const API_BASE = "http://localhost:8000/api";
+import { API_BASE } from "./library/constants";
 
 /**
  * Checks that status of a response.

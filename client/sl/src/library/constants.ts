@@ -1,12 +1,16 @@
 import { Exercise_Hist, ExSet } from "./types";
 import { Workout_Hist } from "./types";
 
+export const API_BASE = import.meta.env.VITE_API_BASE;
+
+export const DRAWER_WIDTH = 175;
+
 export const EMPTY_WORKOUT_HIST: Workout_Hist = {
   name: "",
   notes: "",
   date: "",
   exercises: [],
-}
+};
 
 export const EMPTY_EX_SET: ExSet = {
   order: null,

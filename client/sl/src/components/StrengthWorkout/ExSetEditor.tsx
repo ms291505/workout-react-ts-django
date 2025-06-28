@@ -141,18 +141,19 @@ export default function ExSetEditor({
       display="flex"
       flexDirection="row"
       alignItems="center"
-      gap={2}
+      gap={1}
     >
-      <Chip label={order} variant="outlined" />
+      {order}
       <TextField
-        label="Weight (lbs)"
+        label="lbs"
         name="weightLbs"
         value={exSet.weightLbs ?? ""}
         onChange={handleChange}
         onBlur={handleWeightBlur}
         size="small"
+        fullWidth
         sx={{
-          width: 125
+          flex: 3
         }}
       />
       <TextField
@@ -161,8 +162,9 @@ export default function ExSetEditor({
         value={exSet.reps ?? ""}
         onChange={handleChange}
         size="small"
+        fullWidth
         sx={{
-          width: 125
+          flex: 2.5,
         }}
       />
       {
@@ -175,8 +177,17 @@ export default function ExSetEditor({
             defaultValue={ defaultType }
             size="small"
             label="Set Type"
+            fullWidth
             sx={{
-              width: 125
+              flex:4,
+              "& .MuiSelect-select": {
+                fontSize: "0.85rem"
+              }
+            }}
+            slotProps={{
+              select: {
+                IconComponent: () => null,
+              },
             }}
           >
             {exSetTypeChoices.map(({value, label}) => (
@@ -185,10 +196,15 @@ export default function ExSetEditor({
               </MenuItem>
             ))}
           </TextField>
-        )
+          )
       }
       <IconButton
         onClick={ handleDeleteSet }
+        size="small"
+        sx={{
+          m: 0,
+          p: 0
+        }}
       >
         <DeleteIcon />
       </IconButton>

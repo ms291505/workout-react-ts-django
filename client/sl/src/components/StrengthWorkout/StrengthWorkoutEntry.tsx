@@ -130,6 +130,7 @@ export default function StrengthWorkoutEntry({
   return(
     <Box
       component="form"
+      maxWidth={500}
     >
       {
         accessMode

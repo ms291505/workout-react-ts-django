@@ -36,10 +36,13 @@ export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
       secondary: yellow,
       background: darkMode
         ? {
-          default: "#2a2a2a",
-          paper: "#333"
+            default: "#2a2a2a",
+            paper: "#333"
           }
-        : {},
+        : {
+            default: "#fff2da",
+            paper: "#fdf8ed"
+        },
     },
   });
 

@@ -16,6 +16,7 @@ import { SnackbarProvider, closeSnackbar } from "notistack";
 import { MAX_SNACK, NOTISTACK_DURATION } from './library/constants.ts';
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import { CENTER_COL_FLEX_BOX } from './styles/StyleOverrides.ts';
 
 export default function App() {
 
@@ -29,7 +30,10 @@ export default function App() {
         maxWidth="lg"
       >
       <Box
-        sx={{ display: "flex" }}
+        sx={{
+          ...CENTER_COL_FLEX_BOX,
+          minWidth: 0
+        }}
       >
         <CssBaseline />
         <SnackbarProvider

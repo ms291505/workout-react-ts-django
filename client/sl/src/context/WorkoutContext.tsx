@@ -33,6 +33,7 @@ const WorkoutContext = createContext<WorkoutContextValue>({
 export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
   const [workout, setWorkout] = useState<MaybeWorkout>(null);
   const [workoutContextMode, setWorkoutContextMode] = useState<string>("");
+
   const [exSelections, setExSelections] = useState<Exercise[]>([]);
 
   const clearWorkout = () => {

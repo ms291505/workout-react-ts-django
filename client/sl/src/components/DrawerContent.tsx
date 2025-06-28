@@ -1,43 +1,20 @@
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
 import Toolbar from "@mui/material/Toolbar"
-import { useNavigate } from "react-router";
+import { ReactNode } from "react"
 
 interface Props {
-  onClose?: () => void;
+  children?: ReactNode
 }
 
 export default function DrawerContent({
-  onClose
+  children
 }: Props) {
 
-  const navigate = useNavigate();
 
-  const handleNavClick = (targetPath: string) => {
-    navigate(targetPath);
-    onClose?.();
-  }
 
   return(
     <>
     <Toolbar variant="dense" />
-    <List>
-      <ListItemButton
-        onClick={() => handleNavClick("/")}
-      >
-        Home
-      </ListItemButton>
-      <ListItemButton
-        onClick={() => handleNavClick("/workout/new")}
-      >
-        Enter Workout
-      </ListItemButton>
-      <ListItemButton
-        onClick={() => handleNavClick("/exercise_library")}
-      >
-        Exercise Library
-      </ListItemButton>
-    </List>
+    { children }
     </>
    
   )

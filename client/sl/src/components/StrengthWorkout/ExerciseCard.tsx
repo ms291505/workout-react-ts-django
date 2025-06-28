@@ -83,13 +83,13 @@ export default function ExerciseCard(
   return(
     <Paper
       elevation={3}
-      sx={{ p: 2 }}
+      sx={{ p: 1.5 }}
     >
       <Box
         sx={{ 
           display: "flex",
           flexDirection: "column",
-          gap: 2,
+          gap: 1,
           mb: 2
          }}
       >
@@ -97,7 +97,7 @@ export default function ExerciseCard(
           sx={{
             display: "flex",
             flexDirection: "row",
-            gap:2
+            gap: 1
           }}
         >
           <TextField

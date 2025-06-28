@@ -6,7 +6,7 @@ export default function HomeScreen() {
   return (
     <>
         <Box>
-          <Toolbar variant="dense" sx={{ mb: 1}}/>
+          <Toolbar variant="dense" sx={{ mb: {xs: 1, md: 5}}}/>
             <Outlet />
         </Box>
     </>

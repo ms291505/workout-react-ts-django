@@ -8,19 +8,26 @@ import IconButton from "@mui/material/IconButton"
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { useAppThemeContext } from "../context/ThemeContext";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { AuthContext } from "../context/AuthContext";
 import { DRAWER_WIDTH } from "../library/constants";
 import Container from "@mui/material/Container";
+import NavList from "./NavList";
+import Button from "@mui/material/Button";
+import { navBarRoutes } from "../library/navBarRoutes";
+import Divider from "@mui/material/Divider";
+import { useNavigate } from "react-router";
 
 export default function WorkoutAppBar() {
 
   const [open, setOpen] = useState(false);
   const { toggleDarkMode, isMobile } = useAppThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const drawerWidth = DRAWER_WIDTH;
 
@@ -48,7 +55,7 @@ export default function WorkoutAppBar() {
             edge="start"
             color="inherit"
             onClick={() => setOpen(prev => !prev)}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuBookIcon />
           </IconButton>
@@ -79,6 +86,48 @@ export default function WorkoutAppBar() {
             )
           }
           </Box>
+          <Box
+            sx={{
+              display:{xs:"none", md:"flex"},
+              flexDirection:"row",
+              alignItems:"center",
+              justifyItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            {
+              navBarRoutes.map((n, idx) => (
+                <Fragment
+                  key={n.name}
+                >
+                  <Button
+                    size="small"
+                    color="secondary"
+                    sx={{
+                      fontWeight: "bold"
+                    }}
+                    onClick={() => navigate(n.route)}
+                  >
+                    {n.name}
+                  </Button>
+                  {
+                    idx + 1 < navBarRoutes.length
+                    ? <Divider
+                        orientation="vertical"
+                        flexItem
+                        color="secondary"
+                        sx={{
+                          borderRightWidth: 2,
+                          mr: 1,
+                          ml: 1,
+                        }}
+                      />
+                    : null
+                  }
+                </Fragment>
+              ))
+            }
+          </Box>
           </Container>
         </Toolbar>
       </AppBar>
@@ -86,7 +135,7 @@ export default function WorkoutAppBar() {
       <Box
         component="nav"
         sx={{
-          width: { sm: drawerWidth },
+          width: { sm: 0 },
           flexShrink: { sm: 0 }
         }}
         aria-label="navigation bar"
@@ -96,8 +145,8 @@ export default function WorkoutAppBar() {
           open={open}
           onClose={() => setOpen(false)}
           sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            display: { sm: 'block', med: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth},
           }}
           slotProps={{
             root: {
@@ -105,20 +154,11 @@ export default function WorkoutAppBar() {
             },
           }}
         >
-          <DrawerContent onClose={isMobile? () => setOpen(false) : undefined} />
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            position: "fixed",
-            display: { xs: "none", sm: "block" },
-            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box'},
-          }}
-          open
-        >
-          <DrawerContent />
+          <DrawerContent>
+            <NavList
+              onClose={isMobile? () => setOpen(false) : undefined}
+            />
+          </DrawerContent> 
         </Drawer>
       </Box>
     </>

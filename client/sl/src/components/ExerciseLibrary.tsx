@@ -111,7 +111,7 @@ export default function ExerciseLibrary() {
   const paginationModel = { page: 0, pageSize: 5 };
 
   return (
-    <div>
+    <>
       <Box
         sx={{
           display: "grid",
@@ -206,6 +206,6 @@ export default function ExerciseLibrary() {
           </Stack>
           </Box>
         }
-    </div>
+    </>
   )
 }

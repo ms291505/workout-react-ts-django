@@ -128,6 +128,36 @@ export async function postWorkout(workout: Workout_Hist): Promise<Workout_Hist> 
   return response.json();
 }
 
+export async function deleteWorkout(workout: Workout_Hist): Promise<boolean> {
+  const response = await fetch(`${API_BASE}/workouts/delete/${workout.id!}/`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "Application/json",
+    },
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return deleteWorkout(workout);
+  }
+
+  if (!response.ok) {
+    console.error("Delete failed:", response.status);
+
+    try {
+      const errorData = await response.json();
+      console.error("Validation errors:", errorData);
+      throw errorData;
+    } catch {
+      throw new Error("Unknown error deleting workout");
+    }
+  }
+
+  await checkStatus(response);
+  return true;
+}
+
 export async function updateWorkout(workout: Workout_Hist): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/${workout.id!}/`, {
     method: "PUT",

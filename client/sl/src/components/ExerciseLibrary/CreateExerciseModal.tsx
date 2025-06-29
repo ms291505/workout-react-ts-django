@@ -42,7 +42,6 @@ export default function CreateExerciseModal ({
     setCreating(true);
     try {
       const newExercise = await postExercise(newExName);
-      console.log("New excercise added: " + newExercise.name);
       enqueueSnackbar(newExercise.name + " was added to the library.", {variant: "success"});
       onCreate();
       onClose();

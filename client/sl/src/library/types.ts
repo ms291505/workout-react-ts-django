@@ -43,7 +43,7 @@ export interface Workout_Hist {
  */
 export interface Exercise {
   /** The name of the exercise. */
-  name: string | null;
+  name: string;
 
   /** The unique id from the exercise table. */
   id: string | number | null;
@@ -53,7 +53,7 @@ export interface Exercise {
    * Users cannot see exercises created by other users.
    */
   userAddedFlag?: string | null;
-  count_180_days?: number | null;
+  count180Days?: number | null;
 }
 
 export interface User {

@@ -1,6 +1,6 @@
 import { Exercise } from "../library/types";
 import { fetchExercises } from "../api";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -8,11 +8,11 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import Checkbox from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { useWorkoutContext } from "../context/WorkoutContext";
 import LoadingRoller from "./LoadingRoller";
-import CreateExerciseModal from "./StrengthWorkout/CreateExerciseModal";
+import CreateExerciseModal from "./ExerciseLibrary/CreateExerciseModal";
+import Typography from "@mui/material/Typography";
+import ExerciseInfo from "./ExerciseLibrary/ExerciseInfo";
 
 export default function ExerciseLibrary() {
 
@@ -49,66 +49,10 @@ export default function ExerciseLibrary() {
     setExSelections(nextSelected);
   }
 
-  const columns: GridColDef<Exercise>[] = [
-    {
-      field: "add",
-      headerName: "Select",
-      sortable: false,
-      filterable: false,
-      width: 60,
-      renderCell: (params: GridRenderCellParams<Exercise>) => {
-        const already = exSelections.some((ex) => ex.id === params.row.id);
-        return (
-          <IconButton
-            size="small"
-            onClick={already ? () => handleRemove(params.row) : () => handleAdd(params.row)}
-            sx={{
-              mt:1,
-              mb:1
-            }}
-          >
-            {already ? <Checkbox /> : <CheckBoxOutlineBlankIcon />}
-          </IconButton>
-        )
-      }
-    },
-
-    { 
-      field: "name",
-      headerName: "Name",
-      minWidth: 200,
-    },
-
-    { field: "count180Days",
-      headerName: "Last 180 Days",
-      type: "string",
-      width: 125,
-      valueGetter: (value) => {
-        if (value === 0) {
-          return null;
-        } else if (value === 1) {
-          return value + " workout";
-        } else {
-          return value + " workouts";
-        }
-      },
-    },
-    
-      { field: "userAddedFlag",
-      headerName: "Custom",
-      valueGetter: (value) => {
-        if (value === "N") {
-          return "";
-        } else if (value === "Y") {
-          return "Yes";
-        } else {
-          return "";
-        }
-      }
-    },
-  ];
-
-  const paginationModel = { page: 0, pageSize: 5 };
+  const handleRowClick = (clickedEx: Exercise) => {
+              const already = exSelections.some((ex) => ex.id === clickedEx.id);
+              already ? handleRemove(clickedEx) : handleAdd(clickedEx);
+            };
 
   return (
     <>
@@ -159,22 +103,53 @@ export default function ExerciseLibrary() {
           </>
         :
         <Box>
-          <DataGrid
-            rows={filtered}
-            columns={columns}
-            getRowId={(row) => row.id as string}
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10, 20]}
-            onRowClick={(params) => {
-              const already = exSelections.some((ex) => ex.id === params.row.id);
-              already ? handleRemove(params.row) : handleAdd(params.row);
-            }}
-            checkboxSelection={false}
-            disableRowSelectionOnClick
+          <Box
             sx={{
-              maxHeight: 800
-            }}
-          />
+              display: "flex",
+              flexDirection: "column",
+            
+              justifyContent: "flex-start", // optional, but makes vertical flow clear
+              minWidth: 150,
+              maxHeight: 300,
+              minHeight: 300,
+              overflowY: "auto",
+              width: "100%",      // optional: ensures horizontal space
+              mt: 2,
+              gap: 1
+          }}
+          >
+            {[...filtered]
+              .sort((a,b) => a.name.localeCompare(b.name))
+              .map((ex) => (
+                <Fragment key={ex.id}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => handleRowClick(ex)}
+                    sx={{
+                      width: "100%",
+                      height: "auto",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      alignSelf: "stretch"
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
+                      fontWeight="bold"
+                      sx={{
+                        mb: 1
+                      }}
+                    >
+                      {ex.name}
+                    </Typography>
+                    <ExerciseInfo ex={ex} />
+                  </Button>
+
+                </Fragment>
+              ))
+            }
+          </Box>
       
         <h4>Selected Exercises:</h4>
           <Stack

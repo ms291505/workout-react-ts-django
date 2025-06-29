@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchWorkouts } from "../api";
+import { deleteWorkout, fetchWorkouts } from "../api";
 import { Workout_Hist } from "../library/types";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
@@ -11,12 +11,14 @@ import { parseToWeekdayDate } from "../utils";
 import { useWorkoutContext } from "../context/WorkoutContext";
 import { useNavigate } from "react-router";
 import Divider from "@mui/material/Divider";
+import { useSnackbar } from "notistack";
 
 export default function RecentWorkouts() {
   const navigate = useNavigate();
 
   const [workouts, setWorkouts] = useState<Workout_Hist[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const {enqueueSnackbar} = useSnackbar();
 
   const { setWorkout } = useWorkoutContext();
 
@@ -38,6 +40,26 @@ export default function RecentWorkouts() {
   const handleWorkoutEdit = (w: Workout_Hist) => {
     setWorkout(w as Workout_Hist);
     navigate(`/workout/edit/${w.id}`);
+  }
+
+  const handleWorkoutDelete = async (w: Workout_Hist) => {
+    setLoading(true);
+
+    try{
+      const response = await deleteWorkout(w);
+      if (response === true) enqueueSnackbar(`'${w.name}' was deleted.`);
+      await getWorkouts();
+    } catch (err) {
+      console.error("Ann error occured while trying to delete.", err);
+      if (err && typeof err === "object" && "name" in err) {
+        const nameErrors = (err as any).name;
+        const message = Array.isArray(nameErrors) ? nameErrors[0] : "An unkown Exercise Name error.";
+        enqueueSnackbar(message, { variant: "error" });
+      }
+    } finally {
+      setLoading(false);
+    }
+
   }
 
   if (loading) {
@@ -97,6 +119,13 @@ export default function RecentWorkouts() {
                   onClick={() => handleWorkoutEdit(w)}
                 >
                   Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleWorkoutDelete(w)}
+                >
+                  Delete
                 </Button>
               </CardActions>
             </Card>

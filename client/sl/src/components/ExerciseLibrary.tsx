@@ -1,13 +1,11 @@
 import { Exercise } from "../library/types";
 import { fetchExercises } from "../api";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import { useWorkoutContext } from "../context/WorkoutContext";
 import LoadingRoller from "./LoadingRoller";
 import CreateExerciseModal from "./ExerciseLibrary/CreateExerciseModal";

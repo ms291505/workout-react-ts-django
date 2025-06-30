@@ -12,6 +12,7 @@ venv/
 
 # Django
 server/djangobackend/db.sqlite3
+.env*
 
 # Node
 client/sl/node_modules/

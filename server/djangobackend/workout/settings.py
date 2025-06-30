@@ -12,23 +12,33 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
+import json
+
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
+SECRET_KEY = os.environ.get("SECRET_KEY")
+DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
+PROD = os.environ.get("PROD", "false").lower() == "true"
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+if PROD:
+  STATIC_ROOT = os.path.join(BASE_DIR, "server", "djangobackend", "staticfiles")
+  SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+  ALLOWED_HOSTS = json.loads(os.environ.get("ALLOWED_HOSTS", "[]"))
+  SECURE_SSL_REDIRECT = False
+else:
+  ALLOWED_HOSTS = []
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+PROJECT_LOGGING_FLAG = DEBUG
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kq2h(jyw8h($_uggn*+000@y0$iy2j*u*9gx-+3cgn(bzf-f9r'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-PROJECT_LOGGING_FLAG = True
+STATIC_URL = "/static/"
 
 LOGGING = {
   "version": 1,
@@ -81,6 +91,14 @@ REST_FRAMEWORK = {
         "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
         "rest_framework.parsers.JSONParser",
     ],
+    "DEFAULT_THROTTLE_CLASSES": [
+      "rest_framework.throttling.UserRateThrottle",
+      "rest_framework.throttling.AnonRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+      "user": "100/hour",
+      "anon": "20/hour"
+    }
 }
 
 
@@ -126,9 +144,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-  "http://localhost:5173",
-]
+if PROD:
+  CORS_ALLOWED_ORIGINS = json.loads(os.environ.get("CORS_ALLOWED_ORIGINS", "[]"))
+else:
+  CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+  ]
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -192,12 +213,6 @@ TIME_ZONE = "America/New_York"
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -105,13 +105,12 @@ export default function ExerciseLibrary() {
             sx={{
               display: "flex",
               flexDirection: "column",
-            
-              justifyContent: "flex-start", // optional, but makes vertical flow clear
+              justifyContent: "flex-start",
               minWidth: 150,
               maxHeight: 300,
               minHeight: 300,
               overflowY: "auto",
-              width: "100%",      // optional: ensures horizontal space
+              width: "100%",
               mt: 2,
               gap: 1
           }}

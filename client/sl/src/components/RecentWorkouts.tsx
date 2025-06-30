@@ -16,7 +16,7 @@ import { useSnackbar } from "notistack";
 export default function RecentWorkouts() {
   const navigate = useNavigate();
 
-  const [workouts, setWorkouts] = useState<Workout_Hist[] | null>(null);
+  const [workouts, setWorkouts] = useState<Workout_Hist[]>([]);
   const [loading, setLoading] = useState(true);
   const {enqueueSnackbar} = useSnackbar();
 
@@ -66,8 +66,8 @@ export default function RecentWorkouts() {
     return <p>Your workouts are loading...</p>
   }
 
-  return(
-  <Grid container component="div" spacing={2} justifyContent="flex-start" alignItems="flex-start">
+  if (workouts?.length > 0) return(
+  <Grid container spacing={2} justifyContent="flex-start">
         {workouts?.map((w) => (
           <Grid key={w.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ p: 0 }} raised>

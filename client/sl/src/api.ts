@@ -23,10 +23,15 @@ export async function login(username: string, password: string): Promise<void> {
   const response = await fetch(`${API_BASE}/token/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "Application/json"},
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ username, password }),
   });
   await checkStatus(response);
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    const message = errorData?.detail || "Login failed due to unkown error.";
+    throw new Error(message);
+  }
 }
 
 export async function refreshAccess(): Promise<void> {
@@ -50,7 +55,7 @@ export async function register(payload: UserRegisterDto): Promise<void | Respons
     method: "POST",
     credentials: "include",
     headers: {
-      "Content-Type": "Application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
   });
@@ -94,7 +99,7 @@ export async function fetchWorkoutDetail( workoutID: number): Promise<Workout_Hi
   const response = await fetch(`${API_BASE}/workouts/${workoutID}/`, {
     credentials: "include",
     headers: {
-      "Content-Type": "Application/json",
+      "Content-Type": "application/json",
     }
   });
   if (response.status === 401) {
@@ -109,7 +114,7 @@ export async function postWorkout(workout: Workout_Hist): Promise<Workout_Hist> 
   const response = await fetch(`${API_BASE}/workouts/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "Application/json"},
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify(workout),
   });
   if (response.status === 401) {
@@ -133,7 +138,7 @@ export async function deleteWorkout(workout: Workout_Hist): Promise<boolean> {
     method: "DELETE",
     credentials: "include",
     headers: {
-      "Content-Type": "Application/json",
+      "Content-Type": "application/json",
     },
   });
 
@@ -163,7 +168,7 @@ export async function updateWorkout(workout: Workout_Hist): Promise<Workout_Hist
     method: "PUT",
     credentials: "include",
     headers: {
-      "Content-Type": "Application/json",
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(workout),
   });
@@ -212,7 +217,7 @@ export async function postExercise(inputValue: string): Promise<Exercise> {
   const response = await fetch(`${API_BASE}/exercises/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "Application/json"},
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ name: inputValue }),
   });
   if (response.status === 401) {

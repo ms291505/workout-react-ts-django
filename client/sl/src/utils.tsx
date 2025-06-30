@@ -29,7 +29,7 @@ export const parseToDate = (x: string) => {
 }
 
 export const parseToWeekdayDate = (x: string) => {
-  const date = new Date(parseToDate(x));
+  const date = new Date(x);
 
   const formatted = new Intl.DateTimeFormat("en-US", {
     weekday: "long",

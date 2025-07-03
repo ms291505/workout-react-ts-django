@@ -236,6 +236,24 @@ export default function ExerciseLibrary() {
     </Box>
   )
 }
+  <ExerciseDetails
+    open={createrOpen}
+    onClose={() => setExDetailsOpen(false)}
+    ex={exDetailSelection}
+  />
+  <CreateExerciseModal
+  open={createrOpen}
+  onClose={() => setCreaterOpen(false)}
+  newName={filter}
+  onCreate={
+    () => {
+      fetchExercises().then((response) => {
+        setExercises(response);
+        setLoading(false);
+      })
+    }
+  }
+  />
 </>
   )
 }

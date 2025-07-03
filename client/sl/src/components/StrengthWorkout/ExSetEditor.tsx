@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";

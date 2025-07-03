@@ -237,7 +237,7 @@ export default function ExerciseLibrary() {
   )
 }
   <ExerciseDetails
-    open={createrOpen}
+    open={exDetailsOpen}
     onClose={() => setExDetailsOpen(false)}
     ex={exDetailSelection}
   />

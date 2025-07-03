@@ -9,7 +9,7 @@ import { fetchWorkoutDetail, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
-import ExPickerModal from "../ExPickerModal";
+import ExPickerModal from "../dialog/ExPickerModal";
 import { createEmptyExHist, createEmptyWorkout } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";

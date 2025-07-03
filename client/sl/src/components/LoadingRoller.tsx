@@ -5,6 +5,10 @@ interface Props {
   size: number,
 }
 
+/**
+ * 
+ * @param size - number for width and height style override.
+ */
 export default function LoadingRoller({
   size
 }: Props) {

@@ -38,11 +38,8 @@ export default function Login() {
       const msg = err instanceof Error
         ? err.message
         : "Login failed";
-      if (msg.trim() === "Unauthorized") {
-        enqueueSnackbar("Incorrect username or password.", { variant: "error" })
-      } else{
-        enqueueSnackbar(msg, { variant: "error" });
-      }
+        
+      enqueueSnackbar(msg, { variant: "error" });
     } finally {
       setLoading(false);
       refreshUser();

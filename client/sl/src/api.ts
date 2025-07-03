@@ -1,3 +1,5 @@
+// api.ts
+
 import {
   Workout_Hist,
   User,
@@ -19,6 +21,45 @@ async function checkStatus(response: Response) {
   return response;
 }
 
+/**
+ * Helper function for handling API errors. 
+ * @param response - The `Response` object from a failed catch call.
+ * @throws {Error} - With a message extracted from the response body.
+ */
+async function handleApiError(response: Response): Promise<never> {
+  let userMessage = `Request failed with status ${response.status}`;
+  let debugInfo: any = null;
+
+  try {
+    const data = await response.json();
+    debugInfo = data;
+
+    if (typeof data === "string") {
+      userMessage = data;
+    } else if (data?.detail) {
+      userMessage = data.detail;
+    } else if (typeof data === "object") {
+      // Likely validation errors
+      const errors = Object.entries(data)
+        .map(([field, messages]) => `${field}: ${(messages as string[]).join(", ")}`)
+        .join(" | ");
+      userMessage = errors || userMessage;
+    }
+  } catch (e) {
+    userMessage = response.statusText || "Unknown error occurred";
+  }
+
+  console.error("API error response:", {
+    url: response.url,
+    status: response.status,
+    statusText: response.statusText,
+    body: debugInfo,
+  });
+
+  throw new Error(userMessage);
+}
+
+
 export async function login(username: string, password: string): Promise<void> {
   const response = await fetch(`${API_BASE}/token/`, {
     method: "POST",
@@ -26,11 +67,8 @@ export async function login(username: string, password: string): Promise<void> {
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ username, password }),
   });
-  await checkStatus(response);
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    const message = errorData?.detail || "Login failed due to unkown error.";
-    throw new Error(message);
+    await handleApiError(response);
   }
 }
 

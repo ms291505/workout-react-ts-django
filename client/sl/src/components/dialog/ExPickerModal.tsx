@@ -26,7 +26,8 @@ export default function ExPickerModal({
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="xs"
+      maxWidth="sm"
+      fullWidth
     >
       <DialogTitle>Select or create an exercise</DialogTitle>
       <DialogContent>

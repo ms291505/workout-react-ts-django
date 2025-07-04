@@ -14,6 +14,7 @@ import { createEmptyExHist, createEmptyWorkout } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
+import Typography from "@mui/material/Typography";
 
 interface Props {
   accessMode: string;
@@ -92,7 +93,7 @@ export default function StrengthWorkoutEntry({
     setExSelections([]);
   };
 
-  const onSave = async () => {
+  const onFinish = async () => {
           function describeError(err: any) {
             if (err && typeof err === "object" && "name" in err) {
               const nameErrors = (err as any).name;
@@ -132,11 +133,9 @@ export default function StrengthWorkoutEntry({
       component="form"
       maxWidth={500}
     >
-      {
-        accessMode
-        ? <h1>{accessMode}</h1>
-        : null
-      }
+      <Typography variant="h6">
+        {workout.name}
+      </Typography>
       <StrengthWorkoutHeader />
       <Box
         display="flex"
@@ -192,10 +191,10 @@ export default function StrengthWorkoutEntry({
           Cancel
         </Button>
         <Button 
-          onClick={onSave}
+          onClick={onFinish}
           variant="contained"
         >
-          Save
+          Finish
         </Button>
         <ExPickerModal
           open={exPickerOpen}

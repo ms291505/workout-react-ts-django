@@ -17,7 +17,6 @@ export default function Login() {
   const navigate = useNavigate();
 
   const {enqueueSnackbar} = useSnackbar();
-  const { fromLogout } = useContext(AuthContext);
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -73,11 +72,6 @@ export default function Login() {
         }}
       >
         <h2>Login</h2>
-        {
-          fromLogout
-            ? <LoggedOutAlert />
-            : null
-        }
         <TextField
           type="text"
           label="username"

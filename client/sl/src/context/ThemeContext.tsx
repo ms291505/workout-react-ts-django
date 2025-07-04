@@ -33,7 +33,7 @@ export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
     palette: {
       mode: darkMode ? "dark" : "light",
       primary: cyan,
-      secondary: yellow,
+      secondary: darkMode ? cyan : yellow,
       background: darkMode
         ? {
             default: "#2a2a2a",

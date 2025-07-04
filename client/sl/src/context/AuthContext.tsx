@@ -2,12 +2,12 @@ import { createContext, FC, ReactNode, useEffect, useState } from "react";
 import { whoAmI, logout } from "../api";
 import { User } from "../library/types";
 import { useNavigate } from "react-router";
+import { useSnackbar } from "notistack";
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   error: string | null;
-  fromLogout: boolean;
   refreshUser: () => Promise<void>;
   handleLogout: () => Promise<void>;
 }
@@ -16,7 +16,6 @@ export const AuthContext = createContext<AuthContextValue>({
   user: null,
   loading: true,
   error: null,
-  fromLogout: true,
   refreshUser: async () => {},
   handleLogout: async () => {},
 });
@@ -26,7 +25,8 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [fromLogout, setFromLogout] = useState(false);
+
+  const {enqueueSnackbar} = useSnackbar();
 
   const refreshUser = async () => {
     setLoading(true);
@@ -46,9 +46,9 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   const handleLogout = async () => {
-      setFromLogout(true);
       try {
       await logout();
+      enqueueSnackbar("You have logged out.")
       navigate("/login", { replace: true });
     } catch (err) {
       console.error(err)
@@ -67,7 +67,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         user,
         loading,
         error,
-        fromLogout,
         refreshUser,
         handleLogout
       }}

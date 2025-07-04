@@ -4,6 +4,7 @@ type FormSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => void;
 /**
  * Handles a button click by printing form data to the console log.
  * e.g., onClick={handleSubmitToLog}
+ * @deprecated
  */
 export const handleSubmitToLog: FormSubmitHandler = (event) => {
     event.preventDefault();
@@ -13,6 +14,9 @@ export const handleSubmitToLog: FormSubmitHandler = (event) => {
     console.log(JSON.stringify(dataObject, null, 2));
   }
 
+/**
+ * @deprecated
+ */
 export const handleKeyDownPD = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key === "Enter") e.preventDefault();
 };

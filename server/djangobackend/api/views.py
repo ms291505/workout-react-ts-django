@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
+from django.db.models.query import QuerySet
 
 from rest_framework import generics, status, filters
 from rest_framework.views import APIView
@@ -34,20 +35,17 @@ def index(request):
 
 
 class CookieTokenObtainPairView(CookieTokenMixin, TokenObtainPairView):
-  serializer_class = TokenObtainPairSerializer
+    serializer_class = TokenObtainPairSerializer
 
-  def finalize_response(self, request, response, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
 
-    d_log("something called CookieTokenObtainPairView.")
+        if hasattr(response, "data") and isinstance(response.data, dict):
+            self.set_jwt_cookies(response, response.data)
+            response.data.pop("access", None)
+            response.data.pop("refresh", None)
 
-    resp = super().finalize_response(request, response, *args, **kwargs)
-
-    self.set_jwt_cookies(resp, resp.data)
-
-    resp.data.pop("access", None)
-    resp.data.pop("refresh", None)
-
-    return resp
+        return response
 
 
 class CookieTokenRefreshView(CookieTokenMixin, TokenRefreshView):
@@ -64,10 +62,9 @@ class CookieTokenRefreshView(CookieTokenMixin, TokenRefreshView):
         {"detail": "Refresh token not provided."},
         status=status.HTTP_400_BAD_REQUEST
       )
-    
+
     serializer = self.get_serializer(data={"refresh": raw})
     serializer.is_valid(raise_exception=True)
-
     validated_data = serializer.validated_data
 
     d_log(f"{validated_data}")
@@ -76,21 +73,12 @@ class CookieTokenRefreshView(CookieTokenMixin, TokenRefreshView):
 
     self.set_jwt_cookies(response, validated_data)
 
-    response.data.pop("access", None)
-    response.data.pop("refresh", None)
+
+    if isinstance(response.data, dict):
+      response.data.pop("access", None)
+      response.data.pop("refresh", None)
 
     return response
-
-  def finalize_response(self, request, response, *args, **kwargs):
-
-    resp = super().finalize_response(request, response, *args, **kwargs)
-
-    self.set_jwt_cookies(resp, resp.data)
-
-    resp.data.pop("access", None)
-    resp.data.pop("refresh", None)
-
-    return resp
 
 
 class DeleteCookiesView(APIView):
@@ -147,8 +135,7 @@ class WorkoutListCreate(generics.ListCreateAPIView):
   permission_classes = [IsAuthenticated]
 
   def get_queryset(self):
-    user = self.request.user
-    return Workout_Hist.objects.filter(user=user)
+    return Workout_Hist.objects.filter(user=self.request.user)
   
   def perform_create(self, serializer):
     serializer.save(user=self.request.user)

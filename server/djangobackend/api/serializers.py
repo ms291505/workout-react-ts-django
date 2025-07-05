@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.request import Request
-from .models import Workout_Hist, ExSet, Exercise_Hist, Exercise
+from .models import Workout_Hist, Ex_Set, Exercise_Hist, Exercise
 from django.db.models import Q
 
 
@@ -72,7 +72,7 @@ class ExSetSerializer(serializers.ModelSerializer):
   Serializer for one set of an exercise.
   """
   class Meta:
-    model = ExSet
+    model = Ex_Set
     fields = [
       "id",
       "order",
@@ -128,7 +128,7 @@ class WorkoutHistSerializer(serializers.ModelSerializer):
         **ex_data
       )
       for set_data in sets_data:
-        ExSet.objects.create(exercise_hist=exercise_hist, **set_data)
+        Ex_Set.objects.create(exercise_hist=exercise_hist, **set_data)
     return workout
   
   def update(self, instance, validated_data):
@@ -148,5 +148,5 @@ class WorkoutHistSerializer(serializers.ModelSerializer):
           **ex_data
         )
         for set_data in sets_data:
-          ExSet.objects.create(exercise_hist=exercise_hist, **set_data)
+          Ex_Set.objects.create(exercise_hist=exercise_hist, **set_data)
     return instance

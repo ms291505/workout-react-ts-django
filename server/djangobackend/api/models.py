@@ -103,6 +103,7 @@ class Exercise(models.Model):
     name (CharField): exercise name
     user_added_flag (CharField): flag indicating user created exercise
     created (DateTimeField): created date
+    user (ForeignKey): user_id for user created exercises
 
   Methods:
     __str__: Returns a summary string for admin displays.
@@ -143,7 +144,7 @@ class Exercise_Hist(models.Model):
   Contains the exercises done for each workout.
 
   Attributes:
-    workout (ForeignKey): foreign key for the workout
+    workout_hist (ForeignKey): foreign key for the workout
     exercise (ForeignKey): foreign key for the exercise
     notes (TextField): exercise notes
     created (DateTimeField): created date
@@ -181,12 +182,12 @@ class ExSetType(models.TextChoices):
   DROP = "DP", "Drop"
 
 
-class ExSet(models.Model):
+class Ex_Set(models.Model):
   """
   Contains the sets performed for each exercise.
 
   Attributes:
-    exercise (ForeignKey): Foreign key for `EXERCISE` table (Exercise).
+    exercise (ForeignKey): Foreign key for `EXERCISE_HIST` table.
     order (PositiveSmallIntegerField): the order the sets were performed for each exercise
     weight_lbs (DecimalField): the weight in pounds, up to two decimal places
     reps (PostiveSmallIntergerField): count of reps performed
@@ -198,6 +199,125 @@ class ExSet(models.Model):
     Exercise_Hist,
     on_delete=models.CASCADE,
     related_name="ex_sets"
+  )
+  order = models.PositiveSmallIntegerField(
+    verbose_name="set order",
+    help_text="order the sets were performed for each exercise."  
+  )
+  weight_lbs = models.DecimalField(
+    verbose_name="weight (lbs)",
+    decimal_places=2,
+    max_digits=6,
+    default=Decimal("0.0"),
+    help_text="Enter weight in pounds, up to two decimal places."
+  )
+  reps = models.PositiveSmallIntegerField()
+  target_reps = models.PositiveBigIntegerField(
+    verbose_name="target reps",
+    blank=True,
+    null=True
+  )
+  type = models.CharField(
+    verbose_name="set type",
+    max_length=2,
+    choices=ExSetType.choices,
+    default=ExSetType.WORK,
+    help_text="Select the set type (e.g., Warm-Up)."
+  )
+  created = models.DateTimeField(
+    verbose_name="ceated date",
+    auto_now_add=True
+  )
+
+
+class Teomplate_Workout_Hist(models.Model):
+  """
+  Basic information about a strength training workout.
+
+  Attributes:
+    name (CharField): workout name
+    notes (TextField): workout notes
+    created (DateTimeField): created date
+    user (ForeignKey): ID for the user
+
+  """
+  name = models.CharField(
+    verbose_name="workout name",
+    max_length=200
+  )
+  notes = models.TextField(
+    verbose_name="workout notes",
+    blank=True,
+    help_text="Notes for the workout for reference later."
+  )
+  created = models.DateTimeField(
+    verbose_name="created date",
+    auto_now_add=True
+  )
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now_add=True
+  )
+  user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="workout_templates",
+    blank=True,
+    null=True,
+    default=None
+  )
+
+  class Meta:
+    verbose_name = "Workout_Template"
+    verbose_name_plural = "Workout_Templates"
+
+
+class Template_Exercise_Hist(models.Model):
+  """
+  Contains the exercises done for each workout.
+
+  Attributes:
+    template_workout_hist (ForeignKey): foreign key for the workout template
+    exercise (ForeignKey): foreign key for the exercise
+    notes (TextField): exercise notes
+    created (DateTimeField): created date
+  """
+  template_workout_hist = models.ForeignKey(
+    Teomplate_Workout_Hist,
+    on_delete=models.CASCADE,
+    related_name="template_exercises"
+  )
+  exercise = models.ForeignKey(
+    Exercise,
+    on_delete=models.CASCADE
+  )
+  notes = models.TextField(
+    verbose_name="exercise notes",
+    blank=True,
+    help_text="Notes for an exercise for reference later."
+  )
+  created = models.DateTimeField(
+    verbose_name="created date",
+    auto_now_add=True)
+
+
+class Template_Ex_Set(models.Model):
+  """
+  Contains the sets performed for each exercise.
+
+  Attributes:
+    exercise (ForeignKey): Foreign key for `EXERCISE_HIST` table.
+    order (PositiveSmallIntegerField): the order the sets were performed for each exercise
+    weight_lbs (DecimalField): the weight in pounds, up to two decimal places
+    reps (PostiveSmallIntergerField): count of reps performed
+    target_reps (PositiveSmallIntergerField): target reps for the athlete
+    type (CharField): the set type (ExSetType)
+    created (DateTimeField): created date
+  """
+  template_exercise_hist = models.ForeignKey(
+    Template_Exercise_Hist,
+    on_delete=models.CASCADE,
+    related_name="template_ex_sets"
   )
   order = models.PositiveSmallIntegerField(
     verbose_name="set order",

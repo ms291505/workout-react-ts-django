@@ -166,21 +166,26 @@ class ExerciseListCreate(generics.ListCreateAPIView):
   serializer_class = ExerciseSerializer
   permission_classes = [IsAuthenticated]
   queryset = Exercise.objects.all()
-
   filter_backends = [filters.SearchFilter]
   search_fields = ["name"]
 
   def filter_queryset(self, queryset):
     queryset = super().filter_queryset(queryset)
     user = self.request.user
-    queryset = queryset.filter(
+
+    try:
+      days = int(self.request.query_params.get("days", 180))
+    except (ValueError, TypeError):
+      days = 180
+
+    days = max(1, min(days, 365))
+
+    cutoff = timezone.now() - timedelta(days=days)
+
+    return queryset.filter(
       Q(user=user) | Q(user_added_flag="N")
-    )
-
-    cutoff = timezone.now() - timedelta(days=180)
-
-    return queryset.annotate(
-      count_180_days=Count(
+    ).annotate(
+      recent_count=Count(
         "exercise_hist",
         filter=Q(
           exercise_hist__workout_hist__user=user,

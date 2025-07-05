@@ -230,7 +230,7 @@ class Ex_Set(models.Model):
   )
 
 
-class Teomplate_Workout_Hist(models.Model):
+class Tmpl_Workout_Hist(models.Model):
   """
   Basic information about a strength training workout.
 
@@ -272,7 +272,7 @@ class Teomplate_Workout_Hist(models.Model):
     verbose_name_plural = "Workout_Templates"
 
 
-class Template_Exercise_Hist(models.Model):
+class Tmpl_Exercise_Hist(models.Model):
   """
   Contains the exercises done for each workout.
 
@@ -282,10 +282,10 @@ class Template_Exercise_Hist(models.Model):
     notes (TextField): exercise notes
     created (DateTimeField): created date
   """
-  template_workout_hist = models.ForeignKey(
-    Teomplate_Workout_Hist,
+  tmpl_workout_hist = models.ForeignKey(
+    Tmpl_Workout_Hist,
     on_delete=models.CASCADE,
-    related_name="template_exercises"
+    related_name="tmpl_exercises"
   )
   exercise = models.ForeignKey(
     Exercise,
@@ -301,7 +301,7 @@ class Template_Exercise_Hist(models.Model):
     auto_now_add=True)
 
 
-class Template_Ex_Set(models.Model):
+class Tmpl_Ex_Set(models.Model):
   """
   Contains the sets performed for each exercise.
 
@@ -314,10 +314,10 @@ class Template_Ex_Set(models.Model):
     type (CharField): the set type (ExSetType)
     created (DateTimeField): created date
   """
-  template_exercise_hist = models.ForeignKey(
-    Template_Exercise_Hist,
+  tmpl_exercise_hist = models.ForeignKey(
+    Tmpl_Exercise_Hist,
     on_delete=models.CASCADE,
-    related_name="template_ex_sets"
+    related_name="tmpl_ex_sets"
   )
   order = models.PositiveSmallIntegerField(
     verbose_name="set order",

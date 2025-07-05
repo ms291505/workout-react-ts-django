@@ -53,7 +53,7 @@ export interface Exercise {
    * Users cannot see exercises created by other users.
    */
   userAddedFlag?: string | null;
-  count180Days?: number | null;
+  recentCount?: number | null;
 }
 
 export interface User {

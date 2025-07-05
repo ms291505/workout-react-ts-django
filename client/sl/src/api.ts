@@ -227,7 +227,7 @@ export async function updateWorkout(workout: Workout_Hist): Promise<Workout_Hist
 }
 
 export async function fetchExercises(): Promise<Exercise[]> {
-  const response = await fetch(`${API_BASE}/exercises/`, {
+  const response = await fetch(`${API_BASE}/exercises/?days=30`, {
     credentials: "include",
   });
   if (response.status === 401) {

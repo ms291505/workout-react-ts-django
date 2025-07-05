@@ -16,9 +16,10 @@ export default function ({ex}: Props) {
   const {exSelections} = useWorkoutContext();
 
   const countValue = () => {
-    if (!ex.count180Days) return "0 Workouts";
-    if (ex.count180Days === 1) return "1 Workout";
-    return `${ex.count180Days} Workouts`;
+    console.log(ex)
+    if (!ex.recentCount) return "0 Workouts";
+    if (ex.recentCount === 1) return "1 Workout";
+    return `${ex.recentCount} Workouts`;
   };
 
   return(
@@ -47,7 +48,7 @@ export default function ({ex}: Props) {
         <Divider orientation="vertical" flexItem/>
         <ExerciseAttribute
           value={countValue()}
-          label="180 Days:"
+          label="30 Days:"
         />
         <Divider orientation="vertical" flexItem/>
         <ExerciseAttribute

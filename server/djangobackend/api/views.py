@@ -14,11 +14,13 @@ from .serializers import (
   UserSerializer,
   WorkoutHistSerializer,
   ExerciseSerializer,
+  TmplWorkoutHistSerializer
 )
 from .models import (
   Workout_Hist,
   Exercise,
-  ExSetType
+  ExSetType,
+  Tmpl_Workout_Hist
 )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
@@ -151,6 +153,29 @@ class WorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
   def get_queryset(self):
     user = self.request.user
     return Workout_Hist.objects.filter(user=user)
+  
+
+class TmplWorkoutListCreate(generics.ListCreateAPIView):
+  serializer_class = TmplWorkoutHistSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    return Tmpl_Workout_Hist.objects.filter(user=self.request.user)
+  
+  def perform_create(self, serializer):
+    serializer.save(user=self.request.user)
+
+
+class TmplWorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
+  """
+  /api/workouts/{pk}
+  """
+  serializer_class = TmplWorkoutHistSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    user = self.request.user
+    return Tmpl_Workout_Hist.objects.filter(user=user)
 
 
 class ExerciseListCreate(generics.ListCreateAPIView):

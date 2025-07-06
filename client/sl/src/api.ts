@@ -110,7 +110,7 @@ export async function register(payload: UserRegisterDto): Promise<void | Respons
 }
 
 export async function fetchSetTypeChoice(): Promise<Choice[]> {
-  const response = await fetch(`${API_BASE}/exset-types`, {
+  const response = await fetch(`${API_BASE}/exset-types/`, {
     credentials: "include",
   });
   if (response.status === 401) {

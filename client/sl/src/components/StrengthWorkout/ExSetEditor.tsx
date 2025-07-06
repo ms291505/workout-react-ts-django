@@ -6,7 +6,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { ExSet } from "../../library/types";
 import { ChangeEvent, ReactNode, useEffect, FocusEvent } from "react";
 import { useWorkoutContext } from "../../context/WorkoutContext";
-import { useSetTypeChoices } from "../../hooks/useSetTypeChoices";
 import LoadingRoller from "../LoadingRoller";
 import { DEFAULT_EX_SET_TYPE } from "../../library/constants";
 import { isDecimalString, isNonNegativeIntegerString } from "../../utils/inputValidators";
@@ -24,9 +23,7 @@ export default function ExSetEditor({
 }: ExSetEditorProps
 ) {
 
-  const { setWorkout } = useWorkoutContext();
-  const { choices: exSetTypeChoices, loading } = useSetTypeChoices();
-
+  const { setWorkout, exSetTypeChoices } = useWorkoutContext();
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -167,7 +164,7 @@ export default function ExSetEditor({
         }}
       />
       {
-        loading
+        exSetTypeChoices.length === 0
         ? <LoadingRoller size={50} />
         : (
           <TextField

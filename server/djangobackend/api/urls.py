@@ -10,7 +10,9 @@ from api.views import (
   WorkoutDelete,
   ExerciseListCreate,
   WorkoutDetailView,
-  ExSetTypeList
+  ExSetTypeList,
+  TmplWorkoutListCreate,
+  TmplWorkoutDetailView
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -27,5 +29,7 @@ urlpatterns = [
   path("whoami/", views.WhoAmIView.as_view(), name="who-am-i"),
   path("exercises/", ExerciseListCreate.as_view(), name="exercise-list-create"),
   path("exset-types/", ExSetTypeList.as_view(), name="exset-types"),
+  path("tmpl-workouts/", TmplWorkoutListCreate.as_view(), name="tmpl-workout-list"),
+  path("tmpl-workouts/<int:pk>/", WorkoutDetailView.as_view(), name="tmpl-workout-detail"),
 
 ]

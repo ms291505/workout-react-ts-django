@@ -82,7 +82,7 @@ export default function ExerciseLibrary() {
         },
         alignItems: "flex-start",
         gap: 1,
-        maxWidth: "100%", // ensure fits in modal
+        maxWidth: "100%",
       }}
     >
       {/* Search + List */}
@@ -122,6 +122,7 @@ export default function ExerciseLibrary() {
 
         {/* Exercise list */}
         <Box
+          id="exercises-display"
           sx={{
             mt: 1,
             display: "flex",
@@ -164,7 +165,7 @@ export default function ExerciseLibrary() {
                     width: "100%",
                   }}
                 >
-                  <Typography variant="body1" fontWeight="bold">
+                  <Typography variant="body2" fontWeight="bold">
                     {ex.name}
                   </Typography>
                   <IconButton
@@ -204,7 +205,7 @@ export default function ExerciseLibrary() {
           }
         }}
       >
-        <Typography variant="h6" sx={{ mb: 1 }}>
+        <Typography variant="body2" sx={{ mb: 1 }}>
           Selected Exercises:
         </Typography>
         <Stack

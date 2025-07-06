@@ -16,7 +16,6 @@ export default function ({ex}: Props) {
   const {exSelections} = useWorkoutContext();
 
   const countValue = () => {
-    console.log(ex)
     if (!ex.recentCount) return "0 Workouts";
     if (ex.recentCount === 1) return "1 Workout";
     return `${ex.recentCount} Workouts`;

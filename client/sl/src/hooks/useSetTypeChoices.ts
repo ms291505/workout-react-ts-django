@@ -2,6 +2,9 @@ import { Choice } from "../library/types";
 import { fetchSetTypeChoice } from "../api";
 import { useEffect, useState } from "react";
 
+/**
+ * @deprecated
+ */
 export function useSetTypeChoices(): {
   choices: Choice[];
   loading: boolean;
@@ -18,5 +21,5 @@ export function useSetTypeChoices(): {
       .catch((err) => setError(err))
       .finally(() => setLoading(false));
   }, []);
-  return { choices, loading, error};
+  return { choices, loading, error };
 }

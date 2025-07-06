@@ -5,9 +5,11 @@ import {
   ReactNode,
   SetStateAction,
   useContext,
-  useState
+  useState,
+  useEffect
 } from "react";
-import { Exercise, MaybeWorkout, Workout_Hist } from "../library/types";
+import { Choice, Exercise, MaybeWorkout, Workout_Hist } from "../library/types";
+import { fetchSetTypeChoice } from "../api";
 
 
 interface WorkoutContextValue {
@@ -18,6 +20,8 @@ interface WorkoutContextValue {
   setWorkout: Dispatch<SetStateAction<MaybeWorkout>>;
   setWorkoutContextMode: Dispatch<SetStateAction<string>>;
   setExSelections: Dispatch<SetStateAction<Exercise[]>>;
+  exSetTypeChoices: Choice[];
+  setExSetTypeChoices: Dispatch<SetStateAction<Choice[]>>;
 }
 
 const WorkoutContext = createContext<WorkoutContextValue>({
@@ -28,17 +32,25 @@ const WorkoutContext = createContext<WorkoutContextValue>({
   setWorkout: () => {},
   setWorkoutContextMode: () => {},
   setExSelections: () => {},
+  exSetTypeChoices: [],
+  setExSetTypeChoices: () => {},
 })
 
 export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
   const [workout, setWorkout] = useState<MaybeWorkout>(null);
   const [workoutContextMode, setWorkoutContextMode] = useState<string>("");
+  const [exSetTypeChoices, setExSetTypeChoices] = useState<Choice[]>([]);
 
   const [exSelections, setExSelections] = useState<Exercise[]>([]);
 
   const clearWorkout = () => {
     setWorkout(null);
   }
+
+  useEffect(() =>{
+    fetchSetTypeChoice()
+      .then((data) => setExSetTypeChoices(data))
+  }, [])
 
   return (
     <WorkoutContext.Provider value={{
@@ -49,6 +61,8 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
       setWorkout,
       setWorkoutContextMode,
       setExSelections,
+      exSetTypeChoices,
+      setExSetTypeChoices
     }}>
       {children}
     </WorkoutContext.Provider>

@@ -206,7 +206,7 @@ class Ex_Set(models.Model):
   )
   weight_lbs = models.DecimalField(
     verbose_name="weight (lbs)",
-    decimal_places=2,
+    decimal_places=1,
     max_digits=6,
     default=Decimal("0.0"),
     help_text="Enter weight in pounds, up to two decimal places."
@@ -325,7 +325,7 @@ class Tmpl_Ex_Set(models.Model):
   )
   weight_lbs = models.DecimalField(
     verbose_name="weight (lbs)",
-    decimal_places=2,
+    decimal_places=1,
     max_digits=6,
     default=Decimal("0.0"),
     help_text="Enter weight in pounds, up to two decimal places."

@@ -64,7 +64,7 @@ export default function ExSetEditor({
   }
 
   function handleWeightBlur(e: FocusEvent<HTMLInputElement>) {
-    const v = e.target.value;
+    const v = e.target.value.trim();
 
     if (v === ".") {
       handleChange({
@@ -79,7 +79,7 @@ export default function ExSetEditor({
       handleChange({
         target: {
           name: "weightLbs",
-          value: parseFloat(v.replace(/\.$/, "")),
+          value: parseFloat(v.replace(/\.$/, "")).toFixed(1),
         }
       } as unknown as ChangeEvent<HTMLInputElement>);
     }
@@ -87,7 +87,7 @@ export default function ExSetEditor({
     handleChange({
       target: {
         name: "weightLbs",
-        value: parseFloat(v),
+        value: parseFloat(v).toFixed(1),
       }
     } as unknown as ChangeEvent<HTMLInputElement>);
   }
@@ -155,7 +155,7 @@ export default function ExSetEditor({
       <TextField
         label="Reps"
         name="reps"
-        value={exSet.reps ?? ""}
+        value={exSet.reps ?? "0"}
         onChange={handleChange}
         size="small"
         fullWidth

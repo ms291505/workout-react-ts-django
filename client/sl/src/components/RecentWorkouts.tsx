@@ -43,11 +43,6 @@ export default function RecentWorkouts() {
     getWorkouts();
     }, []);
 
-  const handleSummaryClick = (w: Workout_Hist) => {
-    setSummarySelection(w);
-    setSummaryOpen(true);
-  }
-
   const handleWorkoutEdit = (w: Workout_Hist) => {
     setWorkout(w as Workout_Hist);
     navigate(`/workout/edit/${w.id}`);

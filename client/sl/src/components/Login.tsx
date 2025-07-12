@@ -4,7 +4,6 @@ import { useNavigate  } from "react-router";
 import { AuthContext } from "../context/AuthContext";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import LoggedOutAlert from "./dialog/LoggedOutAlert";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import LoginIcon from "@mui/icons-material/Login";

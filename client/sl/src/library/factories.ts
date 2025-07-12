@@ -13,12 +13,13 @@ export function createEmptyWorkout(): Workout_Hist {
 }
 
 export function createEmptyExHist(ex?: Exercise): Exercise_Hist {
+
   return {
     id: crypto.randomUUID(),
     exerciseId: ex ? ex.id : null,
     name: ex ? ex.name : "",
     notes: "",
-    exSets: []
+    exSets: [createEmptyExSet(),]
   }
 }
 

@@ -7,7 +7,11 @@ export default function MainLayout() {
   return (
     <>
       <WorkoutAppBar />
-      <Box>
+      <Box
+        sx={{
+          mb: 5
+        }}
+      >
         <Outlet />
       </Box>
     </>

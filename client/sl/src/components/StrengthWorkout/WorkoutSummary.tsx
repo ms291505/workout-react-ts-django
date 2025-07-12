@@ -10,7 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from "@mui/material/Paper";
-import { Fragment } from "react/jsx-runtime";
+import { useWorkoutContext } from "../../context/WorkoutContext";
 
 interface Props {
   w: Workout_Hist | null;
@@ -19,6 +19,15 @@ interface Props {
 export default function WorkoutSummary({
   w,
 }: Props) {
+
+  const { exSetTypeChoices } = useWorkoutContext();
+  console.log(exSetTypeChoices);
+
+  const findSetType = (searchValue: string | null) => {
+    const match = exSetTypeChoices.find(t => t.value === searchValue);
+      return match?.label || "Error";
+  };
+
 
   if (w === null) return(null);
   return(
@@ -70,15 +79,21 @@ export default function WorkoutSummary({
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ width: "40%" }}
+                  sx={{ width: "20%" }}
                 >
                   Reps
                 </TableCell>
                 <TableCell
                   align="right"
-                  sx={{ width: "40%" }}
+                  sx={{ width: "25%" }}
                 >
                   {"Lbs"}
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ width: "35%" }}
+                >
+                  {"Type"}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -94,6 +109,9 @@ export default function WorkoutSummary({
                     </TableCell>
                     <TableCell align="right">
                       {s.weightLbs}
+                    </TableCell>
+                    <TableCell align="right">
+                      {findSetType(s.type)}
                     </TableCell>
                   </TableRow>
                 ))

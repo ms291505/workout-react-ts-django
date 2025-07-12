@@ -27,8 +27,8 @@ export function createEmptyExSet(): ExSet {
   return {
     id: crypto.randomUUID(),
     order: null,
-    weightLbs: null,
-    reps: null,
+    weightLbs: 0,
+    reps: 0,
     type: "WK"
   }
 }

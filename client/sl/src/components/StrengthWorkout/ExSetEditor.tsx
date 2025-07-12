@@ -143,7 +143,7 @@ export default function ExSetEditor({
       <TextField
         label="lbs"
         name="weightLbs"
-        value={exSet.weightLbs ?? ""}
+        value={exSet.weightLbs ?? "0.0"}
         onChange={handleChange}
         onBlur={handleWeightBlur}
         size="small"

@@ -15,6 +15,7 @@ import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import Typography from "@mui/material/Typography";
+import WorkoutHeader from "./WorkoutHeader";
 
 interface Props {
   accessMode: string;
@@ -133,6 +134,10 @@ export default function StrengthWorkoutEntry({
       component="form"
       maxWidth={500}
     >
+      <WorkoutHeader
+        name={workout.name}
+        date={workout.date}
+      />
       <Typography variant="h6">
         {workout.name}
       </Typography>

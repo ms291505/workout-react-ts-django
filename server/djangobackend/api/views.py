@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
-from django.db.models.query import QuerySet
 
 from rest_framework import generics, status, filters
 from rest_framework.views import APIView
@@ -253,7 +252,7 @@ class WorkoutDelete(generics.DestroyAPIView):
   
 
 class ExSetTypeList(APIView):
-  permission_classes = [IsAuthenticated]
+  permission_classes = [AllowAny]
 
   def get(self, request):
     choices = [

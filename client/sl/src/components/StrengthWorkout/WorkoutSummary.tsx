@@ -21,7 +21,6 @@ export default function WorkoutSummary({
 }: Props) {
 
   const { exSetTypeChoices } = useWorkoutContext();
-  console.log(exSetTypeChoices);
 
   const findSetType = (searchValue: string | null) => {
     const match = exSetTypeChoices.find(t => t.value === searchValue);

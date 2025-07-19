@@ -1,6 +1,6 @@
 import { createContext, useState, ReactNode, FC, useContext } from "react";
 import { createTheme, Theme, useMediaQuery } from "@mui/material";
-import { cyan, yellow } from '@mui/material/colors';
+import { cyan,  deepPurple, amber } from '@mui/material/colors';
 
 interface AppThemeContextValue {
   darkMode: boolean;
@@ -32,16 +32,14 @@ export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
-      primary: cyan,
-      secondary: darkMode ? cyan : yellow,
+      primary: darkMode? cyan : deepPurple,
+      secondary: darkMode ? cyan : amber,
       background: darkMode
         ? {
             default: "#2a2a2a",
             paper: "#333"
           }
         : {
-            default: "#fff2da",
-            paper: "#fdf8ed"
         },
     },
   });

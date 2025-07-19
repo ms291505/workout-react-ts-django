@@ -14,6 +14,7 @@ import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import WorkoutHeader from "./WorkoutHeader";
+import StrengthWorkoutNotes from "./SrengthWorkoutNotes";
 
 interface Props {
   accessMode: string;
@@ -140,6 +141,7 @@ export default function StrengthWorkoutEntry({
         name={workout.name}
         date={workout.date}
       />
+      <StrengthWorkoutNotes />
       <Box
         display="flex"
         flexDirection="column"

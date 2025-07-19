@@ -6,7 +6,8 @@ import {
   SetStateAction,
   useContext,
   useState,
-  useEffect
+  useEffect,
+  ChangeEvent
 } from "react";
 import { Choice, Exercise, MaybeWorkout, Workout_Hist } from "../library/types";
 import { fetchSetTypeChoice } from "../api";
@@ -22,6 +23,7 @@ interface WorkoutContextValue {
   setExSelections: Dispatch<SetStateAction<Exercise[]>>;
   exSetTypeChoices: Choice[];
   setExSetTypeChoices: Dispatch<SetStateAction<Choice[]>>;
+  handleOneChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const WorkoutContext = createContext<WorkoutContextValue>({
@@ -34,6 +36,7 @@ const WorkoutContext = createContext<WorkoutContextValue>({
   setExSelections: () => {},
   exSetTypeChoices: [],
   setExSetTypeChoices: () => {},
+  handleOneChange: () => {},
 })
 
 export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
@@ -45,6 +48,11 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
 
   const clearWorkout = () => {
     setWorkout(null);
+  }
+  
+  const handleOneChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setWorkout(previous => ({ ...previous, [name]: value } as Workout_Hist));
   }
 
   useEffect(() =>{
@@ -62,7 +70,8 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
       setWorkoutContextMode,
       setExSelections,
       exSetTypeChoices,
-      setExSetTypeChoices
+      setExSetTypeChoices,
+      handleOneChange
     }}>
       {children}
     </WorkoutContext.Provider>

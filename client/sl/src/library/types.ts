@@ -56,6 +56,11 @@ export interface Exercise {
   recentCount?: number | null;
 }
 
+export interface StrengthWorkoutHeaderData {
+  name: string | null;
+  date: string | null;
+}
+
 export interface User {
   /* Extends below, may need to update the Omit if you add anything. */
   id: number | string;

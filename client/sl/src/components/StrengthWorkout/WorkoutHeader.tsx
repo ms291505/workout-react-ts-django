@@ -3,6 +3,9 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import EditSquareIcon from '@mui/icons-material/EditSquare';
 import { parseToWeekdayDate } from "../../utils";
+import IconButton from "@mui/material/IconButton";
+import { useState } from "react";
+import EditWorkoutHeaderModal from "../dialog/EditWorkoutHeaderModal";
 
 interface Props {
   name: string | null;
@@ -14,6 +17,8 @@ export default function WorkoutHeader({
   date
 }: Props) {
 
+  const [headerEditOpen, setHeaderEditOpen] = useState(false);
+
   return (
     <>
     <Box
@@ -21,7 +26,7 @@ export default function WorkoutHeader({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        width: "100%"
+        width: "100%",
       }}    
     >
       <Box
@@ -38,7 +43,11 @@ export default function WorkoutHeader({
           {date && parseToWeekdayDate(date)}
         </Typography>
       </Box>
-      <EditSquareIcon />
+      <IconButton
+        onClick={() => setHeaderEditOpen(!headerEditOpen)}
+      >
+        <EditSquareIcon />
+      </IconButton>
     </Box>
     <Divider
       sx={{
@@ -46,6 +55,12 @@ export default function WorkoutHeader({
         borderColor: "primary.main",
         borderBottomWidth: 2
       }}
+    />
+
+
+    <EditWorkoutHeaderModal
+      open={headerEditOpen}
+      onClose={() => setHeaderEditOpen(false)}
     />
     </>
   )

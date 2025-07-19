@@ -1,3 +1,4 @@
+/**@deprecated - Use WorkoutHeader isntead. */
 import { useWorkoutContext } from "../../context/WorkoutContext";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";

@@ -7,6 +7,7 @@ import { Exercise_Hist, ExSet } from "../../library/types";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import Button from "@mui/material/Button";
 import { createEmptyExSet } from "../../library/factories";
+import Divider from "@mui/material/Divider";
 
 interface ExerciseCardProps {
   exHist: Exercise_Hist,
@@ -125,13 +126,11 @@ export default function ExerciseCard(
           value={exHist.notes ?? ""}
           onChange={handleChange}
         />
-        <Box component="span"
-          sx={{
-            ...CENTER_COL_FLEX_BOX,
-          }}
+        <Divider
+          sx={{mt: 1}}
         >
-          - Sets -
-        </Box>
+          SETS
+        </Divider>
       </Box>
       <Box
         sx={{

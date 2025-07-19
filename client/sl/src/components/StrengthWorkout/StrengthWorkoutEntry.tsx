@@ -3,7 +3,6 @@ import { EMPTY_EXERCISE_HIST } from "../../library/constants";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Exercise_Hist, Workout_Hist } from "../../library/types";
-import StrengthWorkoutHeader from "./SrengthWorkoutHeader";
 import { useNavigate, useParams } from "react-router";
 import { fetchWorkoutDetail, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState } from "react";
@@ -14,7 +13,6 @@ import { createEmptyExHist, createEmptyWorkout } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
-import Typography from "@mui/material/Typography";
 import WorkoutHeader from "./WorkoutHeader";
 
 interface Props {
@@ -132,21 +130,20 @@ export default function StrengthWorkoutEntry({
   return(
     <Box
       component="form"
-      maxWidth={500}
+      sx={{
+        width: "100%",
+        maxWidth: 500,
+        mx: "auto"
+      }}
     >
       <WorkoutHeader
         name={workout.name}
         date={workout.date}
       />
-      <Typography variant="h6">
-        {workout.name}
-      </Typography>
-      <StrengthWorkoutHeader />
       <Box
         display="flex"
         flexDirection="column"
         gap={2}
-        alignItems="center"
       >
         {
           workout.exercises?.length
@@ -166,14 +163,15 @@ export default function StrengthWorkoutEntry({
       <Button
         variant="outlined"
         sx={{
-          width: 200,
-          height: 100
+          width: "100%",
+          height: 100,
         }}
         onClick={() => setExPickerOpen(true)}
       >
         <Box
           sx={{
             ...CENTER_COL_FLEX_BOX,
+            alignItems: "center",
             gap: 1
           }}
         >
@@ -201,15 +199,17 @@ export default function StrengthWorkoutEntry({
         >
           Finish
         </Button>
-        <ExPickerModal
-          open={exPickerOpen}
-          onClose={() => {
-            setExPickerOpen(false);
-            setExSelections([]);
-          }}
-          onConfirm={handleAddExercises}
-        />
       </Box>
+
+
+    <ExPickerModal
+      open={exPickerOpen}
+      onClose={() => {
+        setExPickerOpen(false);
+        setExSelections([]);
+      }}
+      onConfirm={handleAddExercises}
+    />
     </Box>
   )
 }

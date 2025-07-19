@@ -40,6 +40,8 @@ export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
             paper: "#333"
           }
         : {
+            default: "#f4f3ef",
+            paper: "#efeee8"
         },
     },
   });

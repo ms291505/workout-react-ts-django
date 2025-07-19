@@ -43,15 +43,26 @@ export default function ExerciseCard(
   };
 
   function handleAddSet() {
-    const newExSet: ExSet = {
-      ...createEmptyExSet(),
-    }
-
     setWorkout((prev) => {
       if (!prev || !prev.exercises) return prev;
 
       const updatedExercises = prev.exercises.map((ex) => {
         if (ex.id !== exHist.id) return ex;
+
+        const lastSet: ExSet | null = (ex.exSets && ex.exSets.length > 0)
+          ? {...ex.exSets[ex.exSets.length - 1]}
+          : null;
+
+        const newExSet: ExSet = lastSet
+          ? {
+            ...createEmptyExSet(),
+            weightLbs: lastSet.weightLbs,
+            reps: lastSet.reps,
+            type: lastSet.type,
+          }
+          : {
+            ...createEmptyExSet()
+          }
 
         const updatedExSets = ex.exSets ? [...ex.exSets, newExSet] : [newExSet];
         return {

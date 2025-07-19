@@ -77,3 +77,5 @@ export interface UserRegisterDto extends Omit<User, "id"> {
 export type UserRegisterFormData = UserRegisterDto;
 
 export type MaybeWorkout = Workout_Hist | null;
+
+export type confirmTypes = "confirm" | "delete";

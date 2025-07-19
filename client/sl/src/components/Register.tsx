@@ -63,7 +63,7 @@ export default function Register() {
     <Box
       sx={{
         ...CENTER_COL_FLEX_BOX,
-        width: "100vw",
+        alignItems: "center",
         mb:5
       }}>
       <Toolbar
@@ -75,6 +75,7 @@ export default function Register() {
         onSubmit={ handleSubmit }
         sx={{
           ...CENTER_COL_FLEX_BOX,
+          alignItems: "center"
         }}
       >
         <h2>Register</h2>
@@ -155,6 +156,7 @@ export default function Register() {
       <Box
         sx={{
           ...CENTER_COL_FLEX_BOX,
+          alignItems: "center"
         }}
       >
         <Divider />

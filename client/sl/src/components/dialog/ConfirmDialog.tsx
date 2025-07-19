@@ -4,25 +4,32 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { ReactNode } from "react";
+import { confirmTypes } from "../../library/types";
+import { color } from "framer-motion";
 
 interface Props {
   onConfirm: () =>(void);
-  shortMessage?: string;
-  verboseMessage?: string;
+  title?: string;
+  content?: string | ReactNode;
   open: boolean;
   onClose: () => void;
   confirmText?: string;
-  closeText?: string
+  closeText?: string;
+  message?: string;
+  confirmType?: confirmTypes;
 }
 
 export default function ConfirmDialog ({
   onConfirm,
-  verboseMessage = "",
-  shortMessage = "",
+  content,
+  title,
   open,
+  message,
   onClose,
   confirmText = "Confirm",
-  closeText = "Cancel"
+  closeText = "Cancel",
+  confirmType = "confirm"
 }: Props) {
 
   return(
@@ -31,20 +38,21 @@ export default function ConfirmDialog ({
       onClose={onClose}
     >
       {
-        shortMessage
+        title
         ? <DialogTitle>
-            {shortMessage}
+            {title}
           </DialogTitle>
         : null
       }
       {
-        verboseMessage
+        (content ?? message)
         ? <DialogContent>
             <Typography
               variant="body1"
             >
-              {verboseMessage}
+              {message}
             </Typography>
+            {content}
           </DialogContent>
         : null
       }
@@ -58,6 +66,11 @@ export default function ConfirmDialog ({
         <Button
           variant="contained"
           onClick={onConfirm}
+          color={
+            confirmType === "delete"
+            ? "error"
+            : "primary"
+          }
         >
           {confirmText}
         </Button>

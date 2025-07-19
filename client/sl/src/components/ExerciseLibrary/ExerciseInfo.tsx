@@ -30,9 +30,11 @@ export default function ({ex}: Props) {
         gap={1}
         justifyContent="space-between"
         width="100%"
+        sx={{
+          pr: 2
+        }}
       >
-        <Box
-        >
+        <Box>
         {
           exSelections.some((e) => e.id === ex.id)
           ? <Checkbox />
@@ -51,7 +53,7 @@ export default function ({ex}: Props) {
         />
         <Divider orientation="vertical" flexItem/>
         <ExerciseAttribute
-          value="Back"
+          value="Text Here"
           label="Split:"
         />
       </Box>

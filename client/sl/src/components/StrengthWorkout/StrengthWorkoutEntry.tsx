@@ -15,6 +15,8 @@ import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import WorkoutHeader from "./WorkoutHeader";
 import StrengthWorkoutNotes from "./SrengthWorkoutNotes";
+import ConfirmDialog from "../dialog/ConfirmDialog";
+import WorkoutSummary from "./WorkoutSummary";
 
 interface Props {
   accessMode: string;
@@ -32,6 +34,7 @@ export default function StrengthWorkoutEntry({
     clearWorkout,
    } = useWorkoutContext();
   const [exPickerOpen, setExPickerOpen] = useState(false);
+  const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
   
   const { workoutId } = useParams<{
     workoutId?: string,
@@ -93,7 +96,7 @@ export default function StrengthWorkoutEntry({
     setExSelections([]);
   };
 
-  const onFinish = async () => {
+  const handleFinish = async () => {
           function describeError(err: any) {
             if (err && typeof err === "object" && "name" in err) {
               const nameErrors = (err as any).name;
@@ -121,7 +124,7 @@ export default function StrengthWorkoutEntry({
               describeError(err);
             }
           };
-          };
+    };
 
     const onCancel = () => {
       clearWorkout();
@@ -196,7 +199,7 @@ export default function StrengthWorkoutEntry({
           Cancel
         </Button>
         <Button 
-          onClick={onFinish}
+          onClick={() => setFinishConfirmOpen(!finishConfirmOpen)}
           variant="contained"
         >
           Finish
@@ -211,6 +214,18 @@ export default function StrengthWorkoutEntry({
         setExSelections([]);
       }}
       onConfirm={handleAddExercises}
+    />
+    <ConfirmDialog
+      open={finishConfirmOpen}
+      onClose={() => setFinishConfirmOpen(false)}
+      onConfirm={handleFinish}
+      title="Ready to finish?"
+      content={
+        <WorkoutSummary
+          w={workout}
+          prettyHeader={false}
+        />
+      }
     />
     </Box>
   )

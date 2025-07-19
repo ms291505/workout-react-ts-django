@@ -16,6 +16,7 @@ import { useSnackbar } from "notistack";
 import { Box } from "@mui/material";
 import { MODAL_STYLE } from "../styles/StyleOverrides";
 import WorkoutSummary from "./StrengthWorkout/WorkoutSummary";
+import ConfirmDialog from "./dialog/ConfirmDialog";
 
 export default function RecentWorkouts() {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function RecentWorkouts() {
   const [loading, setLoading] = useState(true);
   const [summarySelection, setSummarySelection] = useState<Workout_Hist | null>(null);
   const [summaryOpen, setSummaryOpen] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const {enqueueSnackbar} = useSnackbar();
 
   const { setWorkout } = useWorkoutContext();
@@ -132,8 +134,8 @@ export default function RecentWorkouts() {
               <Button
               variant="outlined"
                 onClick={() => {
-                  setSummarySelection(w)
-                  setSummaryOpen(true)
+                  setSummarySelection(w);
+                  setSummaryOpen(true);
                 }}
               >
                 Summary
@@ -147,7 +149,10 @@ export default function RecentWorkouts() {
               <Button
                 variant="outlined"
                 color="error"
-                onClick={() => handleWorkoutDelete(w)}
+                onClick={() => {
+                  setSummarySelection(w);
+                  setConfirmDeleteOpen(true);
+                }}
               >
                 Delete
               </Button>
@@ -156,6 +161,7 @@ export default function RecentWorkouts() {
         </Grid>
       ))}
     </Grid>
+
     <Modal
       open={summaryOpen}
       onClose={() => setSummaryOpen(false)}
@@ -172,6 +178,24 @@ export default function RecentWorkouts() {
         />
       </Box>
     </Modal>
+    <ConfirmDialog
+      open={confirmDeleteOpen}
+      onConfirm={() => {
+        summarySelection && handleWorkoutDelete(summarySelection)
+      }}
+      onClose={() => setConfirmDeleteOpen(false)}
+      title="Are you sure?"
+      confirmText="Delete"
+      confirmType="delete"
+      content={ summarySelection &&
+        <>
+        <WorkoutSummary
+          w={summarySelection}
+          prettyHeader={false}
+        />
+        </>
+      }
+    />
   </>
   )
 

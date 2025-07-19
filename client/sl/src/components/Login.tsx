@@ -57,7 +57,6 @@ export default function Login() {
     <Box
       sx={{
         ...centerColFlexBox,
-        width: "100vw"
       }}
     >
       <Toolbar

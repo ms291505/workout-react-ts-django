@@ -14,10 +14,12 @@ import { useWorkoutContext } from "../../context/WorkoutContext";
 
 interface Props {
   w: Workout_Hist | null;
+  prettyHeader?: boolean;
 }
 
 export default function WorkoutSummary({
   w,
+  prettyHeader = true,
 }: Props) {
 
   const { exSetTypeChoices } = useWorkoutContext();
@@ -30,20 +32,28 @@ export default function WorkoutSummary({
 
   if (w === null) return(null);
   return(
-    <Box>
-      <Typography variant="h6">
-        {w.name}
-      </Typography>
-      <Typography variant="body1">
-        {w.date && parseToWeekdayDate(w.date)}
-      </Typography>
-      <Divider
-        sx={{
-          mb: 2,
-          borderColor: "primary.main",
-          borderBottomWidth: 2
-        }}
-      />
+    <Box
+      sx={{
+        maxWidth: 350,
+      }}
+    >
+      { prettyHeader &&
+        <>
+        <Typography variant="h6">
+          {w.name}
+        </Typography>
+        <Typography variant="body1">
+          {w.date && parseToWeekdayDate(w.date)}
+        </Typography>
+        <Divider
+          sx={{
+            mb: 2,
+            borderColor: "primary.main",
+            borderBottomWidth: 2
+          }}
+        />
+        </>
+      }
       <Box
         display="flex"
         flexDirection="column"

@@ -4,12 +4,12 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Exercise_Hist, Workout_Hist } from "../../library/types";
 import { useNavigate, useParams } from "react-router";
-import { fetchWorkoutDetail, postWorkout, updateWorkout } from "../../api";
+import { fetchWorkoutDetail, postTemplate, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
 import ExPickerModal from "../dialog/ExPickerModal";
-import { createEmptyExHist, createEmptyWorkout } from "../../library/factories";
+import { createEmptyExHist, createEmptyExSet, createEmptyWorkout } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
@@ -17,6 +17,8 @@ import WorkoutHeader from "./WorkoutHeader";
 import StrengthWorkoutNotes from "./SrengthWorkoutNotes";
 import ConfirmDialog from "../dialog/ConfirmDialog";
 import WorkoutSummary from "./WorkoutSummary";
+import TemplateMenu from "./TemplateMenu";
+import { transformToTemplate } from "../../library/transform";
 
 interface Props {
   accessMode: string;
@@ -35,6 +37,7 @@ export default function StrengthWorkoutEntry({
    } = useWorkoutContext();
   const [exPickerOpen, setExPickerOpen] = useState(false);
   const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
+  const [templateFlag, setTemplateFlag] = useState(false);
   
   const { workoutId } = useParams<{
     workoutId?: string,
@@ -78,8 +81,9 @@ export default function StrengthWorkoutEntry({
       .filter(ex => !existingIds.has(ex.id))
       .map((ex) => ({
         ...createEmptyExHist(),
-      exerciseId: ex.id,
-      name: ex.name,
+        exerciseId: ex.id,
+        name: ex.name,
+        exSets: [createEmptyExSet(),]
     } as Exercise_Hist));
 
     const oldExHists: Exercise_Hist[] = workout.exercises ?? [];
@@ -104,6 +108,15 @@ export default function StrengthWorkoutEntry({
               enqueueSnackbar(message, { variant: "error" });
             }
           };
+
+          if (templateFlag) {
+            try {
+              const t = await postTemplate(transformToTemplate(workout));
+              enqueueSnackbar(`'${t.name}' added as template.`, { variant: "success" });
+            } catch (err) {
+              describeError(err);
+            }
+          }
 
           if (accessMode?.toLowerCase() === "edit") {
             try {
@@ -187,20 +200,34 @@ export default function StrengthWorkoutEntry({
       </Box>
 
       {/* Actions */}
+      <TemplateMenu
+        flagged={templateFlag}
+        handleClick={() => setTemplateFlag(!templateFlag)}
+        sx={{mt: 2}}
+      />
       <Box
-        component="div"
         sx={{
-          mt: 2
+          mt: 2,
+          display: "flex",
+          direction: "row",
+          gap: 2,
         }}
       >
         <Button
           onClick={onCancel}
+          variant="outlined"
+          sx={{
+            flexGrow: 1
+          }}
         >
           Cancel
         </Button>
         <Button 
           onClick={() => setFinishConfirmOpen(!finishConfirmOpen)}
           variant="contained"
+          sx={{
+            flexGrow: 1
+          }}
         >
           Finish
         </Button>
@@ -221,10 +248,12 @@ export default function StrengthWorkoutEntry({
       onConfirm={handleFinish}
       title="Ready to finish?"
       content={
+        <>
         <WorkoutSummary
           w={workout}
           prettyHeader={false}
         />
+        </>
       }
     />
     </Box>

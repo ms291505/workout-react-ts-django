@@ -38,6 +38,17 @@ export interface Workout_Hist {
   notes: string | null;
   exercises: Exercise_Hist[] | null;
 }
+
+export interface TmplExSet extends ExSet {}
+
+export interface TmplExerciseHist extends Omit<Exercise_Hist, "exSets"> {
+  tmplExSets: TmplExSet[];
+}
+
+export interface TmplWorkoutHist extends Omit<Workout_Hist, "date" | "exercises"> {
+  tmplExercises: TmplExerciseHist[];
+}
+
 /**
  * Represents information about an exercise.
  */

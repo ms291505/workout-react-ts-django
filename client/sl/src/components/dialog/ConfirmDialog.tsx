@@ -6,7 +6,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { ReactNode } from "react";
 import { confirmTypes } from "../../library/types";
-import { color } from "framer-motion";
 
 interface Props {
   onConfirm: () =>(void);

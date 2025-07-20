@@ -14,7 +14,7 @@ import { useNavigate } from "react-router";
 import Divider from "@mui/material/Divider";
 import { useSnackbar } from "notistack";
 import { Box } from "@mui/material";
-import { MODAL_STYLE } from "../styles/StyleOverrides";
+import { CENTER_COL_FLEX_BOX, MODAL_STYLE } from "../styles/StyleOverrides";
 import WorkoutSummary from "./StrengthWorkout/WorkoutSummary";
 import ConfirmDialog from "./dialog/ConfirmDialog";
 
@@ -176,8 +176,23 @@ export default function RecentWorkouts() {
         <WorkoutSummary
           w={summarySelection}
         />
+        <Box
+          sx={{
+            ...CENTER_COL_FLEX_BOX,
+            mt: 2,
+          }}
+        >
+          <Button
+            variant="outlined"
+            onClick={() => setSummaryOpen(false)}
+          >
+            Close
+          </Button>
+        </Box>
       </Box>
     </Modal>
+    
+    {/* Confirm finishing the workout entry */}
     <ConfirmDialog
       open={confirmDeleteOpen}
       onConfirm={() => {

@@ -1,5 +1,5 @@
 import { createDefaultWorkoutName, getLocalDateTimeString } from "../utils";
-import { Exercise, Exercise_Hist, ExSet, Workout_Hist } from "./types";
+import { Exercise, Exercise_Hist, ExSet, TmplExerciseHist, TmplExSet, TmplWorkoutHist, Workout_Hist } from "./types";
 
 
 export function createEmptyWorkout(): Workout_Hist {
@@ -19,11 +19,40 @@ export function createEmptyExHist(ex?: Exercise): Exercise_Hist {
     exerciseId: ex ? ex.id : null,
     name: ex ? ex.name : "",
     notes: "",
-    exSets: [createEmptyExSet(),]
+    exSets: []
   }
 }
 
 export function createEmptyExSet(): ExSet {
+  return {
+    id: crypto.randomUUID(),
+    order: null,
+    weightLbs: 0,
+    reps: 0,
+    type: "WK"
+  }
+}
+
+export function createEmptyTemplate(): TmplWorkoutHist {
+  return {
+    name: "",
+    id: crypto.randomUUID(),
+    notes: "",
+    tmplExercises: []
+  }
+}
+
+export function createEmptyTmplExHist(ex?: Exercise): TmplExerciseHist {
+  return {
+    id: crypto.randomUUID(),
+    exerciseId: ex ? ex.id : null,
+    name: ex ? ex.name : "",
+    notes: "",
+    tmplExSets: []
+  }
+}
+
+export function createEmptyTmplExSet(): TmplExSet {
   return {
     id: crypto.randomUUID(),
     order: null,

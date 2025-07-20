@@ -1,6 +1,48 @@
-import type { Workout_Hist, Exercise_Hist, ExSet } from "./types";
+import type { Workout_Hist, Exercise_Hist, ExSet, TmplWorkoutHist, TmplExerciseHist, TmplExSet } from "./types";
 import { isIntId } from "../utils";
+import { createEmptyTemplate, createEmptyTmplExHist, createEmptyTmplExSet } from "./factories";
 
+
+export function transformToTemplate(w: Workout_Hist): TmplWorkoutHist {
+
+  const tmplExercises: TmplExerciseHist[] = [];
+
+  w.exercises?.map((exHist) => {
+    const tmplExSets: TmplExSet[] = [];
+
+    exHist.exSets?.map((exSet) => {
+      const tmplExSet: TmplExSet = {
+        ...createEmptyTmplExSet(),
+        order: exSet.order,
+        weightLbs: exSet.weightLbs,
+        reps: exSet.reps,
+        type: exSet.type,
+      }
+      tmplExSets.push(tmplExSet);
+    })
+
+    const tmplExerciseHist: TmplExerciseHist = {
+      ...createEmptyTmplExHist(),
+      name: exHist.name,
+      exerciseId: exHist.exerciseId,
+      notes: exHist.notes,
+      tmplExSets: tmplExSets,
+    }
+
+    tmplExercises.push(tmplExerciseHist);
+  })
+
+  const t: TmplWorkoutHist = {
+    ...createEmptyTemplate(),
+    name: w.name,
+    notes: w.notes,
+    tmplExercises: tmplExercises,
+  }
+
+  return t;
+}
+
+/**@deprecated */
 export function transformFormData(raw: Record<string, string>): Workout_Hist {
 
   // workout header

@@ -8,6 +8,7 @@ import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import Button from "@mui/material/Button";
 import { createEmptyExSet } from "../../library/factories";
 import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 
 interface ExerciseCardProps {
   exHist: Exercise_Hist,
@@ -109,18 +110,21 @@ export default function ExerciseCard(
           sx={{
             display: "flex",
             flexDirection: "row",
-            gap: 1
+            gap: 1,
+            alignItems: "center"
           }}
         >
-          <TextField
-            label="Exercise Name"
-            name="name"
-            value={exHist.name ?? ""}
+          <Typography
+            variant="body1"
+            color="primary"
+            fontWeight="bold"
             sx={{
-              flexGrow: 1
+              flexGrow: 1,
+              ml: 0.5
             }}
-            onChange={handleChange}
-          />
+          >
+            {exHist.name ?? "..."}
+          </Typography>
           <Button
             aria-label="Delete exercise"
             variant="outlined"
@@ -136,6 +140,7 @@ export default function ExerciseCard(
           name="notes"
           value={exHist.notes ?? ""}
           onChange={handleChange}
+          size="small"
         />
         <Divider
           sx={{mt: 1}}

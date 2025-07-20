@@ -5,7 +5,8 @@ import {
   User,
   Exercise,
   UserRegisterDto,
-  Choice } from "./library/types";
+  Choice, 
+  TmplWorkoutHist} from "./library/types";
 import { API_BASE } from "./library/constants";
 
 /**
@@ -77,7 +78,7 @@ export async function refreshAccess(): Promise<void> {
     method: "POST",
     credentials: "include",
   });
-  await checkStatus(response);
+  if (!response.ok) await handleApiError(response);
 }
 
 export async function logout(): Promise<void> {
@@ -85,7 +86,7 @@ export async function logout(): Promise<void> {
     method: "POST",
     credentials: "include",
   });
-  if (!response.ok) throw new Error("Logout failed");
+  if (!response.ok) await handleApiError(response);
 }
 
 export async function register(payload: UserRegisterDto): Promise<void | Response> {
@@ -167,6 +168,23 @@ export async function postWorkout(workout: Workout_Hist): Promise<Workout_Hist> 
 
     throw errors;
   }
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function postTemplate(workout: TmplWorkoutHist): Promise<TmplWorkoutHist> {
+  const response = await fetch(`${API_BASE}/tmpl-workouts/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(workout),
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return postTemplate(workout);
+  }
+  if (!response.ok) handleApiError(response);
+
   await checkStatus(response);
   return response.json();
 }

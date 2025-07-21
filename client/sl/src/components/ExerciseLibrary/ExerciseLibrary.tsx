@@ -15,7 +15,13 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ExerciseDetails from "../dialog/ExerciseDetails";
 import IconButton from "@mui/material/IconButton";
 
-export default function ExerciseLibrary() {
+interface Props {
+  buildWorkout?: boolean;
+}
+
+export default function ExerciseLibrary({
+  buildWorkout = false,
+}: Props) {
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filter, setFilter] = useState<string>("");
@@ -237,6 +243,17 @@ export default function ExerciseLibrary() {
     </Box>
   )
 }
+
+{buildWorkout &&
+  <Button
+    variant="contained"
+  >
+    Build Workout
+  </Button>
+
+}
+
+{/* Dialogs */}
   <ExerciseDetails
     open={exDetailsOpen}
     onClose={() => setExDetailsOpen(false)}

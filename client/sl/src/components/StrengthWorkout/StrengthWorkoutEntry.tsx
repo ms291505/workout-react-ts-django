@@ -16,7 +16,7 @@ import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import WorkoutHeader from "./WorkoutHeader";
 import StrengthWorkoutNotes from "./SrengthWorkoutNotes";
 import ConfirmDialog from "../dialog/ConfirmDialog";
-import WorkoutSummary from "./WorkoutSummary";
+import WorkoutSummary from "../WorkoutSummary/WorkoutSummary";
 import TemplateMenu from "./TemplateMenu";
 import { transformToTemplate } from "../../library/transform";
 
@@ -252,6 +252,7 @@ export default function StrengthWorkoutEntry({
         <WorkoutSummary
           w={workout}
           prettyHeader={false}
+          style="short"
         />
         </>
       }

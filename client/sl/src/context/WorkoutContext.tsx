@@ -24,6 +24,7 @@ interface WorkoutContextValue {
   exSetTypeChoices: Choice[];
   setExSetTypeChoices: Dispatch<SetStateAction<Choice[]>>;
   handleOneChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  findSetType: (searchValue: string | null) => string;
 }
 
 const WorkoutContext = createContext<WorkoutContextValue>({
@@ -37,6 +38,7 @@ const WorkoutContext = createContext<WorkoutContextValue>({
   exSetTypeChoices: [],
   setExSetTypeChoices: () => {},
   handleOneChange: () => {},
+  findSetType: () => "",
 })
 
 export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
@@ -59,6 +61,11 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
     fetchSetTypeChoice()
       .then((data) => setExSetTypeChoices(data))
   }, [])
+  
+  const findSetType = (searchValue: string | null) => {
+    const match = exSetTypeChoices.find(t => t.value === searchValue);
+    return match?.label || "Error";
+  };
 
   return (
     <WorkoutContext.Provider value={{
@@ -71,7 +78,8 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
       setExSelections,
       exSetTypeChoices,
       setExSetTypeChoices,
-      handleOneChange
+      handleOneChange,
+      findSetType,
     }}>
       {children}
     </WorkoutContext.Provider>

@@ -15,7 +15,7 @@ import Divider from "@mui/material/Divider";
 import { useSnackbar } from "notistack";
 import { Box } from "@mui/material";
 import { CENTER_COL_FLEX_BOX, MODAL_STYLE } from "../styles/StyleOverrides";
-import WorkoutSummary from "./StrengthWorkout/WorkoutSummary";
+import WorkoutSummary from "./WorkoutSummary/WorkoutSummary";
 import ConfirmDialog from "./dialog/ConfirmDialog";
 
 export default function RecentWorkouts() {

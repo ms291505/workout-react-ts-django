@@ -41,7 +41,7 @@ export default function App() {
                 <Route path="/" element={<HomeScreen />}>
                   <Route path="recent" element={<RecentWorkouts />} />
                   <Route path="" element={<Navigate to="recent" replace />} />
-                  <Route path="exercise_library" element={<ExerciseLibrary />} />
+                  <Route path="exercise_library" element={<ExerciseLibrary buildWorkout />} />
                   <Route path="workout/new" element={<StrengthWorkoutEntry accessMode="new" />} />
                   <Route path="workout/edit/:workoutId" element={<StrengthWorkoutEntry accessMode="edit"/>} />
                 </Route>

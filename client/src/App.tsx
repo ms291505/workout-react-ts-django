@@ -1,14 +1,14 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import HomeScreen from './HomeScreen';
-import Login from './components/Login';
-import ProtectedRoute from './components/ProtectedRoute';
-import RecentWorkouts from './components/RecentWorkouts';
+import HomeScreen from './HomeScreen.tsx';
+import Login from './components/Login.tsx';
+import ProtectedRoute from './components/ProtectedRoute.tsx';
+import RecentWorkouts from './components/RecentWorkouts.tsx';
 import ExerciseLibrary from './components/ExerciseLibrary/ExerciseLibrary.tsx';
-import Register from './components/Register';
+import Register from './components/Register.tsx';
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import MainLayout from './components/MainLayout';
+import MainLayout from './components/MainLayout.tsx';
 import StrengthWorkoutEntry from './components/StrengthWorkout/StrengthWorkoutEntry.tsx';
 import { CENTER_COL_FLEX_BOX } from './styles/StyleOverrides.ts';
 

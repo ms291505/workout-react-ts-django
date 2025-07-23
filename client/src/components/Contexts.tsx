@@ -1,7 +1,7 @@
-import { useAppThemeContext } from "../context/ThemeContext";
+import { useAppThemeContext } from "../context/ThemeContext.tsx";
 import { AuthProvider } from "../context/AuthContext.tsx";
-import { AppThemeProvider } from "../context/ThemeContext";
-import { WorkoutProvider } from "../context/WorkoutContext";
+import { AppThemeProvider } from "../context/ThemeContext.tsx";
+import { WorkoutProvider } from "../context/WorkoutContext.tsx";
 import { SnackbarProvider, closeSnackbar } from "notistack";
 import { MAX_SNACK, NOTISTACK_DURATION } from "../library/constants.ts";
 import CloseIcon from "@mui/icons-material/Close";

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from .models import (
+  Template_Hist,
   Workout_Hist,
   Ex_Set, 
   Exercise_Hist,
@@ -117,6 +118,10 @@ class ExerciseHistSerializer(serializers.ModelSerializer):
 class WorkoutHistSerializer(serializers.ModelSerializer):
   exercises = ExerciseHistSerializer(many=True)
   user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+  tmpl_workout_hist_id = serializers.IntegerField(
+    write_only=True,
+    required=False
+    )
 
   class Meta:
     model = Workout_Hist
@@ -125,7 +130,14 @@ class WorkoutHistSerializer(serializers.ModelSerializer):
 
   def create(self, validated_data):
     exercises_data = validated_data.pop("exercises")
+    tmpl_workout_hist_id = validated_data.pop("tmpl_workout_hist_id", None)
     workout_hist = Workout_Hist.objects.create(**validated_data)
+
+    if tmpl_workout_hist_id:
+      Template_Hist.objects.create(
+        workout_hist = workout_hist,
+        tmpl_workout_hist_id = tmpl_workout_hist_id
+      )
 
     for ex_data in exercises_data:
       sets_data = ex_data.pop("ex_sets")
@@ -182,7 +194,7 @@ class TmplExerciseHistSerializer(serializers.ModelSerializer):
   Serializer for an exercise performanced in a workout template.
   """
   exercise_id = serializers.PrimaryKeyRelatedField(
-      source="exercise",                
+      source="exercise",
       queryset=Exercise.objects.all(),
   )
   name = serializers.CharField(
@@ -249,3 +261,13 @@ class TmplWorkoutHistSerializer(serializers.ModelSerializer):
           Tmpl_Ex_Set.objects.create(tmpl_exercise_hist=tmpl_exercise_hist, **s)
     
     return instance
+
+class TemplateHistSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Template_Hist
+    fields = [
+      "id",
+      "workout_hist_id",
+      "tmpl_workout_hist_id"
+    ]

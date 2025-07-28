@@ -266,6 +266,10 @@ class Tmpl_Workout_Hist(models.Model):
     null=True,
     default=None
   )
+  user_added_flag = models.CharField(
+    max_length=1,
+    default="Y"
+  )
 
   class Meta:
     verbose_name = "Workout_Template"
@@ -461,3 +465,16 @@ class Cardio_Workout_Hist(models.Model):
       return f"'{self.name}' on {self.long_workout_date_str}"
     else:
       return self.name
+
+
+class Template_Hist(models.Model):
+  workout_hist = models.ForeignKey(
+    Workout_Hist,
+    on_delete=models.CASCADE,
+    related_name="templates_used"
+  )
+  tmpl_workout_hist = models.ForeignKey(
+    Tmpl_Workout_Hist,
+    on_delete=models.CASCADE,
+    related_name="workouts_used"
+  )

@@ -39,7 +39,7 @@ export interface Workout_Hist {
   exercises: Exercise_Hist[] | null;
 }
 
-export interface TmplExSet extends ExSet {}
+export interface TmplExSet extends ExSet { }
 
 export interface TmplExerciseHist extends Omit<Exercise_Hist, "exSets"> {
   tmplExSets: TmplExSet[];
@@ -47,6 +47,12 @@ export interface TmplExerciseHist extends Omit<Exercise_Hist, "exSets"> {
 
 export interface TmplWorkoutHist extends Omit<Workout_Hist, "date" | "exercises"> {
   tmplExercises: TmplExerciseHist[];
+}
+
+export interface TmplHist {
+  id: string | number | null;
+  workoutHistId: string | number;
+  templateId: string | number;
 }
 
 /**

@@ -6,6 +6,7 @@ from api.views import (
   CookieTokenObtainPairView, 
   CookieTokenRefreshView,
   DeleteCookiesView,
+  TemplateHistListCreate,
   WorkoutListCreate,
   WorkoutDelete,
   ExerciseListCreate,
@@ -30,6 +31,6 @@ urlpatterns = [
   path("exercises/", ExerciseListCreate.as_view(), name="exercise-list-create"),
   path("exset-types/", ExSetTypeList.as_view(), name="exset-types"),
   path("tmpl-workouts/", TmplWorkoutListCreate.as_view(), name="tmpl-workout-list"),
-  path("tmpl-workouts/<int:pk>/", WorkoutDetailView.as_view(), name="tmpl-workout-detail"),
-
+  path("tmpl-workouts/<int:pk>/", TmplWorkoutDetailView.as_view(), name="tmpl-workout-detail"),
+  path("tmpl-hist/", TemplateHistListCreate.as_view(), name="tmplate-hist-list"),
 ]

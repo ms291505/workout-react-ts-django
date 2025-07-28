@@ -5,8 +5,9 @@ import {
   User,
   Exercise,
   UserRegisterDto,
-  Choice, 
-  TmplWorkoutHist} from "./library/types";
+  Choice,
+  TmplWorkoutHist
+} from "./library/types";
 import { API_BASE } from "./library/constants";
 
 /**
@@ -65,7 +66,7 @@ export async function login(username: string, password: string): Promise<void> {
   const response = await fetch(`${API_BASE}/token/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
   });
   if (!response.ok) {
@@ -134,7 +135,7 @@ export async function fetchWorkouts(): Promise<Workout_Hist[]> {
   return response.json();
 }
 
-export async function fetchWorkoutDetail( workoutID: number): Promise<Workout_Hist> {
+export async function fetchWorkoutDetail(workoutID: number): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/${workoutID}/`, {
     credentials: "include",
     headers: {
@@ -153,7 +154,7 @@ export async function postWorkout(workout: Workout_Hist): Promise<Workout_Hist> 
   const response = await fetch(`${API_BASE}/workouts/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(workout),
   });
   if (response.status === 401) {
@@ -176,7 +177,7 @@ export async function postTemplate(workout: TmplWorkoutHist): Promise<TmplWorkou
   const response = await fetch(`${API_BASE}/tmpl-workouts/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(workout),
   });
   if (response.status === 401) {
@@ -214,6 +215,27 @@ export async function deleteWorkout(workout: Workout_Hist): Promise<boolean> {
       throw new Error("Unknown error deleting workout");
     }
   }
+
+  await checkStatus(response);
+  return true;
+}
+
+export async function deleteTemplate(template: TmplWorkoutHist): Promise<boolean> {
+  if (!template.id) throw "Template does not have an ID.";
+  const response = await fetch(`${API_BASE}/tmpl-workouts/${template.id}/`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return deleteTemplate(template);
+  }
+
+  if (!response.ok) handleApiError(response);
 
   await checkStatus(response);
   return true;
@@ -259,21 +281,21 @@ export async function fetchExercises(): Promise<Exercise[]> {
 export async function fetchExercisesByName(inputValue: string): Promise<Exercise[]> {
   const response = await fetch(
     `${API_BASE}/exercises/?search=${encodeURIComponent(inputValue)}`, {
-      credentials: "include"
-    });
-    if (response.status === 401) {
-      await refreshAccess();
-      return fetchExercisesByName(inputValue);
-    }
-    await checkStatus(response);
-    return response.json();
+    credentials: "include"
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchExercisesByName(inputValue);
+  }
+  await checkStatus(response);
+  return response.json();
 }
 
 export async function postExercise(inputValue: string): Promise<Exercise> {
   const response = await fetch(`${API_BASE}/exercises/`, {
     method: "POST",
     credentials: "include",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name: inputValue }),
   });
   if (response.status === 401) {

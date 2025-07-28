@@ -10,12 +10,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .serializers import (
+  TemplateHistSerializer,
   UserSerializer,
   WorkoutHistSerializer,
   ExerciseSerializer,
   TmplWorkoutHistSerializer
 )
 from .models import (
+  Template_Hist,
   Workout_Hist,
   Exercise,
   ExSetType,
@@ -157,12 +159,21 @@ class WorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
 class TmplWorkoutListCreate(generics.ListCreateAPIView):
   serializer_class = TmplWorkoutHistSerializer
   permission_classes = [IsAuthenticated]
+  queryset = Tmpl_Workout_Hist.objects.all()
 
-  def get_queryset(self):
-    return Tmpl_Workout_Hist.objects.filter(user=self.request.user)
+  def filter_queryset(self, queryset):
+    queryset = super().filter_queryset(queryset)
+    user = self.request.user
+
+    return queryset.filter(
+      Q(user=user) | Q(user_added_flag="N")
+    )
   
   def perform_create(self, serializer):
-    serializer.save(user=self.request.user)
+    serializer.save(
+      user=self.request.user,
+      user_added_flag="Y"
+      )
 
 
 class TmplWorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -175,6 +186,15 @@ class TmplWorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
   def get_queryset(self):
     user = self.request.user
     return Tmpl_Workout_Hist.objects.filter(user=user)
+
+
+class TemplateHistListCreate(generics.ListCreateAPIView):
+  serializer_class = TemplateHistSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    user = self.request.user
+    return Template_Hist.objects.filter(user=user)
 
 
 class ExerciseListCreate(generics.ListCreateAPIView):
@@ -219,7 +239,6 @@ class ExerciseListCreate(generics.ListCreateAPIView):
     )
   
   def perform_create(self, serializer):
-    d_log(f"serializer: {serializer}")
     serializer.save(
       user=self.request.user,
       user_added_flag="Y"

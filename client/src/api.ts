@@ -6,7 +6,8 @@ import {
   Exercise,
   UserRegisterDto,
   Choice,
-  TmplWorkoutHist
+  TmplWorkoutHist,
+  TmplHist
 } from "./library/types";
 import { API_BASE } from "./library/constants";
 
@@ -135,6 +136,57 @@ export async function fetchWorkouts(): Promise<Workout_Hist[]> {
   return response.json();
 }
 
+export async function fetchTemplateHists(
+  param: string = "",
+  value: string | number = ""
+): Promise<TmplHist[]> {
+  let url = `${API_BASE}/tmpl-hist/`;
+
+  if (param && value !== "") {
+    url += `?${param}=${encodeURIComponent(value)}`;
+  }
+
+  const response = await fetch(url, {
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchTemplateHists(param, value);
+  }
+
+  if (!response.ok) await handleApiError(response);
+
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function fetchTemplateByWorkout(
+  workout_id: string | number
+): Promise<TmplWorkoutHist[]> {
+
+  let url = `${API_BASE}/tmpl-workouts/`;
+
+  url += `?workout_id=${encodeURIComponent(workout_id.toString())}`;
+
+  const response = await fetch(url, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchTemplateByWorkout(workout_id);
+  }
+
+  if (!response.ok) await handleApiError(response);
+
+  await checkStatus(response);
+  return response.json();
+}
+
 export async function fetchWorkoutDetail(workoutID: number): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/${workoutID}/`, {
     credentials: "include",
@@ -188,6 +240,24 @@ export async function postTemplate(workout: TmplWorkoutHist): Promise<TmplWorkou
 
   await checkStatus(response);
   return response.json();
+}
+
+export async function postTemplateHist(tmplHist: TmplHist): Promise<boolean> {
+  const response = await fetch(`${API_BASE}/tmpl-hist/`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(tmplHist),
+  })
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return postTemplateHist(tmplHist);
+  }
+  if (!response.ok) handleApiError(response);
+
+  await checkStatus(response);
+  return true;
 }
 
 export async function deleteWorkout(workout: Workout_Hist): Promise<boolean> {

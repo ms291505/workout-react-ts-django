@@ -9,8 +9,14 @@ import {
   useEffect,
   ChangeEvent
 } from "react";
-import { Choice, Exercise, MaybeWorkout, Workout_Hist } from "../library/types";
-import { fetchSetTypeChoice } from "../api";
+import {
+  Choice,
+  Exercise,
+  MaybeWorkout,
+  TmplWorkoutHist,
+  Workout_Hist
+} from "../library/types";
+import { fetchSetTypeChoice, fetchTemplateByWorkout } from "../api";
 
 
 interface WorkoutContextValue {
@@ -25,43 +31,63 @@ interface WorkoutContextValue {
   setExSetTypeChoices: Dispatch<SetStateAction<Choice[]>>;
   handleOneChange: (event: ChangeEvent<HTMLInputElement>) => void;
   findSetType: (searchValue: string | null) => string;
+  workoutTemplate: TmplWorkoutHist | null;
+  setWorkoutTemplate: Dispatch<SetStateAction<TmplWorkoutHist | null>>
 }
 
 const WorkoutContext = createContext<WorkoutContextValue>({
   workout: null,
   workoutContextMode: "",
   exSelections: [],
-  clearWorkout: () => {},
-  setWorkout: () => {},
-  setWorkoutContextMode: () => {},
-  setExSelections: () => {},
+  clearWorkout: () => { },
+  setWorkout: () => { },
+  setWorkoutContextMode: () => { },
+  setExSelections: () => { },
   exSetTypeChoices: [],
-  setExSetTypeChoices: () => {},
-  handleOneChange: () => {},
+  setExSetTypeChoices: () => { },
+  handleOneChange: () => { },
   findSetType: () => "",
+  workoutTemplate: null,
+  setWorkoutTemplate: () => { },
 })
 
-export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
+export const WorkoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [workout, setWorkout] = useState<MaybeWorkout>(null);
   const [workoutContextMode, setWorkoutContextMode] = useState<string>("");
   const [exSetTypeChoices, setExSetTypeChoices] = useState<Choice[]>([]);
+  const [workoutTemplate, setWorkoutTemplate] = useState<TmplWorkoutHist | null>(null);
 
   const [exSelections, setExSelections] = useState<Exercise[]>([]);
 
   const clearWorkout = () => {
     setWorkout(null);
   }
-  
+
   const handleOneChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setWorkout(previous => ({ ...previous, [name]: value } as Workout_Hist));
   }
 
-  useEffect(() =>{
+  useEffect(() => {
     fetchSetTypeChoice()
       .then((data) => setExSetTypeChoices(data))
   }, [])
-  
+
+  useEffect(() => {
+    if (!workout || workout.id == null) return;
+    fetchTemplateByWorkout(workout.id!)
+      .then((data) => {
+        if (data.length > 0) {
+          setWorkoutTemplate(data[data.length - 1]);
+        }
+        else setWorkoutTemplate(null);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch template by workout:", error);
+        setWorkoutTemplate(null);
+      })
+  }, [workout?.id])
+
   const findSetType = (searchValue: string | null) => {
     const match = exSetTypeChoices.find(t => t.value === searchValue);
     return match?.label || "Error";
@@ -80,6 +106,8 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({children}) => {
       setExSetTypeChoices,
       handleOneChange,
       findSetType,
+      workoutTemplate,
+      setWorkoutTemplate
     }}>
       {children}
     </WorkoutContext.Provider>

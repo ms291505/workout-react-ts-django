@@ -51,8 +51,8 @@ export interface TmplWorkoutHist extends Omit<Workout_Hist, "date" | "exercises"
 
 export interface TmplHist {
   id: string | number | null;
-  workoutHistId: string | number;
-  templateId: string | number;
+  workoutHist: string | number;
+  tmplWorkoutHist: string | number;
 }
 
 /**

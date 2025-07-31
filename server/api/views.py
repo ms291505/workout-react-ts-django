@@ -1,7 +1,7 @@
 from datetime import timedelta
 from django.utils import timezone
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.contrib.auth.models import User
 from django.db.models import Q, Count
 
@@ -157,24 +157,34 @@ class WorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
   
 
 class TmplWorkoutListCreate(generics.ListCreateAPIView):
-  serializer_class = TmplWorkoutHistSerializer
-  permission_classes = [IsAuthenticated]
-  queryset = Tmpl_Workout_Hist.objects.all()
+    serializer_class = TmplWorkoutHistSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Tmpl_Workout_Hist.objects.all()
 
-  def filter_queryset(self, queryset):
-    queryset = super().filter_queryset(queryset)
-    user = self.request.user
+    def filter_queryset(self, queryset):
+      queryset = super().filter_queryset(queryset)
+      user = self.request.user
 
-    return queryset.filter(
-      Q(user=user) | Q(user_added_flag="N")
-    )
-  
-  def perform_create(self, serializer):
-    serializer.save(
-      user=self.request.user,
-      user_added_flag="Y"
+      try:
+        workout_hist_id = int(self.request.query_params.get("workout_id", 0))
+        print("workout_id is: ", workout_hist_id)
+      except(ValueError, TypeError):
+        workout_hist_id: int = 0
+
+      if workout_hist_id:
+        queryset = queryset.filter(
+          workouts_used__workout_hist_id=workout_hist_id
+        ).distinct()
+      
+      return queryset.filter(
+          Q(user=user) | Q(user_added_flag="N")
       )
 
+    def perform_create(self, serializer):
+        serializer.save(
+            user=self.request.user,
+            user_added_flag="Y"
+        )
 
 class TmplWorkoutDetailView(generics.RetrieveUpdateDestroyAPIView):
   """
@@ -192,9 +202,17 @@ class TemplateHistListCreate(generics.ListCreateAPIView):
   serializer_class = TemplateHistSerializer
   permission_classes = [IsAuthenticated]
 
-  def get_queryset(self):
+  queryset = Template_Hist.objects.all()
+
+  def filter_queryset(self, queryset):
     user = self.request.user
-    return Template_Hist.objects.filter(user=user)
+    queryset = queryset.filter(workout_hist__user=user)
+
+
+    return queryset.order_by("created")
+
+  def perform_create(self, serializer):
+    serializer.save()
 
 
 class ExerciseListCreate(generics.ListCreateAPIView):

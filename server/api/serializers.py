@@ -267,7 +267,8 @@ class TemplateHistSerializer(serializers.ModelSerializer):
   class Meta:
     model = Template_Hist
     fields = [
-      "id",
-      "workout_hist_id",
-      "tmpl_workout_hist_id"
+      "workout_hist",
+      "tmpl_workout_hist",
+      "created"
     ]
+    read_only_fields = ["created"]

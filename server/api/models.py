@@ -478,3 +478,7 @@ class Template_Hist(models.Model):
     on_delete=models.CASCADE,
     related_name="workouts_used"
   )
+  created = models.DateTimeField(
+    verbose_name="created date",
+    auto_now_add=True
+  )

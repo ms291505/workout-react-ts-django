@@ -2,14 +2,14 @@ import { useWorkoutContext } from "../../context/WorkoutContext";
 import { EMPTY_EXERCISE_HIST } from "../../library/constants";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Exercise_Hist, Workout_Hist } from "../../library/types";
+import { Exercise_Hist, Workout_Hist, TmplHist } from "../../library/types";
 import { useNavigate, useParams } from "react-router";
-import { fetchWorkoutDetail, postTemplate, postWorkout, updateWorkout } from "../../api";
+import { fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
 import ExPickerModal from "../dialog/ExPickerModal";
-import { createEmptyExHist, createEmptyExSet, createEmptyWorkout } from "../../library/factories";
+import { createEmptyExHist, createEmptyExSet, createEmptyWorkout, createEmtpyTmplHist } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
@@ -34,6 +34,7 @@ export default function StrengthWorkoutEntry({
     exSelections,
     setExSelections,
     clearWorkout,
+    workoutTemplate,
   } = useWorkoutContext();
   const [exPickerOpen, setExPickerOpen] = useState(false);
   const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
@@ -115,35 +116,40 @@ export default function StrengthWorkoutEntry({
       }
     };
 
+    if (!accessMode) return;
+
+    const tmplHist: TmplHist = { ...createEmtpyTmplHist() };
+
     if (templateFlag) {
       try {
         const t = await postTemplate(transformToTemplate(workout));
         enqueueSnackbar(`'${t.name}' added as template.`, { variant: "success" });
+        tmplHist.tmplWorkoutHist = t.id!;
       } catch (err) {
         describeError(err);
       }
     }
 
-    if (accessMode?.toLowerCase() === "edit") {
-      try {
-        const w = await updateWorkout(workout);
-        enqueueSnackbar(`'${w.name}' updated.`, { variant: "success" });
-        navigate("/");
-      } catch (err) {
-        describeError(err);
-      }
-    };
+    try {
+      const w = accessMode.toLowerCase() === "new"
+        ? await postWorkout(workout)
+        : accessMode.toLowerCase() === "edit" &&
+        await updateWorkout(workout)
+      if (!w) throw new Error("An error occurred resolving the accessMode for the Workout Entry submission.");
 
-    if (accessMode?.toLowerCase() === "new") {
-      try {
-        const w = await postWorkout(workout);
-        enqueueSnackbar(`'${w.name}' created.`, { variant: "success" });
-        navigate("/");
-      } catch (err) {
-        describeError(err);
-      }
-    };
+      enqueueSnackbar(`'${w.name}' uploaded.`, { variant: "success" });
+      tmplHist.workoutHist = w.id!;
+      navigate("/");
+    } catch (err) {
+      describeError(err);
+    }
+
+    if (tmplHist.tmplWorkoutHist && tmplHist.workoutHist) {
+      console.log(tmplHist);
+      await postTemplateHist(tmplHist);
+    } else console.log("didn't update the template hist")
   };
+
 
   const onCancel = () => {
     clearWorkout();
@@ -163,6 +169,10 @@ export default function StrengthWorkoutEntry({
         name={workout.name}
         date={workout.date}
       />
+      {workoutTemplate
+        ? <span>{workoutTemplate.name}</span>
+        : null
+      }
       <StrengthWorkoutNotes />
       <Box
         display="flex"

@@ -16,7 +16,7 @@ PROD = os.environ.get("PROD", "false").lower() == "true"
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 if PROD:
-  STATIC_ROOT = os.path.join(BASE_DIR, "server", "djangobackend", "staticfiles")
+  STATIC_ROOT = os.path.join(BASE_DIR, "server", "staticfiles")
   SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
   ALLOWED_HOSTS = json.loads(os.environ.get("ALLOWED_HOSTS", "[]"))
   SECURE_SSL_REDIRECT = False

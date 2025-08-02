@@ -1,0 +1,11 @@
+
+{
+  "typeCheckingMode": "basic",
+  "include": ["server"],
+  "extraPaths": ["./server"],  // or wherever your Django code lives
+  "reportMissingTypeStubs": false,
+  "reportAttributeAccessIssue": false,  // optional, to suppress these specifically
+  "reportReturnType": "none",  // optional, if needed to quiet `CharField` warnings
+  "reportIncompatibleVariableOverride": false,
+  "reportMissingTypeStubs": false
+}

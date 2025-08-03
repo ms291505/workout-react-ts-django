@@ -6,7 +6,9 @@ from api.views import (
   CookieTokenObtainPairView, 
   CookieTokenRefreshView,
   DeleteCookiesView,
+  TemplateFolderListCreate,
   TemplateHistListCreate,
+  TmplWorkoutHistDelete,
   WorkoutListCreate,
   WorkoutDelete,
   ExerciseListCreate,
@@ -32,5 +34,8 @@ urlpatterns = [
   path("exset-types/", ExSetTypeList.as_view(), name="exset-types"),
   path("tmpl-workouts/", TmplWorkoutListCreate.as_view(), name="tmpl-workout-list"),
   path("tmpl-workouts/<int:pk>/", TmplWorkoutDetailView.as_view(), name="tmpl-workout-detail"),
-  path("tmpl-hist/", TemplateHistListCreate.as_view(), name="tmplate-hist-list"),
+  path("tmpl-hist/", TemplateHistListCreate.as_view(), name="template-hist-list"),
+  path("tmpl-folders/", TemplateFolderListCreate.as_view(), name="template-folders"),
+  path("tmpl-folders/delete/<int:pk>/", TmplWorkoutHistDelete.as_view(), name="template-folders-delete"),
+  path("tmpl-workouts/delete/<int:pk>/", TmplWorkoutHistDelete.as_view(),name="tmpl-wkt-delete")
 ]

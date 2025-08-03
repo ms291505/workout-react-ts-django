@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import fields, serializers
 from .models import (
+  Template_Folder,
   Template_Hist,
   Workout_Hist,
   Ex_Set, 
@@ -271,4 +272,12 @@ class TemplateHistSerializer(serializers.ModelSerializer):
       "tmpl_workout_hist",
       "created"
     ]
+    read_only_fields = ["created"]
+
+
+class TemplateFolderSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Template_Folder
+    fields = "__all__"
     read_only_fields = ["created"]

@@ -96,3 +96,9 @@ export type UserRegisterFormData = UserRegisterDto;
 export type MaybeWorkout = Workout_Hist | null;
 
 export type confirmTypes = "confirm" | "delete";
+
+export interface TemplateFolder {
+  id: number | string;
+  name: string;
+  templates: [number | string];
+}

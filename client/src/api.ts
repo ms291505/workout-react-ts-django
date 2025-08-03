@@ -7,7 +7,8 @@ import {
   UserRegisterDto,
   Choice,
   TmplWorkoutHist,
-  TmplHist
+  TmplHist,
+  TemplateFolder
 } from "./library/types";
 import { API_BASE } from "./library/constants";
 
@@ -161,6 +162,44 @@ export async function fetchTemplateHists(
   return response.json();
 }
 
+export async function fetchTmplWorkoutHists(): Promise<TmplWorkoutHist[]> {
+  const response = await fetch(`${API_BASE}/tmpl-workouts/`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchTmplWorkoutHists();
+  }
+
+  if (!response.ok) await handleApiError(response);
+
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function fetchTemplateFolders(): Promise<TemplateFolder[]> {
+  const response = await fetch(`${API_BASE}/tmpl-folders/`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchTemplateFolders();
+  }
+
+  if (!response.ok) await handleApiError(response);
+
+  await checkStatus(response);
+  return response.json();
+}
+
 export async function fetchTemplateByWorkout(
   workout_id: string | number
 ): Promise<TmplWorkoutHist[]> {
@@ -292,7 +331,7 @@ export async function deleteWorkout(workout: Workout_Hist): Promise<boolean> {
 
 export async function deleteTemplate(template: TmplWorkoutHist): Promise<boolean> {
   if (!template.id) throw "Template does not have an ID.";
-  const response = await fetch(`${API_BASE}/tmpl-workouts/${template.id}/`, {
+  const response = await fetch(`${API_BASE}/tmpl-workouts/delete/${template.id}/`, {
     method: "DELETE",
     credentials: "include",
     headers: {
@@ -303,6 +342,26 @@ export async function deleteTemplate(template: TmplWorkoutHist): Promise<boolean
   if (response.status === 401) {
     await refreshAccess();
     return deleteTemplate(template);
+  }
+
+  if (!response.ok) handleApiError(response);
+
+  await checkStatus(response);
+  return true;
+}
+
+export async function deleteTemplateFolder(id: string | number): Promise<boolean> {
+  const response = await fetch(`${API_BASE}/tmpl-folders/delete/${id}/`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return deleteTemplateFolder(id);
   }
 
   if (!response.ok) handleApiError(response);

@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .serializers import (
+  TemplateFolderSerializer,
   TemplateHistSerializer,
   UserSerializer,
   WorkoutHistSerializer,
@@ -17,6 +18,7 @@ from .serializers import (
   TmplWorkoutHistSerializer
 )
 from .models import (
+  Template_Folder,
   Template_Hist,
   Workout_Hist,
   Exercise,
@@ -215,6 +217,22 @@ class TemplateHistListCreate(generics.ListCreateAPIView):
     serializer.save()
 
 
+class TemplateFolderListCreate(generics.ListCreateAPIView):
+  serializer_class = TemplateFolderSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    return Template_Folder.objects.filter(
+        Q(user=self.request.user) | Q(user_added_flag="N")
+    )
+  
+  def perform_create(self, serializer):
+    serializer.save(
+      user=self.request.user,
+      user_added_flag="Y"
+    )
+
+
 class ExerciseListCreate(generics.ListCreateAPIView):
   """
   List existing workouts or create a new one for an authenticated user.
@@ -286,7 +304,23 @@ class WorkoutDelete(generics.DestroyAPIView):
       QuerySet[Workout_Hist]: All workouts filtered by the current user.
     """
     return Workout_Hist.objects.filter(user=self.request.user)
-  
+
+
+class TemplateFolderDelete(generics.DestroyAPIView):
+  serializer_class = TemplateFolderSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    return Template_Folder.objects.filter(user=self.request.user)
+
+
+class TmplWorkoutHistDelete(generics.DestroyAPIView):
+  serializer_class = TmplWorkoutHistSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    return Tmpl_Workout_Hist.objects.filter(user=self.request.user)
+
 
 class ExSetTypeList(APIView):
   permission_classes = [AllowAny]

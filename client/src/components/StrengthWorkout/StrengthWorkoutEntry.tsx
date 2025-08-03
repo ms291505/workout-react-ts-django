@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import { Exercise_Hist, Workout_Hist, TmplHist } from "../../library/types";
 import { useNavigate, useParams } from "react-router";
 import { fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
 import ExPickerModal from "../dialog/ExPickerModal";
@@ -36,9 +36,11 @@ export default function StrengthWorkoutEntry({
     clearWorkout,
     workoutTemplate,
   } = useWorkoutContext();
+
   const [exPickerOpen, setExPickerOpen] = useState(false);
   const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
   const [templateFlag, setTemplateFlag] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState("");
 
   const { workoutId } = useParams<{
     workoutId?: string,
@@ -103,9 +105,15 @@ export default function StrengthWorkoutEntry({
       ]
     };
 
+
     setWorkout(newWorkout);
     setExSelections([]);
   };
+
+  function handleTemplateNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+    setNewTemplateName(value);
+  }
 
   const handleFinish = async () => {
     function describeError(err: any) {
@@ -168,11 +176,12 @@ export default function StrengthWorkoutEntry({
       <WorkoutHeader
         name={workout.name}
         date={workout.date}
+        tmplName={
+          workoutTemplate
+            ? workoutTemplate.name
+            : null
+        }
       />
-      {workoutTemplate
-        ? <span>{workoutTemplate.name}</span>
-        : null
-      }
       <StrengthWorkoutNotes />
       <Box
         display="flex"
@@ -220,6 +229,8 @@ export default function StrengthWorkoutEntry({
         flagged={templateFlag}
         handleClick={() => setTemplateFlag(!templateFlag)}
         sx={{ mt: 2 }}
+        value={newTemplateName}
+        onChange={handleTemplateNameChange}
       />
       <Box
         sx={{

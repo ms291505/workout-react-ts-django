@@ -482,3 +482,28 @@ class Template_Hist(models.Model):
     verbose_name="created date",
     auto_now_add=True
   )
+
+
+class Template_Folder(models.Model):
+  user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="template_folders",
+    blank=True,
+    null=True
+  )
+  created = models.DateTimeField(
+    verbose_name="created date",
+    auto_now_add=True
+  )
+  name = models.TextField(
+    blank=True,
+    null=True
+  )
+  templates = models.TextField(
+    default="[]"
+  )
+  user_added_flag = models.CharField(
+    max_length=1,
+    default="N"
+  )

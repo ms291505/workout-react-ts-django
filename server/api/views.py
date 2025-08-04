@@ -169,7 +169,6 @@ class TmplWorkoutListCreate(generics.ListCreateAPIView):
 
       try:
         workout_hist_id = int(self.request.query_params.get("workout_id", 0))
-        print("workout_id is: ", workout_hist_id)
       except(ValueError, TypeError):
         workout_hist_id: int = 0
 

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth.models import User
 from decimal import Decimal
+import json
 
 
 # python3 manage.py makemigrations api
@@ -500,10 +501,21 @@ class Template_Folder(models.Model):
     blank=True,
     null=True
   )
-  templates = models.TextField(
+  template_ids_array = models.TextField(
     default="[]"
   )
   user_added_flag = models.CharField(
     max_length=1,
     default="N"
   )
+
+  @property
+  def template_ids(self) -> list[int | str]:
+    try:
+      return json.loads(self.templates or "[]")
+    except json.JSONDecodeError:
+      return []
+  
+  @template_ids.setter
+  def template_ids(self, value: list[int | str]):
+    self.templates = json.dumps(value)

@@ -85,10 +85,10 @@ export function createDefaultWorkoutName() {
  * @param event Changes on an input.
  * @param setter State setter to be used.
  */
-export const handleControlledChange = (
-  event: ChangeEvent<HTMLInputElement>,
+export function handleControlledChange<T extends HTMLInputElement | HTMLTextAreaElement> (
+  event: ChangeEvent<T>,
   setter: Dispatch<SetStateAction<any>>
-) => {
+) {
   const { name, value } = event.target;
   setter((previous: any) => ({ ...previous, [name]: value }));
 }

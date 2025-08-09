@@ -299,6 +299,29 @@ export async function postTemplateHist(tmplHist: TmplHist): Promise<boolean> {
   return true;
 }
 
+export async function postTemplateFolder(folder: TemplateFolder): Promise<boolean> {
+  const response = await fetch(`${API_BASE}/tmpl-folders/`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(folder),
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return postTemplateFolder(folder);
+  }
+
+  if (!response.ok) {
+    handleApiError(response);
+  }
+
+  await checkStatus(response);
+  return true;
+}
+
 export async function deleteWorkout(workout: Workout_Hist): Promise<boolean> {
   const response = await fetch(`${API_BASE}/workouts/delete/${workout.id!}/`, {
     method: "DELETE",

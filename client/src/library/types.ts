@@ -100,5 +100,5 @@ export type confirmTypes = "confirm" | "delete";
 export interface TemplateFolder {
   id: number | string;
   name: string;
-  templateIdsArray: [string | number];
+  templateIdsArray: (string | number)[];
 }

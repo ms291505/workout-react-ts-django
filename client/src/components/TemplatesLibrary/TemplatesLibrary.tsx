@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { TemplateFolder, TmplWorkoutHist } from "../../library/types";
 import { useEffect, useState } from "react";
-import { deleteTemplate, fetchTemplateFolders, fetchTmplWorkoutHists } from "../../api";
+import { deleteTemplate, fetchTemplateFolders, fetchTmplWorkoutHists, postTemplateFolder } from "../../api";
 import LoadingRoller from "../LoadingRoller";
 import Divider from "@mui/material/Divider";
 import CardContent from "@mui/material/CardContent";
@@ -13,6 +13,11 @@ import Button from "@mui/material/Button";
 import FolderIcon from '@mui/icons-material/Folder';
 import ConfirmDialog from "../dialog/ConfirmDialog";
 import { enqueueSnackbar } from "notistack";
+import MyDialog from "../dialog/MyDialog";
+import TextField from "@mui/material/TextField";
+import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
+import { handleControlledChange } from "../../utils";
+import { createEmptyTemplateFolder } from "../../library/factories";
 
 interface Loading {
   templates: boolean;
@@ -31,12 +36,15 @@ export default function TemplatesLibrary() {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
   const [selection, setSelection] = useState<TmplWorkoutHist| null>(null);
+  const [folderCreateOpen, setFolderCreateOpen] = useState(false);
+  const [newFolder, setNewFolder] = useState<TemplateFolder>({...createEmptyTemplateFolder()})
 
   useEffect(() => {
     Promise.all([fetchTmplWorkoutHists(), fetchTemplateFolders()])
       .then(([templateResponse, folderResponse]) => {
         setTemplates(templateResponse);
         setFolders(folderResponse);
+        console.log(folderResponse);
         setLoading({ templates: false, folders: false });
       });
     
@@ -48,6 +56,7 @@ export default function TemplatesLibrary() {
   );
 
   const grouped = folders.map(folder => ({
+    id: folder.id,
     name: folder.name || "Unamed Folder",
     templates: templates.filter(template => folder.templateIdsArray.includes(template.id!))
   }));
@@ -55,6 +64,7 @@ export default function TemplatesLibrary() {
   const uncategorized = templates.filter(template => !folderedIds.has(template.id!));
   if (uncategorized.length > 0) {
     grouped.push({
+      id: -1,
       name: "Uncategorized",
       templates: uncategorized,
     });
@@ -81,6 +91,23 @@ export default function TemplatesLibrary() {
     }
   }
 
+  const handleAddFolder = () => {
+    setLoading(prev => ({...prev, folders: true}))
+    try {
+      postTemplateFolder(newFolder);
+      console.log(newFolder);
+      const newFolders: TemplateFolder[] = structuredClone(folders);
+      newFolders.push(newFolder);
+      setFolders(newFolders);
+      setNewFolder({...createEmptyTemplateFolder()});
+    } catch(err) {
+      console.log(err);
+    } finally {
+      setFolderCreateOpen(false);
+      setLoading(prev => ({...prev, folders: false}))
+    }
+  }
+
 
   if (Object.values(loading).some(Boolean)) return (
     <>
@@ -90,9 +117,30 @@ export default function TemplatesLibrary() {
   )
   return (
     <>
+    <Box
+      sx={{
+        display:"flex",
+        direction:"row",
+        gap: 2,
+        m: 1,
+        mb: 2
+      }}
+    >
+      <Button
+        variant="contained"
+        onClick={() => setFolderCreateOpen(true)}
+      >
+        Add Folder
+      </Button>
+      <Button
+        variant="contained"
+      >
+        Add Template
+      </Button>
+    </Box>
     <Box>
       {grouped.map(folder => (
-        <Box key={folder.name}>
+        <Box key={folder.id}>
           <Box
             sx={{
               display: "flex",
@@ -150,6 +198,56 @@ export default function TemplatesLibrary() {
       title="Are you sure?"
       confirmText="Delete"
       confirmType="delete"
+    />
+    <MyDialog
+      open={folderCreateOpen}
+      onClose= {() => setFolderCreateOpen(false)}
+      title= "Create Folder"
+      content={
+        <Box
+          sx={{
+            ...CENTER_COL_FLEX_BOX,
+          }}
+        >
+          <Box
+            sx={{ display: "flex", width: "100%"}}
+          >
+
+          <TextField
+            label="Folder Name"
+            name="name"
+            size="small"
+            sx={{flex:1, m:1, mb: 2}}
+            value={newFolder.name}
+            onChange={(event) => handleControlledChange(event, setNewFolder)}
+          />
+          </Box>
+          <Box
+            sx={{
+            display: "flex",
+            direction: "row",
+            gap: 1,
+            width: "100%"
+            }}
+          >
+            <Button
+              variant="outlined"
+              color="error"
+              sx={{flex: 1}}
+              onClick={() => setFolderCreateOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              sx={{flex: 1}}
+              onClick={handleAddFolder}
+            >
+              Save
+            </Button>
+          </Box>
+        </Box>
+      }
     />
     </>
   )

@@ -1,5 +1,5 @@
 import { createDefaultWorkoutName, getLocalDateTimeString } from "../utils";
-import { Exercise, Exercise_Hist, ExSet, TmplExerciseHist, TmplExSet, TmplHist, TmplWorkoutHist, Workout_Hist } from "./types";
+import { Exercise, Exercise_Hist, ExSet, TemplateFolder, TmplExerciseHist, TmplExSet, TmplHist, TmplWorkoutHist, Workout_Hist } from "./types";
 
 
 export function createEmptyWorkout(): Workout_Hist {
@@ -41,6 +41,13 @@ export function createEmptyTemplate(): TmplWorkoutHist {
     tmplExercises: []
   }
 }
+
+export function createEmptyTemplateFolder(): TemplateFolder {
+  return {
+    name:"",
+    templateIdsArray: [],
+    id: crypto.randomUUID(),
+}}
 
 export function createEmptyTmplExHist(ex?: Exercise): TmplExerciseHist {
   return {

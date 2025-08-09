@@ -226,6 +226,7 @@ class TemplateFolderListCreate(generics.ListCreateAPIView):
     )
   
   def perform_create(self, serializer):
+    print("request: ",self.request.data)
     serializer.save(
       user=self.request.user,
       user_added_flag="Y"

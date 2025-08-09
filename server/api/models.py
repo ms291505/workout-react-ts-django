@@ -42,6 +42,10 @@ class Workout_Hist(models.Model):
   created = models.DateTimeField(
     verbose_name="created date",
     auto_now_add=True)
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
   voided = models.CharField(
     max_length=1,
     default="N"
@@ -119,6 +123,10 @@ class Exercise(models.Model):
   created = models.DateTimeField(
     verbose_name="created date",
     auto_now_add=True)
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
   user = models.ForeignKey(
     User,
     on_delete=models.CASCADE,
@@ -167,6 +175,10 @@ class Exercise_Hist(models.Model):
   created = models.DateTimeField(
     verbose_name="created date",
     auto_now_add=True)
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
 
   def __str__(self):
     return f"'{self.exercise.name}' performed on {self.workout_hist.long_workout_date_str}"
@@ -229,6 +241,10 @@ class Ex_Set(models.Model):
     verbose_name="ceated date",
     auto_now_add=True
   )
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
 
 
 class Tmpl_Workout_Hist(models.Model):
@@ -257,7 +273,7 @@ class Tmpl_Workout_Hist(models.Model):
   )
   updated = models.DateTimeField(
     verbose_name="updated date",
-    auto_now_add=True
+    auto_now=True
   )
   user = models.ForeignKey(
     User,
@@ -304,6 +320,10 @@ class Tmpl_Exercise_Hist(models.Model):
   created = models.DateTimeField(
     verbose_name="created date",
     auto_now_add=True)
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
 
 
 class Tmpl_Ex_Set(models.Model):
@@ -351,6 +371,10 @@ class Tmpl_Ex_Set(models.Model):
   created = models.DateTimeField(
     verbose_name="ceated date",
     auto_now_add=True
+  )
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
   )
 
 
@@ -436,6 +460,10 @@ class Cardio_Workout_Hist(models.Model):
   created = models.DateTimeField(
     verbose_name="created date",
     auto_now_add=True)
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
   user = models.ForeignKey(
     User,
     on_delete=models.CASCADE,
@@ -483,6 +511,10 @@ class Template_Hist(models.Model):
     verbose_name="created date",
     auto_now_add=True
   )
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
 
 
 class Template_Folder(models.Model):
@@ -497,25 +529,20 @@ class Template_Folder(models.Model):
     verbose_name="created date",
     auto_now_add=True
   )
+  updated = models.DateTimeField(
+    verbose_name="updated date",
+    auto_now=True
+  )
   name = models.TextField(
     blank=True,
     null=True
-  )
-  template_ids_array = models.TextField(
-    default="[]"
   )
   user_added_flag = models.CharField(
     max_length=1,
     default="N"
   )
-
-  @property
-  def template_ids(self) -> list[int | str]:
-    try:
-      return json.loads(self.templates or "[]")
-    except json.JSONDecodeError:
-      return []
-  
-  @template_ids.setter
-  def template_ids(self, value: list[int | str]):
-    self.templates = json.dumps(value)
+  templates = models.ManyToManyField(
+    Tmpl_Workout_Hist,
+    blank=True,
+    null=True
+  )

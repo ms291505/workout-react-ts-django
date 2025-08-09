@@ -100,5 +100,10 @@ export type confirmTypes = "confirm" | "delete";
 export interface TemplateFolder {
   id: number | string;
   name: string;
-  templateIdsArray: (string | number)[];
+  templates: (string | number | TmplWorkoutHist)[];
+}
+
+export interface MenuAction {
+  label: string;
+  action: (arg?: any) => null | undefined | void | any;
 }

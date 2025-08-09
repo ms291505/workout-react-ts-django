@@ -45,7 +45,7 @@ export function createEmptyTemplate(): TmplWorkoutHist {
 export function createEmptyTemplateFolder(): TemplateFolder {
   return {
     name:"",
-    templateIdsArray: [],
+    templates: [],
     id: crypto.randomUUID(),
 }}
 

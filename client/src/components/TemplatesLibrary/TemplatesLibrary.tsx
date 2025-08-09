@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
-import { TemplateFolder, TmplWorkoutHist } from "../../library/types";
+import { MenuAction, TemplateFolder, TmplWorkoutHist } from "../../library/types";
 import { useEffect, useState } from "react";
-import { deleteTemplate, fetchTemplateFolders, fetchTmplWorkoutHists, postTemplateFolder } from "../../api";
+import { deleteTemplate, deleteTemplateFolder, fetchTemplateFolders, fetchTmplWorkoutHists, postTemplateFolder } from "../../api";
 import LoadingRoller from "../LoadingRoller";
 import Divider from "@mui/material/Divider";
 import CardContent from "@mui/material/CardContent";
@@ -10,7 +10,6 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import FolderIcon from '@mui/icons-material/Folder';
 import ConfirmDialog from "../dialog/ConfirmDialog";
 import { enqueueSnackbar } from "notistack";
 import MyDialog from "../dialog/MyDialog";
@@ -18,12 +17,12 @@ import TextField from "@mui/material/TextField";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import { handleControlledChange } from "../../utils";
 import { createEmptyTemplateFolder } from "../../library/factories";
+import FolderHeader from "./FolderHeader";
 
 interface Loading {
   templates: boolean;
   folders: boolean;
 }
-
 
 export default function TemplatesLibrary() {
 
@@ -39,6 +38,14 @@ export default function TemplatesLibrary() {
   const [folderCreateOpen, setFolderCreateOpen] = useState(false);
   const [newFolder, setNewFolder] = useState<TemplateFolder>({...createEmptyTemplateFolder()})
 
+  const folderMenuActions: MenuAction[] = [
+    {
+      label: "Delete",
+      action: (f: TemplateFolder) => handleDeleteFolder(f)
+      //TODO: Add delete folder API.
+    }
+  ]
+  
   useEffect(() => {
     Promise.all([fetchTmplWorkoutHists(), fetchTemplateFolders()])
       .then(([templateResponse, folderResponse]) => {
@@ -52,13 +59,13 @@ export default function TemplatesLibrary() {
   }, [refreshTrigger]);
 
   const folderedIds = new Set(
-    folders.flatMap(folder => folder.templateIdsArray)
+    folders.flatMap(folder => folder.templates)
   );
 
   const grouped = folders.map(folder => ({
     id: folder.id,
     name: folder.name || "Unamed Folder",
-    templates: templates.filter(template => folder.templateIdsArray.includes(template.id!))
+    templates: templates.filter(template => folder.templates.includes(template.id!))
   }));
 
   const uncategorized = templates.filter(template => !folderedIds.has(template.id!));
@@ -68,6 +75,19 @@ export default function TemplatesLibrary() {
       name: "Uncategorized",
       templates: uncategorized,
     });
+  }
+
+  const handleDeleteFolder = async (folder: TemplateFolder) => {
+    if (!folder) return null;
+    try {
+      const response = await deleteTemplateFolder(folder.id);
+      if (response) {
+        enqueueSnackbar(`'${folder.name}' was deleted.`);
+        setRefreshTrigger(true);
+      }
+    } catch (err) {
+      console.error("An error occured while trying to delete.", err);
+    }
   }
 
   const handleDeleteTemplate = async (template: TmplWorkoutHist | null) => {
@@ -80,7 +100,7 @@ export default function TemplatesLibrary() {
       }
       
     } catch (err) {
-      console.error("Ann error occured while trying to delete.", err);
+      console.error("An error occured while trying to delete.", err);
       if (err && typeof err === "object" && "name" in err) {
         const nameErrors = (err as any).name;
         const message = Array.isArray(nameErrors) ? nameErrors[0] : "An unkown Exercise Name error.";
@@ -141,17 +161,7 @@ export default function TemplatesLibrary() {
     <Box>
       {grouped.map(folder => (
         <Box key={folder.id}>
-          <Box
-            sx={{
-              display: "flex",
-            }}
-          >
-            <FolderIcon sx={{pb: 0.5, mr: 1}} />
-            <Typography>
-
-            {folder.name}
-            </Typography>
-          </Box>
+          <FolderHeader folder={folder} actions={folderMenuActions} />
           <Divider sx={{mb: 2}}/>
           <Grid container spacing={2}>
 

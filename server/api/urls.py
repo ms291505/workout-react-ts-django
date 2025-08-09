@@ -15,7 +15,8 @@ from api.views import (
   WorkoutDetailView,
   ExSetTypeList,
   TmplWorkoutListCreate,
-  TmplWorkoutDetailView
+  TmplWorkoutDetailView,
+  TemplateFolderDelete
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -36,6 +37,6 @@ urlpatterns = [
   path("tmpl-workouts/<int:pk>/", TmplWorkoutDetailView.as_view(), name="tmpl-workout-detail"),
   path("tmpl-hist/", TemplateHistListCreate.as_view(), name="template-hist-list"),
   path("tmpl-folders/", TemplateFolderListCreate.as_view(), name="template-folders"),
-  path("tmpl-folders/delete/<int:pk>/", TmplWorkoutHistDelete.as_view(), name="template-folders-delete"),
+  path("tmpl-folders/delete/<int:pk>/", TemplateFolderDelete.as_view(), name="template-folders-delete"),
   path("tmpl-workouts/delete/<int:pk>/", TmplWorkoutHistDelete.as_view(),name="tmpl-wkt-delete")
 ]

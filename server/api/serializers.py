@@ -280,4 +280,4 @@ class TemplateFolderSerializer(serializers.ModelSerializer):
   class Meta:
     model = Template_Folder
     fields = "__all__"
-    read_only_fields = ["created"]
+    read_only_fields = ["created", "id", "updated"]

@@ -222,13 +222,16 @@ export default function StrengthWorkoutEntry({
       </Box>
 
       {/* Actions */}
-      <TemplateMenu
-        flagged={templateFlag}
-        handleClick={() => setTemplateFlag(!templateFlag)}
-        sx={{ mt: 2 }}
-        value={newTemplateName}
-        onChange={handleTemplateNameChange}
-      />
+      { accessMode === "new"
+        ? <TemplateMenu
+            flagged={templateFlag}
+            handleClick={() => setTemplateFlag(!templateFlag)}
+            sx={{ mt: 2 }}
+            value={newTemplateName}
+            onChange={handleTemplateNameChange}
+          />
+        : null
+      }
       <Box
         sx={{
           mt: 2,

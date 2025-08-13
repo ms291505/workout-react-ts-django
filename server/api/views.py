@@ -164,22 +164,21 @@ class TmplWorkoutListCreate(generics.ListCreateAPIView):
     queryset = Tmpl_Workout_Hist.objects.all()
 
     def filter_queryset(self, queryset):
-      queryset = super().filter_queryset(queryset)
       user = self.request.user
+      queryset = Tmpl_Workout_Hist.objects.filter(
+        Q(user=user) | Q(user_added_flag="N")
+      )
 
-      try:
-        workout_hist_id = int(self.request.query_params.get("workout_id", 0))
-      except(ValueError, TypeError):
-        workout_hist_id: int = 0
-
-      if workout_hist_id:
-        queryset = queryset.filter(
-          workouts_used__workout_hist_id=workout_hist_id
+      workout_hist_id = self.request.query_params.get("workout_id")
+      if workout_hist_id is None:
+        return queryset.distinct()
+      
+      if isinstance(workout_hist_id, str) and workout_hist_id.isdigit():
+        return queryset.filter(
+          workouts_used__workout_hist_id=int(workout_hist_id)
         ).distinct()
       
-      return queryset.filter(
-          Q(user=user) | Q(user_added_flag="N")
-      )
+      return Tmpl_Workout_Hist.objects.none()
 
     def perform_create(self, serializer):
         serializer.save(
@@ -231,6 +230,18 @@ class TemplateFolderListCreate(generics.ListCreateAPIView):
       user=self.request.user,
       user_added_flag="Y"
     )
+
+
+class TemplateFolderDetailView(generics.RetrieveUpdateDestroyAPIView):
+  """
+  /api/tmpl-folders/{pk}
+  """
+  serializer_class = TemplateFolderSerializer
+  permission_classes = [IsAuthenticated]
+
+  def get_queryset(self):
+    user = self.request.user
+    return Template_Folder.objects.filter(user=user)
 
 
 class ExerciseListCreate(generics.ListCreateAPIView):

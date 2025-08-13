@@ -42,9 +42,7 @@ export default function StrengthWorkoutEntry({
   const [templateFlag, setTemplateFlag] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
 
-  const { workoutId } = useParams<{
-    workoutId?: string,
-  }>();
+  const { workoutId, templateId } = useParams<{ workoutId?: string, templateId?: string}>();
 
   // Edit mode fallback in case of browser refresh:
   useEffect(() => {
@@ -105,7 +103,6 @@ export default function StrengthWorkoutEntry({
       ]
     };
 
-
     setWorkout(newWorkout);
     setExSelections([]);
   };
@@ -130,7 +127,7 @@ export default function StrengthWorkoutEntry({
 
     if (templateFlag) {
       try {
-        const t = await postTemplate(transformToTemplate(workout));
+        const t = await postTemplate(transformToTemplate(workout, newTemplateName));
         enqueueSnackbar(`'${t.name}' added as template.`, { variant: "success" });
         tmplHist.tmplWorkoutHist = t.id!;
       } catch (err) {

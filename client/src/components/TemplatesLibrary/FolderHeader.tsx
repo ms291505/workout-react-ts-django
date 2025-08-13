@@ -23,9 +23,6 @@ export default function FolderHeader ({
   const handleMenuClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   }
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  }
 
   return(
     <>
@@ -60,18 +57,20 @@ export default function FolderHeader ({
           open={menuOpen}
           onClose={() => setAnchorEl(null)}
           anchorOrigin={{
-            vertical: "center",
-            horizontal: "left"
+            vertical: "top",
+            horizontal: "right"
           }}
           transformOrigin={{
-            vertical: "center",
+            vertical: "top",
             horizontal: "left"
           }}
         >
-          <MenuItem onClick={handleMenuClose}>Cancel</MenuItem>
           {actions && actions.map((action) => (
             <MenuItem
-              onClick={() => action.action(folder)}
+              onClick={() => {
+                action.action(folder);
+                setAnchorEl(null);
+              }}
               key={action.label}
             >{action.label}</MenuItem>
           ))}

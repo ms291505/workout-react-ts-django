@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { MenuAction, TemplateFolder, TmplWorkoutHist } from "../../library/types";
-import { useEffect, useState } from "react";
-import { deleteTemplate, deleteTemplateFolder, fetchTemplateFolders, fetchTmplWorkoutHists, postTemplateFolder } from "../../api";
+import { useEffect, useState, useRef } from "react";
+import { deleteTemplate, deleteTemplateFolder, fetchTemplateFolders, fetchTmplWorkoutHists, postTemplateFolder, updateTemplateFolder } from "../../api";
 import LoadingRoller from "../LoadingRoller";
 import Divider from "@mui/material/Divider";
 import CardContent from "@mui/material/CardContent";
@@ -18,13 +18,20 @@ import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import { handleControlledChange } from "../../utils";
 import { createEmptyTemplateFolder } from "../../library/factories";
 import FolderHeader from "./FolderHeader";
+import { useWorkoutContext } from "../../context/WorkoutContext";
+import { transformToStrengthWorkout } from "../../library/transform";
+import { useNavigate } from "react-router";
 
 interface Loading {
   templates: boolean;
   folders: boolean;
 }
 
+type Dialog = null | "create folder" | "rename folder" | "delete folder";
+
 export default function TemplatesLibrary() {
+
+  const navigate = useNavigate();
 
   const [templates, setTemplates] = useState<TmplWorkoutHist[]>([]);
   const [loading, setLoading] = useState<Loading>({
@@ -35,14 +42,20 @@ export default function TemplatesLibrary() {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
   const [selection, setSelection] = useState<TmplWorkoutHist| null>(null);
-  const [folderCreateOpen, setFolderCreateOpen] = useState(false);
+  const [dialog, setDialog] = useState<Dialog>(null);
+  const [folder, setFolder] = useState<TemplateFolder>({...createEmptyTemplateFolder()});
   const [newFolder, setNewFolder] = useState<TemplateFolder>({...createEmptyTemplateFolder()})
+  const nameRef = useRef<HTMLInputElement>(null);
+  const { setWorkout } = useWorkoutContext();
 
   const folderMenuActions: MenuAction[] = [
     {
+      label: "Rename",
+      action: (f: TemplateFolder) => onClickRenameFolder(f)
+    },
+    {
       label: "Delete",
-      action: (f: TemplateFolder) => handleDeleteFolder(f)
-      //TODO: Add delete folder API.
+      action: (f: TemplateFolder) => onClickDeleteFolder(f)
     }
   ]
   
@@ -51,12 +64,21 @@ export default function TemplatesLibrary() {
       .then(([templateResponse, folderResponse]) => {
         setTemplates(templateResponse);
         setFolders(folderResponse);
-        console.log(folderResponse);
         setLoading({ templates: false, folders: false });
       });
     
       setRefreshTrigger(false);
   }, [refreshTrigger]);
+
+  useEffect(() => {
+    if (!dialog) return;
+
+    const id = requestAnimationFrame(() => {
+      nameRef.current?.focus();
+    });
+
+    return () => cancelAnimationFrame(id);
+  }, [dialog]);
 
   const folderedIds = new Set(
     folders.flatMap(folder => folder.templates)
@@ -87,6 +109,32 @@ export default function TemplatesLibrary() {
       }
     } catch (err) {
       console.error("An error occured while trying to delete.", err);
+    } finally {
+      setDialog(null);
+    }
+  }
+
+  const onClickDeleteFolder = (folder: TemplateFolder) => {
+    setFolder(folder);
+    setDialog("delete folder");
+  }
+
+  const onClickRenameFolder = (folder: TemplateFolder) => {
+    setFolder(folder);
+    setDialog("rename folder");
+  }
+
+  const handleRenameFolder = async (folder: TemplateFolder) => {
+    try {
+      const response = await updateTemplateFolder(folder);
+      if (response) {
+        enqueueSnackbar(`'${folder.name}' was renamed to '${response.name}.'`);
+        setRefreshTrigger(true);
+      }
+    } catch (err) {
+      console.error("An error occured while trying to update the folder.");
+    } finally {
+      setDialog(null);
     }
   }
 
@@ -112,19 +160,16 @@ export default function TemplatesLibrary() {
   }
 
   const handleAddFolder = () => {
-    setLoading(prev => ({...prev, folders: true}))
+    setLoading(prev => ({...prev, folders: true}));
     try {
       postTemplateFolder(newFolder);
-      console.log(newFolder);
-      const newFolders: TemplateFolder[] = structuredClone(folders);
-      newFolders.push(newFolder);
-      setFolders(newFolders);
       setNewFolder({...createEmptyTemplateFolder()});
     } catch(err) {
       console.log(err);
     } finally {
-      setFolderCreateOpen(false);
-      setLoading(prev => ({...prev, folders: false}))
+      setRefreshTrigger(true);
+      setDialog(null);
+      setLoading(prev => ({...prev, folders: false}));
     }
   }
 
@@ -148,7 +193,7 @@ export default function TemplatesLibrary() {
     >
       <Button
         variant="contained"
-        onClick={() => setFolderCreateOpen(true)}
+        onClick={() => setDialog("create folder")}
       >
         Add Folder
       </Button>
@@ -164,7 +209,6 @@ export default function TemplatesLibrary() {
           <FolderHeader folder={folder} actions={folderMenuActions} />
           <Divider sx={{mb: 2}}/>
           <Grid container spacing={2}>
-
           {folder.templates.map(template => (
               <Grid key={template.id} size= {{xs: 12, sm: 6, md: 4}}>
                 <Card raised>
@@ -185,6 +229,15 @@ export default function TemplatesLibrary() {
                       color="error"
                     >
                       Delete
+                    </Button>
+                    <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setWorkout(transformToStrengthWorkout(template));
+                      navigate(`/template/edit/${template.id}`);
+                    }}
+                    >
+                      View
                     </Button>
                   </CardActions>
                 </Card>
@@ -209,9 +262,17 @@ export default function TemplatesLibrary() {
       confirmText="Delete"
       confirmType="delete"
     />
+    <ConfirmDialog
+      onConfirm={() => handleDeleteFolder(folder)}
+      open= {Boolean(dialog === "delete folder")}
+      onClose={() => setDialog(null)}
+      title="Are you sure?"
+      confirmText="Delete"
+      confirmType="delete"
+    />
     <MyDialog
-      open={folderCreateOpen}
-      onClose= {() => setFolderCreateOpen(false)}
+      open={Boolean(dialog === "create folder")}
+      onClose= {() => setDialog(null)}
       title= "Create Folder"
       content={
         <Box
@@ -222,15 +283,15 @@ export default function TemplatesLibrary() {
           <Box
             sx={{ display: "flex", width: "100%"}}
           >
-
-          <TextField
-            label="Folder Name"
-            name="name"
-            size="small"
-            sx={{flex:1, m:1, mb: 2}}
-            value={newFolder.name}
-            onChange={(event) => handleControlledChange(event, setNewFolder)}
-          />
+            <TextField
+              inputRef={nameRef}
+              label="Folder Name"
+              name="name"
+              size="small"
+              sx={{flex:1, m:1, mb: 2}}
+              value={newFolder.name}
+              onChange={(event) => handleControlledChange(event, setNewFolder)}
+            />
           </Box>
           <Box
             sx={{
@@ -244,7 +305,7 @@ export default function TemplatesLibrary() {
               variant="outlined"
               color="error"
               sx={{flex: 1}}
-              onClick={() => setFolderCreateOpen(false)}
+              onClick={() => setDialog(null)}
             >
               Cancel
             </Button>
@@ -252,6 +313,57 @@ export default function TemplatesLibrary() {
               variant="contained"
               sx={{flex: 1}}
               onClick={handleAddFolder}
+              disabled={(newFolder.name === "")}
+            >
+              Save
+            </Button>
+          </Box>
+        </Box>
+      }
+    />
+    <MyDialog
+      open={Boolean(dialog === "rename folder")}
+      onClose= {() => setDialog(null)}
+      title= "Rename Folder"
+      content={
+        <Box
+          sx={{
+            ...CENTER_COL_FLEX_BOX,
+          }}
+        >
+          <Box
+            sx={{ display: "flex", width: "100%"}}
+          >
+            <TextField
+              inputRef={nameRef}
+              label="Folder Name"
+              name="name"
+              size="small"
+              sx={{flex:1, m:1, mb: 2}}
+              value={folder.name}
+              onChange={(event) => handleControlledChange(event, setFolder)}
+            />
+          </Box>
+          <Box
+            sx={{
+            display: "flex",
+            direction: "row",
+            gap: 1,
+            width: "100%"
+            }}
+          >
+            <Button
+              variant="outlined"
+              color="error"
+              sx={{flex: 1}}
+              onClick={() => setDialog(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              sx={{flex: 1}}
+              onClick={() => handleRenameFolder(folder)}
             >
               Save
             </Button>

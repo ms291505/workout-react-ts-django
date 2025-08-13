@@ -201,12 +201,12 @@ export async function fetchTemplateFolders(): Promise<TemplateFolder[]> {
 }
 
 export async function fetchTemplateByWorkout(
-  workout_id: string | number
+  workoutId: string | number
 ): Promise<TmplWorkoutHist[]> {
 
   let url = `${API_BASE}/tmpl-workouts/`;
 
-  url += `?workout_id=${encodeURIComponent(workout_id.toString())}`;
+  url += `?workout_id=${encodeURIComponent(workoutId.toString())}`;
 
   const response = await fetch(url, {
     credentials: "include",
@@ -217,7 +217,7 @@ export async function fetchTemplateByWorkout(
 
   if (response.status === 401) {
     await refreshAccess();
-    return fetchTemplateByWorkout(workout_id);
+    return fetchTemplateByWorkout(workoutId);
   }
 
   if (!response.ok) await handleApiError(response);
@@ -226,8 +226,8 @@ export async function fetchTemplateByWorkout(
   return response.json();
 }
 
-export async function fetchWorkoutDetail(workoutID: number): Promise<Workout_Hist> {
-  const response = await fetch(`${API_BASE}/workouts/${workoutID}/`, {
+export async function fetchWorkoutDetail(workoutId: number): Promise<Workout_Hist> {
+  const response = await fetch(`${API_BASE}/workouts/${workoutId}/`, {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
@@ -235,7 +235,7 @@ export async function fetchWorkoutDetail(workoutID: number): Promise<Workout_His
   });
   if (response.status === 401) {
     await refreshAccess();
-    return fetchWorkoutDetail(workoutID);
+    return fetchWorkoutDetail(workoutId);
   }
   await checkStatus(response);
   return response.json();
@@ -391,6 +391,28 @@ export async function deleteTemplateFolder(id: string | number): Promise<boolean
 
   await checkStatus(response);
   return true;
+}
+
+export async function updateTemplateFolder(template: TemplateFolder): Promise<TemplateFolder> {
+  if (!template.id) throw new Error("The tempalte ID was missing for updateTemplateFolder.") ;
+  const response = await fetch(`${API_BASE}/tmpl-folders/${template.id}/`, {
+    method: "PUT",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(template),
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return updateTemplateFolder(template);
+  }
+
+  if (!response.ok) handleApiError(response);
+
+  await checkStatus(response);
+  return response.json();
 }
 
 export async function updateWorkout(workout: Workout_Hist): Promise<Workout_Hist> {

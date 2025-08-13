@@ -1,9 +1,9 @@
 import type { Workout_Hist, Exercise_Hist, ExSet, TmplWorkoutHist, TmplExerciseHist, TmplExSet } from "./types";
 import { isIntId } from "../utils";
-import { createEmptyTemplate, createEmptyTmplExHist, createEmptyTmplExSet } from "./factories";
+import { createEmptyExHist, createEmptyExSet, createEmptyTemplate, createEmptyTmplExHist, createEmptyTmplExSet, createEmptyWorkout } from "./factories";
 
 
-export function transformToTemplate(w: Workout_Hist): TmplWorkoutHist {
+export function transformToTemplate(w: Workout_Hist, nameOverride?: string): TmplWorkoutHist {
 
   const tmplExercises: TmplExerciseHist[] = [];
 
@@ -32,14 +32,55 @@ export function transformToTemplate(w: Workout_Hist): TmplWorkoutHist {
     tmplExercises.push(tmplExerciseHist);
   })
 
+  const name = nameOverride ? nameOverride : w.name;
+
   const t: TmplWorkoutHist = {
     ...createEmptyTemplate(),
-    name: w.name,
+    name: name,
     notes: w.notes,
     tmplExercises: tmplExercises,
   }
 
   return t;
+}
+
+export function transformToStrengthWorkout(t: TmplWorkoutHist): Workout_Hist {
+
+  const exercises: Exercise_Hist[] = [];
+
+  t.tmplExercises?.map((tEx) => {
+    const exSets: ExSet[] = [];
+
+    tEx.tmplExSets?.map((tExSet) => {
+      const exSet: ExSet = {
+        ...createEmptyExSet(),
+        order: tExSet.order,
+        weightLbs: tExSet.weightLbs,
+        reps: tExSet.reps,
+        type: tExSet.type,
+      }
+      exSets.push(exSet);
+    })
+
+    const exercise: Exercise_Hist = {
+      ...createEmptyExHist(),
+      name: tEx.name,
+      exerciseId: tEx.exerciseId,
+      notes: tEx.notes,
+      exSets: exSets,
+    }
+
+    exercises.push(exercise);
+  })
+
+  const w: Workout_Hist = {
+    ...createEmptyWorkout(),
+    name: t.name,
+    notes: t.notes,
+    exercises: exercises
+  }
+
+  return w;
 }
 
 /**@deprecated */

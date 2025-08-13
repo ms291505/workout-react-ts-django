@@ -17,6 +17,7 @@ import {
   Workout_Hist
 } from "../library/types";
 import { fetchSetTypeChoice, fetchTemplateByWorkout } from "../api";
+import { isIntegerOrIntegerString } from "../utils/inputValidators";
 
 
 interface WorkoutContextValue {
@@ -74,9 +75,20 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    if (!workout || workout.id == null) return;
+    if (!workout || workout.id == null) {
+      setWorkoutTemplate(null);
+      return;
+    }
+
+    if (!isIntegerOrIntegerString(workout.id)) {
+      setWorkoutTemplate(null);
+      return;
+    }
+
     fetchTemplateByWorkout(workout.id!)
       .then((data) => {
+        console.log(workout);
+        console.log(data);
         if (data.length > 0) {
           setWorkoutTemplate(data[data.length - 1]);
         }

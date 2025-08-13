@@ -44,6 +44,7 @@ export default function App() {
                 <Route path="workout/from_list" element={<StrengthWorkoutEntry accessMode="from list" />} />
                 <Route path="workout/edit/:workoutId" element={<StrengthWorkoutEntry accessMode="edit" />} />
                 <Route path="templates_library" element={<TemplatesLibrary />} />
+                <Route path="template/edit/:templateId" element={<StrengthWorkoutEntry accessMode="edit template" />} />
               </Route>
             </Route>
           </Route>

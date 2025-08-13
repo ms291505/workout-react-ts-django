@@ -42,7 +42,7 @@ export default function StrengthWorkoutEntry({
   const [templateFlag, setTemplateFlag] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
 
-  const { workoutId, templateId } = useParams<{ workoutId?: string, templateId?: string}>();
+  const { workoutId, } = useParams<{ workoutId?: string, templateId?: string}>();
 
   // Edit mode fallback in case of browser refresh:
   useEffect(() => {

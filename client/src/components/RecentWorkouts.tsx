@@ -17,16 +17,29 @@ import { Box } from "@mui/material";
 import { CENTER_COL_FLEX_BOX, MODAL_STYLE } from "../styles/StyleOverrides";
 import WorkoutSummary from "./WorkoutSummary/WorkoutSummary";
 import ConfirmDialog from "./dialog/ConfirmDialog";
+import LoadingRoller from "./LoadingRoller";
+
+interface Loading {
+  delete: boolean;
+  workouts: boolean;
+}
 
 export default function RecentWorkouts() {
   const navigate = useNavigate();
 
   const [workouts, setWorkouts] = useState<Workout_Hist[]>([]);
-  const [loading, setLoading] = useState(true);
   const [summarySelection, setSummarySelection] = useState<Workout_Hist | null>(null);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState<Loading>({
+    delete: false,
+    workouts: true,
+  })
+
+  const loadingSetter = <K extends keyof Loading>(key: K, value: boolean) => {
+    setLoading((prev) => ({...prev, [key]: value}));
+  };
 
   const { setWorkout, clearWorkout } = useWorkoutContext();
 
@@ -38,7 +51,7 @@ export default function RecentWorkouts() {
       return dateB - dateA;
     });
     setWorkouts(newWorkouts);
-    setLoading(false);
+    loadingSetter("workouts", false)
   }
 
   useEffect(() => {
@@ -52,7 +65,7 @@ export default function RecentWorkouts() {
   }
 
   const handleWorkoutDelete = async (w: Workout_Hist) => {
-    setLoading(true);
+    loadingSetter("delete", true)
 
     try {
       const response = await deleteWorkout(w);
@@ -66,13 +79,20 @@ export default function RecentWorkouts() {
         enqueueSnackbar(message, { variant: "error" });
       }
     } finally {
-      setLoading(false);
+      loadingSetter("delete", false);
+      setConfirmDeleteOpen(false);
     }
-
   }
 
-  if (loading) {
-    return <p>Your workouts are loading...</p>
+  if (loading.workouts) {
+    return (
+      <Box
+        sx={{ ...CENTER_COL_FLEX_BOX }}
+      >
+        <p>Your workouts are loading...</p>
+        <LoadingRoller size={75} />
+      </ Box>
+    )
   }
 
   if (workouts?.length > 0) return (

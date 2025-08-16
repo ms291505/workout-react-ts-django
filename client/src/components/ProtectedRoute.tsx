@@ -8,7 +8,6 @@ export default function ProtectedRoute() {
   const [status, setStatus] = useState<"loading" | "allowed" | "denied">("loading");
 
   useEffect(() => {
-    console.log("ProtectedRoute useEffect firing.");
     refreshAccess()
     .then(() => setStatus("allowed"))
     .catch(() => setStatus("denied"));

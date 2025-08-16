@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { login } from "../api";
 import { useNavigate  } from "react-router";
 import { AuthContext } from "../context/AuthContext";
@@ -22,7 +22,14 @@ export default function Login() {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { refreshUser } = useContext(AuthContext);
+  const { refreshUser, user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user) {
+      enqueueSnackbar("Welcome!");
+      navigate("/", { replace: true });
+    }
+  }, [user]);
   
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();

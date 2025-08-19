@@ -12,6 +12,7 @@ import MainLayout from './components/MainLayout.tsx';
 import StrengthWorkoutEntry from './components/StrengthWorkout/StrengthWorkoutEntry.tsx';
 import { CENTER_COL_FLEX_BOX } from './styles/StyleOverrides.ts';
 import TemplatesLibrary from "./components/TemplatesLibrary/TemplatesLibrary.tsx";
+import { TemplateLibraryProvider } from './context/TemplateLibraryContext.tsx';
 
 export default function App() {
 
@@ -43,7 +44,11 @@ export default function App() {
                 <Route path="workout/new" element={<StrengthWorkoutEntry accessMode="new" />} />
                 <Route path="workout/from_list" element={<StrengthWorkoutEntry accessMode="from list" />} />
                 <Route path="workout/edit/:workoutId" element={<StrengthWorkoutEntry accessMode="edit" />} />
-                <Route path="templates_library" element={<TemplatesLibrary />} />
+                <Route path="templates_library" element={
+                  <TemplateLibraryProvider>
+                    <TemplatesLibrary />
+                  </TemplateLibraryProvider>
+                } />
                 <Route path="template/edit/:templateId" element={<StrengthWorkoutEntry accessMode="edit template" />} />
               </Route>
             </Route>

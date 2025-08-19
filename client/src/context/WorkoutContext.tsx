@@ -33,7 +33,9 @@ interface WorkoutContextValue {
   handleOneChange: (event: ChangeEvent<HTMLInputElement>) => void;
   findSetType: (searchValue: string | null) => string;
   workoutTemplate: TmplWorkoutHist | null;
-  setWorkoutTemplate: Dispatch<SetStateAction<TmplWorkoutHist | null>>
+  setWorkoutTemplate: Dispatch<SetStateAction<TmplWorkoutHist | null>>;
+  templates: TmplWorkoutHist[];
+  setTemplates: Dispatch<SetStateAction<TmplWorkoutHist[]>>;
 }
 
 const WorkoutContext = createContext<WorkoutContextValue>({
@@ -50,6 +52,8 @@ const WorkoutContext = createContext<WorkoutContextValue>({
   findSetType: () => "",
   workoutTemplate: null,
   setWorkoutTemplate: () => { },
+  templates: [],
+  setTemplates: () => { },
 })
 
 export const WorkoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -57,6 +61,7 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [workoutContextMode, setWorkoutContextMode] = useState<string>("");
   const [exSetTypeChoices, setExSetTypeChoices] = useState<Choice[]>([]);
   const [workoutTemplate, setWorkoutTemplate] = useState<TmplWorkoutHist | null>(null);
+  const [templates, setTemplates] = useState<TmplWorkoutHist[]>([]);
 
   const [exSelections, setExSelections] = useState<Exercise[]>([]);
 
@@ -119,7 +124,9 @@ export const WorkoutProvider: FC<{ children: ReactNode }> = ({ children }) => {
       handleOneChange,
       findSetType,
       workoutTemplate,
-      setWorkoutTemplate
+      setWorkoutTemplate,
+      templates,
+      setTemplates,
     }}>
       {children}
     </WorkoutContext.Provider>

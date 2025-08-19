@@ -169,8 +169,9 @@ export default function ExSetEditor({
         : (
           <TextField
             select
-            name="setType"
-            defaultValue={ defaultType }
+            name="type"
+            value={ exSet.type ?? defaultType }
+            onChange={handleChange}
             size="small"
             label="Set Type"
             fullWidth

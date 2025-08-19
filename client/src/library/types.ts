@@ -79,7 +79,6 @@ export interface StrengthWorkoutHeaderData {
 }
 
 export interface User {
-  /* Extends below, may need to update the Omit if you add anything. */
   id: number | string;
   username: string;
   email: string | null;

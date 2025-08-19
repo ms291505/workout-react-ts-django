@@ -256,7 +256,7 @@ export default function ExerciseLibrary({
                     label={ex.name}
                   />
                 ))}
-                {exSelections.length > 0 && (
+                {(!buildWorkout && exSelections.length > 0) && (
                   <Chip
                     onDelete={() => setExSelections([])}
                     label="Clear All"
@@ -271,12 +271,31 @@ export default function ExerciseLibrary({
       }
 
       {buildWorkout &&
-        <Button
-          variant="contained"
-          onClick={handleBuildClick}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            m: 2,
+            gap: 2
+          }}
         >
-          Build Workout
-        </Button>
+          <Button
+            sx={{ flex: 1 }}
+            variant="outlined"
+            onClick={() => setExSelections([])}
+            disabled={exSelections.length === 0}
+          >
+            Clear Selections
+          </Button>
+          <Button
+            sx={{ flex: 1 }}
+            variant="contained"
+            onClick={handleBuildClick}
+            disabled={exSelections.length === 0}
+          >
+            Build Workout
+          </Button>
+        </Box>
 
       }
 

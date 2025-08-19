@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Exercise_Hist, Workout_Hist, TmplHist } from "../../library/types";
 import { useNavigate, useParams } from "react-router";
-import { fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
+import { fetchTmplWorkoutHists, fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState, ChangeEvent } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
@@ -35,6 +35,8 @@ export default function StrengthWorkoutEntry({
     setExSelections,
     clearWorkout,
     workoutTemplate,
+    templates,
+    setTemplates
   } = useWorkoutContext();
 
   const [exPickerOpen, setExPickerOpen] = useState(false);
@@ -62,6 +64,19 @@ export default function StrengthWorkoutEntry({
     }
 
   }, []);
+  
+  useEffect(() => {
+    if (templateFlag && templates.length === 0) {
+      try {
+        fetchTmplWorkoutHists()
+          .then((data) => {
+            setTemplates(data);
+        })
+      } catch (err) {
+        console.error("Some error occured fetching templates:", err);
+      }
+    }
+  }, [templateFlag])
 
   if (workout === null) {
     return "Loading workout...";
@@ -79,6 +94,7 @@ export default function StrengthWorkoutEntry({
     };
     setWorkout(newWorkout);
   }
+
 
   function handleAddExercises() {
     if (exSelections.length < 1) return;
@@ -226,7 +242,7 @@ export default function StrengthWorkoutEntry({
         ? <TemplateMenu
             flagged={templateFlag}
             handleClick={() => setTemplateFlag(!templateFlag)}
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, mb: 1 }}
             value={newTemplateName}
             onChange={handleTemplateNameChange}
           />
@@ -250,7 +266,10 @@ export default function StrengthWorkoutEntry({
           Cancel
         </Button>
         <Button
-          onClick={() => setFinishConfirmOpen(!finishConfirmOpen)}
+          onClick={() => {
+            setFinishConfirmOpen(true);
+            console.log(workout);
+          }}
           variant="contained"
           sx={{
             flexGrow: 1

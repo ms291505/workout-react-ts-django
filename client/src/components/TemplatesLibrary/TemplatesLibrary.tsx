@@ -55,7 +55,6 @@ export default function TemplatesLibrary() {
   }
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(false);
-  const [selection, setSelection] = useState<TmplWorkoutHist | null>(null);
   const [dialog, setDialog] = useState<Dialog>(null);
   const [folder, setFolder] = useState<TemplateFolder>({ ...createEmptyTemplateFolder() });
   const [newFolder, setNewFolder] = useState<TemplateFolder>({ ...createEmptyTemplateFolder() })
@@ -73,6 +72,8 @@ export default function TemplatesLibrary() {
   const {
     folders,
     setFolders,
+    selection,
+    setSelection
   } = useTemplateLibraryContext();
 
   const closeMenu = () => setMenu({ anchorEl: null, template: null });
@@ -100,8 +101,29 @@ export default function TemplatesLibrary() {
   useEffect(() => {
     Promise.all([fetchTmplWorkoutHists(), fetchTemplateFolders()])
       .then(([templateResponse, folderResponse]) => {
+
+        const folderedIds = new Set(
+          folderResponse.flatMap(folder => folder.templates)
+        );
+
+        const grouped: TemplateFolder[] = folderResponse.map(folder => ({
+          id: folder.id,
+          name: folder.name || "Unamed Folder",
+          templates: folder.templates,
+          tmplWorkoutHists: templateResponse.filter(template => folder.templates.includes(template.id!))
+        }));
+
+        const uncategorized = templateResponse.filter(template => !folderedIds.has(template.id!));
+        if (uncategorized.length > 0) {
+          grouped.push({
+            id: -1,
+            name: "Uncategorized",
+            templates: uncategorized.flatMap(t => t.id!),
+            tmplWorkoutHists: uncategorized,
+          });
+        }
+        setFolders(grouped);
         setTemplates(templateResponse);
-        setFolders(folderResponse);
         loadingSetter("templates", false);
         loadingSetter("folders", false);
       });
@@ -119,24 +141,6 @@ export default function TemplatesLibrary() {
     return () => cancelAnimationFrame(id);
   }, [dialog]);
 
-  const folderedIds = new Set(
-    folders.flatMap(folder => folder.templates)
-  );
-
-  const grouped = folders.map(folder => ({
-    id: folder.id,
-    name: folder.name || "Unamed Folder",
-    templates: templates.filter(template => folder.templates.includes(template.id!))
-  }));
-
-  const uncategorized = templates.filter(template => !folderedIds.has(template.id!));
-  if (uncategorized.length > 0) {
-    grouped.push({
-      id: -1,
-      name: "Uncategorized",
-      templates: uncategorized,
-    });
-  }
 
   const handleDeleteFolder = async (folder: TemplateFolder) => {
     if (!folder) return null;
@@ -179,13 +183,12 @@ export default function TemplatesLibrary() {
     closeMenu();
   }
 
-  
-
   const handleRenameFolder = async (folder: TemplateFolder) => {
     try {
+      const oldName = folder.name;
       const response = await updateTemplateFolder(folder);
       if (response) {
-        enqueueSnackbar(`'${folder.name}' was renamed to '${response.name}.'`);
+        enqueueSnackbar(`Folder was renamed to '${response.name}.'`);
         setRefreshTrigger(true);
       }
     } catch (err) {
@@ -292,12 +295,12 @@ export default function TemplatesLibrary() {
         </Button>
       </Box>
       <Box>
-        {grouped.map(folder => (
+        {folders.map(folder => (
           <Box key={folder.id}>
             <FolderHeader folder={folder} actions={folderMenuActions} />
             <Divider sx={{ mb: 2 }} />
             <Grid container spacing={2}>
-              {folder.templates.map(template => (
+              {folder.tmplWorkoutHists!.map(template => (
                 <Grid key={template.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Card raised>
                     <CardContent>
@@ -460,7 +463,7 @@ export default function TemplatesLibrary() {
                 size="small"
                 value={folder.name}
               >
-                {grouped.map((f) => (
+                {folders.map((f) => (
                   <MenuItem value= {f.name}>
                     {f.name}
                   </MenuItem>

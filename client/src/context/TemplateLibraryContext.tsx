@@ -10,6 +10,8 @@ interface TemplateLibararyContextValue {
   setFolder: Dispatch<SetStateAction<TemplateFolder>>;
   selection: TmplWorkoutHist | null;
   setSelection: Dispatch<SetStateAction<TmplWorkoutHist | null>>;
+  refreshTrigger: boolean;
+  setRefreshTrigger: Dispatch<SetStateAction<boolean>>;
 }
 
 const TemplateLibraryContext = createContext<TemplateLibararyContextValue>({
@@ -19,12 +21,15 @@ const TemplateLibraryContext = createContext<TemplateLibararyContextValue>({
   setFolder: () => {},
   selection: null,
   setSelection: () => {},
+  refreshTrigger: false,
+  setRefreshTrigger: () => {},
 })
 
 export const TemplateLibraryProvider: FC<{ children: ReactNode }> = ({children}) => {
   const [folders, setFolders] = useState<TemplateFolder[]>([]);
   const [folder, setFolder]= useState<TemplateFolder>({...createEmptyTemplateFolder()})
   const [selection, setSelection] = useState<TmplWorkoutHist | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(false);
 
   return (
     <TemplateLibraryContext.Provider value={{
@@ -34,6 +39,8 @@ export const TemplateLibraryProvider: FC<{ children: ReactNode }> = ({children})
       setFolder,
       selection,
       setSelection,
+      refreshTrigger,
+      setRefreshTrigger
     }}>
       {children}
     </TemplateLibraryContext.Provider>

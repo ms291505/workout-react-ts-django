@@ -394,6 +394,7 @@ export async function deleteTemplateFolder(id: string | number): Promise<boolean
 }
 
 export async function updateTemplateFolder(template: TemplateFolder): Promise<TemplateFolder> {
+  if (String(template.id) === "-1") return template;
   if (!template.id) throw new Error("The tempalte ID was missing for updateTemplateFolder.") ;
   const response = await fetch(`${API_BASE}/tmpl-folders/${template.id}/`, {
     method: "PUT",

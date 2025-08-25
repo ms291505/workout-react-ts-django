@@ -4,12 +4,20 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { ChangeEvent, useState } from "react";
-import { TemplateFolder } from "../../library/types";
+import { TemplateFolder, TmplWorkoutHist } from "../../library/types";
 import { useTemplateLibraryContext } from "../../context/TemplateLibraryContext";
+import { updateTemplateFolder } from "../../api";
+import { enqueueSnackbar } from "notistack";
+import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
+
+interface Disable {
+  save: boolean,
+  cancel: boolean
+}
 
 interface Props {
   open: boolean,
-  onClose: () => {},
+  onClose: () => void,
   originFolder: TemplateFolder,
 }
 
@@ -19,39 +27,119 @@ export default function MoveTemplateDialog ({
   originFolder
 }: Props) {
 
-  const [dest, setDest] = useState<string>(originFolder.name);
+  const [destId, setDestId] = useState<string>(String(originFolder.id));
+  const [disable, setDisable] = useState<Disable>({
+    save: false,
+    cancel: false
+  })
+  const disableAllBoolean = (b: boolean) => ({
+    save: b,
+    cancel: b,
+  });
 
-  const {folders} = useTemplateLibraryContext();
+  const {
+    folders,
+    selection,
+    setRefreshTrigger,
+  } = useTemplateLibraryContext();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDest(e.target.value);
+    console.log(e.target.value);
+    console.log(originFolder);
+    setDestId(e.target.value);
   }
 
-  const content = (
-    <Box>
-      <TextField
-        select
-        value={dest}
-        onChange={handleChange}
-        size="small"
-        label
-        fullWidth
-      >
-        {folders.map((f) => (
-          <MenuItem value={f.name} key={f.name}>
-            {f.name}
-          </MenuItem>
-        ))}
-      </TextField>
-    </Box>
-  );
+  const handleMoveTemplate = async (
+    t: TmplWorkoutHist,
+    destFolderId: string,
+  ) => {
+    const destFolder = folders.find(f => String(f.id) === destFolderId)
+    if (!destFolder) return;
+    setDisable(disableAllBoolean(true));
+    
+    if (!t.id) {
+      console.error("Tried to move a template, but it doesn't have an id: ", t);
+      setDisable(disableAllBoolean(false));
+      return;
+    }
+
+    const newDestFolder = structuredClone(destFolder);
+    newDestFolder.templates.push(t.id);
+
+    const newOrigFolder: TemplateFolder = {
+      id: originFolder.id,
+      name: originFolder.name,
+      templates: originFolder.templates.filter(tmpl => String(tmpl) !== String(t.id)),
+      };
+
+    try {
+      Promise.all([updateTemplateFolder(newDestFolder), updateTemplateFolder(newOrigFolder)])
+        .then(([dest, orig]) => {
+          enqueueSnackbar(
+            `Moved from '${dest.name}' to '${orig.name}'.`
+          );
+        })
+      setRefreshTrigger(true);
+      onClose();
+    } catch(err) {
+      console.error(
+        `An error occured while updating the folder '${destFolder.name}': `,
+        err
+      )
+      enqueueSnackbar("An error occured moving the template.", {variant: "error"})
+    } finally {
+      setDisable(disableAllBoolean(false));
+    }
+
+  }
+
+  if (!selection) return null;
 
   return(
     <MyDialog
       open={open}
       onClose={onClose}
       title="Move Template"
-      content={content}
+      content={
+        
+    <Box
+      sx={{
+        ...CENTER_COL_FLEX_BOX,
+        mt: 1
+      }}
+    >
+      <TextField
+        select
+        value={destId}
+        onChange={handleChange}
+        size="small"
+        label="Folder"
+        fullWidth
+      >
+        {folders.map((f) => (
+          <MenuItem value={String(f.id)} key={f.id}>
+            {f.name}
+          </MenuItem>
+        ))}
+      </TextField>
+      <Box>
+        <Button
+          variant="outlined"
+          disabled={disable.cancel}
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          disabled={disable.save || destId === originFolder.id}
+          onClick={() => handleMoveTemplate(selection, destId)}
+        >
+          Save
+        </Button>
+      </Box>
+    </Box>
+      }
     />
   )
 }

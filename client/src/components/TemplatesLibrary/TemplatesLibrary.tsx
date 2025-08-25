@@ -32,6 +32,7 @@ import { transformToStrengthWorkout } from "../../library/transform";
 import { useNavigate } from "react-router";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useTemplateLibraryContext } from "../../context/TemplateLibraryContext";
+import MoveTemplateDialog from "./MoveTemplateDialog";
 
 interface Loading {
   templates: boolean;
@@ -54,7 +55,6 @@ export default function TemplatesLibrary() {
     setLoading((prev) => ({...prev, [key]: value}));
   }
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-  const [refreshTrigger, setRefreshTrigger] = useState(false);
   const [dialog, setDialog] = useState<Dialog>(null);
   const [folder, setFolder] = useState<TemplateFolder>({ ...createEmptyTemplateFolder() });
   const [newFolder, setNewFolder] = useState<TemplateFolder>({ ...createEmptyTemplateFolder() })
@@ -66,26 +66,18 @@ export default function TemplatesLibrary() {
   const nameRef = useRef<HTMLInputElement>(null);
   const { 
     setWorkout,
-    templates,
-    setTemplates
+    setTemplates,
   } = useWorkoutContext();
   const {
     folders,
     setFolders,
     selection,
-    setSelection
+    setSelection,
+    refreshTrigger,
+    setRefreshTrigger,
   } = useTemplateLibraryContext();
 
   const closeMenu = () => setMenu({ anchorEl: null, template: null });
-  const openMenu = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    t: TmplWorkoutHist,
-    f: TemplateFolder,
-  ) => {
-    setMenu({ anchorEl: e.currentTarget, template: t });
-    setSelection(t);
-    setFolder(f);
-  }
 
   const folderMenuActions: MenuAction[] = [
     {
@@ -170,22 +162,23 @@ export default function TemplatesLibrary() {
   const onClickMoveTemplate = (
   ) => {
     setDialog("move template");
+    console.log(folders);
+    console.log(folder);
     closeMenu();
   }
 
   const onClickTemplateMenu = (
-    template: TmplWorkoutHist,
-    folder: TemplateFolder
+    e: React.MouseEvent<HTMLButtonElement>,
+    t: TmplWorkoutHist,
+    f: TemplateFolder,
   ) => {
-    setDialog("move template");
-    setFolder(folder);
-    setSelection(template);
-    closeMenu();
+    setMenu({ anchorEl: e.currentTarget, template: t });
+    setSelection(t);
+    setFolder(f);
   }
 
   const handleRenameFolder = async (folder: TemplateFolder) => {
     try {
-      const oldName = folder.name;
       const response = await updateTemplateFolder(folder);
       if (response) {
         enqueueSnackbar(`Folder was renamed to '${response.name}.'`);
@@ -216,38 +209,6 @@ export default function TemplatesLibrary() {
       }
     } finally {
       setConfirmDeleteOpen(false);
-    }
-  }
-  
-  const handleMoveTemplate = async (
-    template: TmplWorkoutHist,
-    targetFolder: TemplateFolder
-  ) => {
-    loadingSetter("buttonDisable", true);
-
-    if (!template.id) {
-      console.log(
-        "Tried to move template, but it doesn't have an id. ",
-        template        
-      )
-      loadingSetter("buttonDisable", false);
-      return null;
-    }
-
-    const updatedFolder = structuredClone(targetFolder);
-    updatedFolder.templates.push(template.id)
-
-    try {
-      await updateTemplateFolder(updatedFolder);
-    } catch(err) {
-      console.error(
-        "An error occured while udpating the a folder: ",
-        err
-      )
-    } finally {
-      loadingSetter("buttonDisable", false);
-      setDialog(null);
-      setRefreshTrigger(true);
     }
   }
 
@@ -320,7 +281,7 @@ export default function TemplatesLibrary() {
                         <Grid size={2}>
                           <Button
                             variant="outlined"
-                            onClick={(e) => openMenu(e, template, folder)}
+                            onClick={(e) => onClickTemplateMenu(e, template, folder)}
                             fullWidth
                             sx={{ minWidth: 0 }}
                           >
@@ -446,32 +407,13 @@ export default function TemplatesLibrary() {
           </Box>
         }
       />
-      <MyDialog
-        open={Boolean(dialog === "move template")}
-        onClose={() => {setDialog(null)}}
-        title = "Move Template"
-        content = {
-          <Box
-            sx={{...CENTER_COL_FLEX_BOX}}
-          >
-            <Box
-              sx={{ display: "flex", width: "100%" }}
-            >
-              <TextField
-                select
-                label="Select Folder"
-                size="small"
-                value={folder.name}
-              >
-                {folders.map((f) => (
-                  <MenuItem value= {f.name}>
-                    {f.name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box>
-          </Box>
-        }
+      <MoveTemplateDialog
+        open={dialog === "move template"}
+        onClose={() => {
+          setDialog(null);
+          setSelection(null);
+        }}
+        originFolder={folder}
       />
       <MyDialog
         open={Boolean(dialog === "rename folder")}

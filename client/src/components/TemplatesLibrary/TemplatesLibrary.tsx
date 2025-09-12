@@ -56,7 +56,6 @@ export default function TemplatesLibrary() {
   }
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [dialog, setDialog] = useState<Dialog>(null);
-  const [folder, setFolder] = useState<TemplateFolder>({ ...createEmptyTemplateFolder() });
   const [newFolder, setNewFolder] = useState<TemplateFolder>({ ...createEmptyTemplateFolder() })
   const [menu, setMenu] = useState<{
     anchorEl: HTMLElement | null;
@@ -75,6 +74,8 @@ export default function TemplatesLibrary() {
     setSelection,
     refreshTrigger,
     setRefreshTrigger,
+    folder,
+    setFolder
   } = useTemplateLibraryContext();
 
   const closeMenu = () => setMenu({ anchorEl: null, template: null });
@@ -162,8 +163,6 @@ export default function TemplatesLibrary() {
   const onClickMoveTemplate = (
   ) => {
     setDialog("move template");
-    console.log(folders);
-    console.log(folder);
     closeMenu();
   }
 
@@ -172,9 +171,9 @@ export default function TemplatesLibrary() {
     t: TmplWorkoutHist,
     f: TemplateFolder,
   ) => {
+    setFolder(f);
     setMenu({ anchorEl: e.currentTarget, template: t });
     setSelection(t);
-    setFolder(f);
   }
 
   const handleRenameFolder = async (folder: TemplateFolder) => {
@@ -256,12 +255,12 @@ export default function TemplatesLibrary() {
         </Button>
       </Box>
       <Box>
-        {folders.map(folder => (
-          <Box key={folder.id}>
-            <FolderHeader folder={folder} actions={folderMenuActions} />
+        {folders.map(f => (
+          <Box key={f.id}>
+            <FolderHeader folder={f} actions={folderMenuActions} />
             <Divider sx={{ mb: 2 }} />
             <Grid container spacing={2}>
-              {folder.tmplWorkoutHists!.map(template => (
+              {f.tmplWorkoutHists!.map(template => (
                 <Grid key={template.id} size={{ xs: 12, sm: 6, md: 4 }}>
                   <Card raised>
                     <CardContent>
@@ -281,7 +280,9 @@ export default function TemplatesLibrary() {
                         <Grid size={2}>
                           <Button
                             variant="outlined"
-                            onClick={(e) => onClickTemplateMenu(e, template, folder)}
+                            onClick={(e) => {
+                              onClickTemplateMenu(e, template, f);
+                            }}
                             fullWidth
                             sx={{ minWidth: 0 }}
                           >
@@ -344,7 +345,8 @@ export default function TemplatesLibrary() {
         onConfirm={() => handleDeleteTemplate(selection)}
         open={confirmDeleteOpen}
         onClose={() => setConfirmDeleteOpen(false)}
-        title="Are you sure?"
+        title="Permanently Delete Folder?"
+        message="Any templates will be moved to 'Uncategorized'."
         confirmText="Delete"
         confirmType="delete"
       />
@@ -389,7 +391,6 @@ export default function TemplatesLibrary() {
             >
               <Button
                 variant="outlined"
-                color="error"
                 sx={{ flex: 1 }}
                 onClick={() => setDialog(null)}
               >

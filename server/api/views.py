@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse, request
 from django.contrib.auth.models import User
+from django.db.models.functions import Lower
 from django.db.models import Q, Count
 
 from rest_framework import generics, status, filters
@@ -222,7 +223,7 @@ class TemplateFolderListCreate(generics.ListCreateAPIView):
   def get_queryset(self):
     return Template_Folder.objects.filter(
         Q(user=self.request.user) | Q(user_added_flag="N")
-    )
+    ).order_by(Lower("name"))
   
   def perform_create(self, serializer):
     print("request: ",self.request.data)

@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { TemplateFolder, TmplWorkoutHist } from "../../library/types";
 import { useTemplateLibraryContext } from "../../context/TemplateLibraryContext";
 import { updateTemplateFolder } from "../../api";
@@ -29,9 +29,14 @@ export default function MoveTemplateDialog ({
 
   const [destId, setDestId] = useState<string>(String(originFolder.id));
   const [disable, setDisable] = useState<Disable>({
-    save: false,
+    save: true,
     cancel: false
   })
+
+  useEffect(() => {
+    setDestId(String(originFolder.id));
+  }, [originFolder.id, open])
+
   const disableAllBoolean = (b: boolean) => ({
     save: b,
     cancel: b,
@@ -44,9 +49,13 @@ export default function MoveTemplateDialog ({
   } = useTemplateLibraryContext();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    console.log(originFolder);
     setDestId(e.target.value);
+    if (destId !== originFolder.id) {
+      setDisable(prev => ({
+        ...prev,
+        save: false
+      }))
+    }
   }
 
   const handleMoveTemplate = async (
@@ -73,12 +82,11 @@ export default function MoveTemplateDialog ({
       };
 
     try {
-      Promise.all([updateTemplateFolder(newDestFolder), updateTemplateFolder(newOrigFolder)])
-        .then(([dest, orig]) => {
-          enqueueSnackbar(
-            `Moved from '${dest.name}' to '${orig.name}'.`
-          );
-        })
+      const orig = await updateTemplateFolder(newOrigFolder);
+      const dest = await updateTemplateFolder(newDestFolder);
+      enqueueSnackbar(
+        `Moved from '${dest.name}' to '${orig.name}'.`
+      );
       setRefreshTrigger(true);
       onClose();
     } catch(err) {
@@ -132,7 +140,7 @@ export default function MoveTemplateDialog ({
         </Button>
         <Button
           variant="contained"
-          disabled={disable.save || destId === originFolder.id}
+          disabled={disable.save}
           onClick={() => handleMoveTemplate(selection, destId)}
         >
           Save

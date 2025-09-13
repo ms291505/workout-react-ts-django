@@ -17,7 +17,7 @@ export const navBarRoutes: navBarRoute[] = [
     route: "/exercise_library"
   },
   {
-    name: "Templates Library ",
+    name: "Template Library ",
     route: "/templates_library"
   },
 ]

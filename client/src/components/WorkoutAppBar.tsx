@@ -20,11 +20,12 @@ import Button from "@mui/material/Button";
 import { navBarRoutes } from "../library/navBarRoutes";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router";
+import Grid from "@mui/material/Grid";
 
 export default function WorkoutAppBar() {
 
   const [open, setOpen] = useState(false);
-  const { toggleDarkMode, isMobile } = useAppThemeContext();
+  const { toggleDarkMode, isMobile, title } = useAppThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -58,16 +59,35 @@ export default function WorkoutAppBar() {
             sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuBookIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-            noWrap
-          >
-            The Log
-          </Typography>
-          <IconButton
+              </IconButton>
+              <Grid container spacing={1} flexGrow={1}>
+                <Grid size={{ xs: 12, md: 6 }} >
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                    noWrap
+                  >
+                    The Log
+                  </Typography>
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography
+                    variant={
+                      isMobile
+                      ? "h6"
+                      : "h5"
+                    }
+                    component="div"
+                    sx={{ flexGrow: 1 }}
+                    color="secondary"
+                    noWrap
+                  >
+                    {title}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <IconButton
             size="large"
             color="inherit"
             onClick={toggleDarkMode}

@@ -107,3 +107,9 @@ export interface MenuAction {
   label: string;
   action: (arg?: any) => null | undefined | void | any;
 }
+
+export type AccessMode = "edit" | "from list" | "new" | "edit template";
+
+export interface StrengthWorkoutEntryText {
+  title: string;
+}

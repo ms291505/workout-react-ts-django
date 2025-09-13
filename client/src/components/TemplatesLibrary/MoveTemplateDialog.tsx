@@ -18,7 +18,7 @@ interface Disable {
 interface Props {
   open: boolean,
   onClose: () => void,
-  originFolder: TemplateFolder,
+  originFolder: TemplateFolder | null,
 }
 
 export default function MoveTemplateDialog ({
@@ -27,15 +27,13 @@ export default function MoveTemplateDialog ({
   originFolder
 }: Props) {
 
+  if (!originFolder) return;
+
   const [destId, setDestId] = useState<string>(String(originFolder.id));
   const [disable, setDisable] = useState<Disable>({
     save: true,
     cancel: false
   })
-
-  useEffect(() => {
-    setDestId(String(originFolder.id));
-  }, [originFolder.id, open])
 
   const disableAllBoolean = (b: boolean) => ({
     save: b,

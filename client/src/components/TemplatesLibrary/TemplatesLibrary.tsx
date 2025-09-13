@@ -33,6 +33,7 @@ import { useNavigate } from "react-router";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { useTemplateLibraryContext } from "../../context/TemplateLibraryContext";
 import MoveTemplateDialog from "./MoveTemplateDialog";
+import { useAppThemeContext } from "../../context/ThemeContext";
 
 interface Loading {
   templates: boolean;
@@ -60,7 +61,8 @@ export default function TemplatesLibrary() {
   const [menu, setMenu] = useState<{
     anchorEl: HTMLElement | null;
     template: TmplWorkoutHist | null;
-  }>({ anchorEl: null, template: null });
+    folder: TemplateFolder | null;
+  }>({ anchorEl: null, template: null, folder: null });
 
   const nameRef = useRef<HTMLInputElement>(null);
   const { 
@@ -77,8 +79,15 @@ export default function TemplatesLibrary() {
     folder,
     setFolder
   } = useTemplateLibraryContext();
+  const { setTitle } = useAppThemeContext();
 
-  const closeMenu = () => setMenu({ anchorEl: null, template: null });
+  useEffect(() => {
+    setTitle("Template Library");
+  }, [])
+
+  const closeMenu = () => {
+    setMenu(prev => ({ ...prev, anchorEl: null}));
+  }
 
   const folderMenuActions: MenuAction[] = [
     {
@@ -162,6 +171,7 @@ export default function TemplatesLibrary() {
 
   const onClickMoveTemplate = (
   ) => {
+    if (!menu.folder) return;
     setDialog("move template");
     closeMenu();
   }
@@ -171,8 +181,7 @@ export default function TemplatesLibrary() {
     t: TmplWorkoutHist,
     f: TemplateFolder,
   ) => {
-    setFolder(f);
-    setMenu({ anchorEl: e.currentTarget, template: t });
+    setMenu({ anchorEl: e.currentTarget, template: t, folder: f });
     setSelection(t);
   }
 
@@ -414,7 +423,7 @@ export default function TemplatesLibrary() {
           setDialog(null);
           setSelection(null);
         }}
-        originFolder={folder}
+        originFolder={menu.folder!}
       />
       <MyDialog
         open={Boolean(dialog === "rename folder")}

@@ -1,5 +1,5 @@
 import { createDefaultWorkoutName, getLocalDateTimeString } from "../utils";
-import { Exercise, Exercise_Hist, ExSet, TemplateFolder, TmplExerciseHist, TmplExSet, TmplHist, TmplWorkoutHist, Workout_Hist } from "./types";
+import { AccessMode, Exercise, Exercise_Hist, ExSet, StrengthWorkoutEntryText, TemplateFolder, TmplExerciseHist, TmplExSet, TmplHist, TmplWorkoutHist, Workout_Hist } from "./types";
 
 
 export function createEmptyWorkout(): Workout_Hist {
@@ -75,4 +75,32 @@ export function createEmtpyTmplHist(): TmplHist {
     workoutHist: 0,
     tmplWorkoutHist: 0
   }
+}
+
+export function createStrengthWorkoutEntryText(
+  accessMode: AccessMode,
+): StrengthWorkoutEntryText {
+
+  let title = "";
+
+  switch (accessMode) {
+    case "edit":
+      title = "Editing Workout";
+      break;
+    case "edit template":
+      title = "Editing Template";
+      break;
+    case "from list":
+      title = "From List" // Not sure this is ever actually used anywhere?
+      break;
+    case "new":
+      title = "Entering New Workout";
+      break;
+    default:
+      title = "No Title, this shouldn't happen."
+  }
+
+  return ({
+    title: title,
+  })
 }

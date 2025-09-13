@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, FC, useContext } from "react";
+import { createContext, useState, ReactNode, FC, useContext, SetStateAction, Dispatch } from "react";
 import { createTheme, Theme, useMediaQuery } from "@mui/material";
 import { cyan,  deepPurple, amber } from '@mui/material/colors';
 
@@ -7,6 +7,8 @@ interface AppThemeContextValue {
   theme: Theme;
   toggleDarkMode: () => void;
   isMobile: boolean;
+  title: string;
+  setTitle: Dispatch<SetStateAction<string>>;
 }
 
 const AppThemeContext = createContext<AppThemeContextValue>({
@@ -14,9 +16,13 @@ const AppThemeContext = createContext<AppThemeContextValue>({
   theme: createTheme(),
   toggleDarkMode: () => {},
   isMobile: false,
+  title: "",
+  setTitle: () => {},
 });
 
 export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
+
+  const [title, setTitle] = useState("");
   
   const [darkMode, setDarkMode] = useState(
     useMediaQuery("(prefers-color-scheme: dark)")
@@ -54,6 +60,8 @@ export const AppThemeProvider: FC<{ children: ReactNode }> = ({children}) => {
       theme,
       toggleDarkMode,
       isMobile,
+      title,
+      setTitle
     }}>
       {children}
     </AppThemeContext.Provider>

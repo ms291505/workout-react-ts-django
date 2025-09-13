@@ -2,14 +2,14 @@ import { useWorkoutContext } from "../../context/WorkoutContext";
 import { EMPTY_EXERCISE_HIST } from "../../library/constants";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Exercise_Hist, Workout_Hist, TmplHist } from "../../library/types";
+import { Exercise_Hist, Workout_Hist, TmplHist, AccessMode, StrengthWorkoutEntryText } from "../../library/types";
 import { useNavigate, useParams } from "react-router";
 import { fetchTmplWorkoutHists, fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState, ChangeEvent } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
 import ExPickerModal from "../dialog/ExPickerModal";
-import { createEmptyExHist, createEmptyExSet, createEmptyWorkout, createEmtpyTmplHist } from "../../library/factories";
+import { createEmptyExHist, createEmptyExSet, createEmptyWorkout, createEmtpyTmplHist, createStrengthWorkoutEntryText } from "../../library/factories";
 import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
@@ -19,9 +19,11 @@ import ConfirmDialog from "../dialog/ConfirmDialog";
 import WorkoutSummary from "../WorkoutSummary/WorkoutSummary";
 import TemplateMenu from "./TemplateMenu";
 import { transformToTemplate } from "../../library/transform";
+import { useAppThemeContext } from "../../context/ThemeContext";
+
 
 interface Props {
-  accessMode: string;
+  accessMode: AccessMode;
 };
 
 export default function StrengthWorkoutEntry({
@@ -43,6 +45,11 @@ export default function StrengthWorkoutEntry({
   const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
   const [templateFlag, setTemplateFlag] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
+  const displayText: StrengthWorkoutEntryText = createStrengthWorkoutEntryText(accessMode);
+  const {setTitle} = useAppThemeContext();
+  useEffect(() => {
+    setTitle(displayText.title);
+  }, [displayText])
 
   const { workoutId, } = useParams<{ workoutId?: string, templateId?: string}>();
 

@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import HomeScreen from './HomeScreen.tsx';
+import HomeScreen from './components/Layout/HomeScreen.tsx';
 import Login from './components/Login.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';
 import RecentWorkouts from './components/RecentWorkouts.tsx';

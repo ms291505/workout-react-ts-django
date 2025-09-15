@@ -33,7 +33,7 @@ export default function WorkoutAppBar() {
   const drawerWidth = DRAWER_WIDTH;
 
   return (
-   <> 
+    <>
       <AppBar
         position="fixed"
         sx={{
@@ -44,21 +44,21 @@ export default function WorkoutAppBar() {
           <Container
             maxWidth="lg"
           >
-          <Box
-            sx={{
-              display:"flex",
-              flexDirection:"row",
-              alignItems:"center"
-            }}
-          >
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            onClick={() => setOpen(prev => !prev)}
-            sx={{ mr: 2, display: { md: "none" } }}
-          >
-            <MenuBookIcon />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center"
+              }}
+            >
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                onClick={() => setOpen(prev => !prev)}
+                sx={{ mr: 2, display: { md: "none" } }}
+              >
+                <MenuBookIcon />
               </IconButton>
               <Grid container spacing={1} flexGrow={1}>
                 <Grid size={{ xs: 12, md: 6 }} >
@@ -71,83 +71,87 @@ export default function WorkoutAppBar() {
                     The Log
                   </Typography>
                 </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography
-                    variant={
-                      isMobile
-                      ? "h6"
-                      : "h5"
-                    }
-                    component="div"
-                    sx={{ flexGrow: 1 }}
-                    color="secondary"
-                    noWrap
-                  >
-                    {title}
-                  </Typography>
-                </Grid>
+                {isMobile
+                  ? null
+                  :
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Typography
+                      variant={
+                        isMobile
+                          ? "h6"
+                          : "h5"
+                      }
+                      component="div"
+                      sx={{ flexGrow: 1 }}
+                      color="secondary"
+                      noWrap
+                    >
+                      {title}
+                    </Typography>
+                  </Grid>
+                }
               </Grid>
-              <IconButton
-            size="large"
-            color="inherit"
-            onClick={toggleDarkMode}
-          >
-            <Brightness4Icon />
-          </IconButton>
-          {
-            user && (
               <IconButton
                 size="large"
                 color="inherit"
-                onClick={handleLogout}
+                onClick={toggleDarkMode}
               >
-                <LogoutIcon />
+                <Brightness4Icon />
               </IconButton>
-            )
-          }
-          </Box>
-          <Box
-            sx={{
-              display:{xs:"none", md:"flex"},
-              flexDirection:"row",
-              alignItems:"center",
-              justifyItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            {
-              navBarRoutes.map((n, idx) => (
-                <Fragment
-                  key={n.name}
-                >
-                  <Button
-                    size="small"
-                    color="secondary"
-                    sx={{
-                      fontWeight: "bold"
-                    }}
-                    onClick={() => navigate(n.route)}
+              {
+                user && (
+                  <IconButton
+                    size="large"
+                    color="inherit"
+                    onClick={handleLogout}
                   >
-                    {n.name}
-                  </Button>
-                  {
-                    idx + 1 < navBarRoutes.length
-                    ? <Divider
-                        orientation="vertical"
-                        flexItem
-                        color="secondary"
-                        sx={{
-                          borderRightWidth: 2,
-                          mr: 1,
-                          ml: 1,
-                        }}
-                      />
-                    : null
-                  }
-                </Fragment>
-              ))
-            }
-          </Box>
+                    <LogoutIcon />
+                  </IconButton>
+                )
+              }
+            </Box>
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                flexDirection: "row",
+                alignItems: "center",
+                justifyItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              {
+                navBarRoutes.map((n, idx) => (
+                  <Fragment
+                    key={n.name}
+                  >
+                    <Button
+                      size="small"
+                      color="secondary"
+                      sx={{
+                        fontWeight: "bold"
+                      }}
+                      onClick={() => navigate(n.route)}
+                    >
+                      {n.name}
+                    </Button>
+                    {
+                      idx + 1 < navBarRoutes.length
+                        ? <Divider
+                          orientation="vertical"
+                          flexItem
+                          color="secondary"
+                          sx={{
+                            borderRightWidth: 2,
+                            mr: 1,
+                            ml: 1,
+                          }}
+                        />
+                        : null
+                    }
+                  </Fragment>
+                ))
+              }
+            </Box>
           </Container>
         </Toolbar>
       </AppBar>
@@ -166,7 +170,7 @@ export default function WorkoutAppBar() {
           onClose={() => setOpen(false)}
           sx={{
             display: { sm: 'block', med: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth},
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
           slotProps={{
             root: {
@@ -176,9 +180,9 @@ export default function WorkoutAppBar() {
         >
           <DrawerContent>
             <NavList
-              onClose={isMobile? () => setOpen(false) : undefined}
+              onClose={isMobile ? () => setOpen(false) : undefined}
             />
-          </DrawerContent> 
+          </DrawerContent>
         </Drawer>
       </Box>
     </>

@@ -7,6 +7,8 @@ export default function MainLayout() {
   return (
     <>
       <WorkoutAppBar />
+      <Box>
+      </Box>
       <Box
         sx={{
           mb: 5

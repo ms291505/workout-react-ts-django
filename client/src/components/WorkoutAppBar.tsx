@@ -1,12 +1,9 @@
-//WorkoutAppBar.tsx
-
 import DrawerContent from "./DrawerContent";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton"
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import { Fragment, useContext, useState } from "react";
 import { useAppThemeContext } from "../context/ThemeContext";
@@ -20,12 +17,12 @@ import Button from "@mui/material/Button";
 import { navBarRoutes } from "../library/navBarRoutes";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router";
-import Grid from "@mui/material/Grid";
+import AppTitle from "./Layout/AppTitle";
 
 export default function WorkoutAppBar() {
 
   const [open, setOpen] = useState(false);
-  const { toggleDarkMode, isMobile, title } = useAppThemeContext();
+  const { toggleDarkMode, isMobile, setTitle } = useAppThemeContext();
   const { user, handleLogout } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -60,37 +57,7 @@ export default function WorkoutAppBar() {
               >
                 <MenuBookIcon />
               </IconButton>
-              <Grid container spacing={1} flexGrow={1}>
-                <Grid size={{ xs: 12, md: 6 }} >
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ flexGrow: 1 }}
-                    noWrap
-                  >
-                    The Log
-                  </Typography>
-                </Grid>
-                {isMobile
-                  ? null
-                  :
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Typography
-                      variant={
-                        isMobile
-                          ? "h6"
-                          : "h5"
-                      }
-                      component="div"
-                      sx={{ flexGrow: 1 }}
-                      color="secondary"
-                      noWrap
-                    >
-                      {title}
-                    </Typography>
-                  </Grid>
-                }
-              </Grid>
+              <AppTitle />
               <IconButton
                 size="large"
                 color="inherit"
@@ -130,7 +97,10 @@ export default function WorkoutAppBar() {
                       sx={{
                         fontWeight: "bold"
                       }}
-                      onClick={() => navigate(n.route)}
+                      onClick={() => {
+                        navigate(n.route);
+                        setTitle(n.name);
+                      }}
                     >
                       {n.name}
                     </Button>

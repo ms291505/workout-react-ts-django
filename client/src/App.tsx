@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router';
 import HomeScreen from './components/Layout/HomeScreen.tsx';
 import Login from './components/Login.tsx';
 import ProtectedRoute from './components/ProtectedRoute.tsx';

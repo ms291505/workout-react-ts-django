@@ -18,6 +18,7 @@ import { CENTER_COL_FLEX_BOX, MODAL_STYLE } from "../styles/StyleOverrides";
 import WorkoutSummary from "./WorkoutSummary/WorkoutSummary";
 import ConfirmDialog from "./dialog/ConfirmDialog";
 import LoadingRoller from "./LoadingRoller";
+import { useAppThemeContext } from "../context/ThemeContext";
 
 interface Loading {
   delete: boolean;
@@ -42,6 +43,7 @@ export default function RecentWorkouts() {
   };
 
   const { setWorkout, clearWorkout } = useWorkoutContext();
+  const { setTitle } = useAppThemeContext();
 
   const getWorkouts = async () => {
     const newWorkouts = await fetchWorkouts();
@@ -55,6 +57,7 @@ export default function RecentWorkouts() {
   }
 
   useEffect(() => {
+    setTitle("Recent Workouts")
     getWorkouts();
     clearWorkout();
   }, []);

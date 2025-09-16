@@ -1,18 +1,18 @@
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import { UserRegisterDto, UserRegisterFormData } from "../library/types";
-import { register } from "../api";
+import { UserRegisterDto, UserRegisterFormData } from "../../library/types";
+import { register } from "../../api";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import { AuthContext } from "../context/AuthContext";
-import LogoutModal from "./dialog/LogoutModal";
+import { AuthContext } from "../../context/AuthContext";
+import LogoutModal from "../dialog/LogoutModal";
 import Link from "@mui/material/Link";
-import AuthAppBar from "./AuthAppBar";
-import { CENTER_COL_FLEX_BOX } from "../styles/StyleOverrides";
+import AuthAppBar from "../Layout/AuthAppBar";
+import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 
 export default function Register() {
   const { user } = useContext(AuthContext);

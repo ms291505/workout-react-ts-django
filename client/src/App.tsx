@@ -1,18 +1,18 @@
-import { Routes, Route, Navigate } from 'react-router';
-import HomeScreen from './components/Layout/HomeScreen.tsx';
-import Login from './components/Login.tsx';
-import ProtectedRoute from './components/ProtectedRoute.tsx';
-import RecentWorkouts from './components/RecentWorkouts.tsx';
-import ExerciseLibrary from './components/ExerciseLibrary/ExerciseLibrary.tsx';
-import Register from './components/Register.tsx';
+import { Routes, Route, Navigate } from "react-router";
+import HomeScreen from "./components/Layout/HomeScreen.tsx";
+import Login from "./components/Auth/Login.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import RecentWorkouts from "./components/RecentWorkouts.tsx";
+import ExerciseLibrary from "./components/ExerciseLibrary/ExerciseLibrary.tsx";
+import Register from "./components/Auth/Register.tsx";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import MainLayout from './components/MainLayout.tsx';
-import StrengthWorkoutEntry from './components/StrengthWorkout/StrengthWorkoutEntry.tsx';
-import { CENTER_COL_FLEX_BOX } from './styles/StyleOverrides.ts';
+import MainLayout from "./components/MainLayout.tsx";
+import StrengthWorkoutEntry from "./components/StrengthWorkout/StrengthWorkoutEntry.tsx";
+import { CENTER_COL_FLEX_BOX } from "./styles/StyleOverrides.ts";
 import TemplatesLibrary from "./components/TemplatesLibrary/TemplatesLibrary.tsx";
-import { TemplateLibraryProvider } from './context/TemplateLibraryContext.tsx';
+import { TemplateLibraryProvider } from "./context/TemplateLibraryContext.tsx";
 
 export default function App() {
 

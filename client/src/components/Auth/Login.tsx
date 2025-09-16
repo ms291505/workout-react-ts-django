@@ -1,13 +1,13 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
-import { login } from "../api";
+import { login } from "../../api";
 import { useNavigate  } from "react-router";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import LoginIcon from "@mui/icons-material/Login";
-import AuthAppBar from "./AuthAppBar";
+import AuthAppBar from "../Layout/AuthAppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Divider from "@mui/material/Divider";
 import { useSnackbar } from "notistack";

@@ -57,7 +57,7 @@ export default function RecentWorkouts() {
   }
 
   useEffect(() => {
-    setTitle("Recent Workouts")
+    setTitle("Recent Workouts");
     getWorkouts();
     clearWorkout();
   }, []);

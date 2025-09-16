@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton"
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import Typography from "@mui/material/Typography";
-import { useAppThemeContext } from "../context/ThemeContext";
+import { useAppThemeContext } from "../../context/ThemeContext";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 
 export default function AuthAppBar() {

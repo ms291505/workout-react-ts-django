@@ -16,13 +16,16 @@ import ExerciseDetails from "../dialog/ExerciseDetails";
 import IconButton from "@mui/material/IconButton";
 import { createEmptyExHist, createEmptyExSet, createEmptyWorkout } from "../../library/factories";
 import { useNavigate } from "react-router";
+import { useAppThemeContext } from "../../context/ThemeContext";
 
 interface Props {
   buildWorkout?: boolean;
+  variant?: "default" | "modal";
 }
 
 export default function ExerciseLibrary({
   buildWorkout = false,
+  variant = "default",
 }: Props) {
 
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -31,10 +34,12 @@ export default function ExerciseLibrary({
   const [createrOpen, setCreaterOpen] = useState(false);
   const [exDetailsOpen, setExDetailsOpen] = useState(false);
   const [exDetailSelection, setExDetailSelection] = useState<Exercise | null>(null)
+  const { setTitle } = useAppThemeContext();
   const { exSelections, setExSelections, setWorkout } = useWorkoutContext();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (variant === "default") setTitle("Exercise Library");
     fetchExercises().then((response) => {
       setExercises(response);
       setLoading(false);

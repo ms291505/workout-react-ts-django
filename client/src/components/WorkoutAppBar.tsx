@@ -5,11 +5,8 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton"
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import Drawer from "@mui/material/Drawer";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useState } from "react";
 import { useAppThemeContext } from "../context/ThemeContext";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { AuthContext } from "../context/AuthContext";
 import { DRAWER_WIDTH } from "../library/constants";
 import Container from "@mui/material/Container";
 import NavList from "./NavList";
@@ -22,8 +19,7 @@ import AppTitle from "./Layout/AppTitle";
 export default function WorkoutAppBar() {
 
   const [open, setOpen] = useState(false);
-  const { toggleDarkMode, isMobile, setTitle } = useAppThemeContext();
-  const { user, handleLogout } = useContext(AuthContext);
+  const { isMobile, setTitle } = useAppThemeContext();
 
   const navigate = useNavigate();
 
@@ -58,24 +54,6 @@ export default function WorkoutAppBar() {
                 <MenuBookIcon />
               </IconButton>
               <AppTitle />
-              <IconButton
-                size="large"
-                color="inherit"
-                onClick={toggleDarkMode}
-              >
-                <Brightness4Icon />
-              </IconButton>
-              {
-                user && (
-                  <IconButton
-                    size="large"
-                    color="inherit"
-                    onClick={handleLogout}
-                  >
-                    <LogoutIcon />
-                  </IconButton>
-                )
-              }
             </Box>
             <Box
               sx={{

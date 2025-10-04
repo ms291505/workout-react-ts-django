@@ -5,7 +5,7 @@ interface navBarRoute {
 
 export const navBarRoutes: navBarRoute[] = [
   {
-    name: "Home",
+    name: "Recent",
     route: "/"
   },
   {

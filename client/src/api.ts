@@ -239,6 +239,25 @@ export async function fetchWorkoutDetail(workoutId: number): Promise<Workout_His
   return response.json();
 }
 
+export async function fetchTemplateDetail(templateId: number): Promise<TmplWorkoutHist> {
+  const response = await fetch(`${API_BASE}/tmpl-workouts/${templateId}`, {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  if (response.status === 401) {
+    await refreshAccess();
+    return fetchTemplateDetail(templateId);
+  }
+
+  if (!response.ok) await handleApiError(response);
+
+  await checkStatus(response);
+  return response.json();
+}
+
 export async function postWorkout(workout: Workout_Hist): Promise<Workout_Hist> {
   const response = await fetch(`${API_BASE}/workouts/`, {
     method: "POST",

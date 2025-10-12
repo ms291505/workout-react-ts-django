@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { Exercise_Hist, Workout_Hist, TmplHist, AccessMode, StrengthWorkoutEntryText } from "../../library/types";
 import { useNavigate, useParams } from "react-router";
-import { fetchTmplWorkoutHists, fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
+import { fetchTemplateDetail, fetchTmplWorkoutHists, fetchWorkoutDetail, postTemplate, postTemplateHist, postWorkout, updateWorkout } from "../../api";
 import { useEffect, useState, ChangeEvent } from "react";
 import ExerciseCard from "./ExerciseCard";
 import ExSetEditor from "./ExSetEditor";
@@ -14,11 +14,11 @@ import { enqueueSnackbar } from "notistack";
 import AddIcon from "@mui/icons-material/Add";
 import { CENTER_COL_FLEX_BOX } from "../../styles/StyleOverrides";
 import WorkoutHeader from "./WorkoutHeader";
-import StrengthWorkoutNotes from "./SrengthWorkoutNotes";
+import StrengthWorkoutNotes from "./StrengthWorkoutNotes";
 import ConfirmDialog from "../dialog/ConfirmDialog";
 import WorkoutSummary from "../WorkoutSummary/WorkoutSummary";
 import TemplateMenu from "./TemplateMenu";
-import { transformToTemplate } from "../../library/transform";
+import { transformToStrengthWorkout, transformToTemplate } from "../../library/transform";
 import { useAppThemeContext } from "../../context/ThemeContext";
 
 
@@ -51,10 +51,13 @@ export default function StrengthWorkoutEntry({
     setTitle(displayText.title);
   }, [displayText])
 
-  const { workoutId, } = useParams<{ workoutId?: string, templateId?: string}>();
+  const { workoutId, templateId} = useParams<{ workoutId?: string, templateId?: string}>();
 
   // Edit mode fallback in case of browser refresh:
   useEffect(() => {
+    if (templateId) {
+      console.log("templateId " + templateId);
+    }
     if (accessMode?.toLowerCase() === "edit" && !workout?.id) {
       fetchWorkoutDetail(Number(workoutId))
         .then((data) => {
@@ -62,8 +65,11 @@ export default function StrengthWorkoutEntry({
         })
     }
 
-    if (accessMode === "from list") {
-      // do nothing.
+    if (accessMode.toLowerCase() === "edit template" && !workout?.id) {
+      fetchTemplateDetail(Number(templateId))
+        .then((data) => {
+          setWorkout(transformToStrengthWorkout(data));
+        })
     }
 
     if (accessMode === "new") {

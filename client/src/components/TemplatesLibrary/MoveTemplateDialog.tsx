@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { TemplateFolder, TmplWorkoutHist } from "../../library/types";
 import { useTemplateLibraryContext } from "../../context/TemplateLibraryContext";
 import { updateTemplateFolder } from "../../api";

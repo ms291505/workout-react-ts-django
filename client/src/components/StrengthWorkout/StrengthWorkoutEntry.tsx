@@ -86,7 +86,7 @@ export default function StrengthWorkoutEntry({
             setTemplates(data);
         })
       } catch (err) {
-        console.error("Some error occured fetching templates:", err);
+        console.error("An error occured fetching templates:", err);
       }
     }
   }, [templateFlag])
@@ -183,7 +183,6 @@ export default function StrengthWorkoutEntry({
       await postTemplateHist(tmplHist);
     } else console.log("didn't update the template hist")
   };
-
 
   const onCancel = () => {
     clearWorkout();

@@ -11,6 +11,7 @@ interface Props {
   name: string | null;
   date: string | null;
   tmplName?: string | null;
+
 }
 
 export default function WorkoutHeader({
@@ -60,16 +61,6 @@ export default function WorkoutHeader({
           borderBottomWidth: 2
         }}
       />
-      {tmplName
-        ? <Typography
-          sx={{
-            mb: 1
-          }}
-          variant="body1">
-          {tmplDisplay}
-        </Typography>
-        : null
-      }
 
       {/* Modals */}
       <EditWorkoutHeaderModal

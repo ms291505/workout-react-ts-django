@@ -61,9 +61,19 @@ async function handleApiError(response: Response): Promise<never> {
   throw new Error(userMessage);
 }
 
+const createPath = (segment: string) => {
+  let clean = segment;
+  if (clean.charAt(0) === "/") {
+    clean = clean.slice(1);
+  }
+  
+  return(
+    `${API_BASE}/${segment}/`
+  );
+}
 
 export async function login(username: string, password: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/token/`, {
+  const response = await fetch(createPath("token"), {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

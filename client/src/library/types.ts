@@ -113,3 +113,7 @@ export type AccessMode = "edit" | "from list" | "new" | "edit template";
 export interface StrengthWorkoutEntryText {
   title: string;
 }
+
+export interface UploadFormData extends FormData {
+  file: File;
+}

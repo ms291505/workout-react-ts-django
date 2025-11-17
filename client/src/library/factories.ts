@@ -104,3 +104,12 @@ export function createStrengthWorkoutEntryText(
     title: title,
   })
 }
+
+export function createConditionalButtonText(
+  b: boolean,
+  trueText: string,
+  falseText: string,
+): string {
+  if (b) return trueText;
+  else return falseText;
+}

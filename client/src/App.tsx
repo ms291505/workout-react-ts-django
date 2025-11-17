@@ -13,6 +13,7 @@ import StrengthWorkoutEntry from "./components/StrengthWorkout/StrengthWorkoutEn
 import { CENTER_COL_FLEX_BOX } from "./styles/StyleOverrides.ts";
 import TemplatesLibrary from "./components/TemplatesLibrary/TemplatesLibrary.tsx";
 import { TemplateLibraryProvider } from "./context/TemplateLibraryContext.tsx";
+import FileUploadForm from "./components/UserControlPanel/FileUploadForm.tsx";
 
 export default function App() {
 
@@ -50,6 +51,9 @@ export default function App() {
                   </TemplateLibraryProvider>
                 } />
                 <Route path="template/edit/:templateId" element={<StrengthWorkoutEntry accessMode="edit template" />} />
+                <Route path="upload" element={
+                  <FileUploadForm />
+                } />
               </Route>
             </Route>
           </Route>

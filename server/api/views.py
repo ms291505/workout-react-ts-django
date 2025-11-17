@@ -8,6 +8,7 @@ from django.db.models import Q, Count
 
 from rest_framework import generics, status, filters
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 from .serializers import (
@@ -34,6 +35,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 from .auth_helpers import CookieTokenMixin
 
 from .debug_utils import d_log
+
+import csv
+import io
 
 
 def index(request):
@@ -132,10 +136,6 @@ class WorkoutListCreate(generics.ListCreateAPIView):
 
   POST:
     Creates a new workout for the user.
-
-  Attributes:
-    serializer_class (Serializer): Serializer clss for validating and serializing Workout_Hist instances.
-    permission_classes (list): List of permission classes that determine access; only authenticated users.
   """
   serializer_class = WorkoutHistSerializer
   permission_classes = [IsAuthenticated]
@@ -349,3 +349,30 @@ class CreateUserView(generics.CreateAPIView):
   queryset = User.objects.all()
   serializer_class = UserSerializer
   permission_classes = [AllowAny]
+
+
+class UploadWorkoutsView(APIView):
+  parser_classes = [MultiPartParser, FormParser]
+  
+  def post(self, request, *args, **kwargs):
+    file_obj = request.FILES.get("file")
+
+    if not file_obj:
+      return Response({"message": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+      reader = csv.DictReader(io.StringIO(file_obj.read().decode("utf-8")))
+      rows = [row for row in reader]
+
+      print(rows[:3])
+
+      return Response({
+        "message": f"Processed {len(rows)} rows.",
+        "sample": rows[:3]
+      })
+    
+    except Exception as e:
+      return Response(
+        {"error": str(e)},
+        status=status.HTTP_400_BAD_REQUEST
+      )

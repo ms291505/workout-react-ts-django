@@ -36,7 +36,6 @@ export default function StrengthWorkoutEntry({
     exSelections,
     setExSelections,
     clearWorkout,
-    workoutTemplate,
     templates,
     setTemplates
   } = useWorkoutContext();
@@ -201,10 +200,10 @@ export default function StrengthWorkoutEntry({
       <WorkoutHeader
         name={workout.name}
         date={workout.date}
-        tmplName={
-          workoutTemplate
-            ? workoutTemplate.name
-            : null
+        mode={
+          accessMode == "edit template"
+            ? "template"
+            : "workout"
         }
       />
       <StrengthWorkoutNotes />

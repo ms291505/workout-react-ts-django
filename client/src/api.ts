@@ -6,7 +6,8 @@ import {
   Choice,
   TmplWorkoutHist,
   TmplHist,
-  TemplateFolder
+  TemplateFolder,
+  UploadFormData
 } from "./library/types";
 import { API_BASE } from "./library/constants";
 
@@ -519,6 +520,22 @@ export async function whoAmI(): Promise<User> {
     await refreshAccess();
     return whoAmI();
   }
+  await checkStatus(response);
+  return response.json();
+}
+
+export async function uploadFile(formData: FormData): Promise<Response> {
+  const response = await fetch(`${API_BASE}/upload-workouts/`, {
+    method: "POST",
+    credentials: "include",
+    body: formData
+  });
+  if (response.status === 401) {
+    await refreshAccess();
+    return uploadFile(formData);
+  }
+  if (!response.ok) await handleApiError(response);
+
   await checkStatus(response);
   return response.json();
 }

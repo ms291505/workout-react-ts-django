@@ -40,7 +40,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
   fieldsets = [
-    *UserAdmin.fieldsets,
+    *UserAdmin.fieldsets, # type: ignore
     ("Workout Tools", {"fields": ("view_workouts_link",),
                        }),
   ]

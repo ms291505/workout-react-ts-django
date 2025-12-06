@@ -33,6 +33,10 @@ from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from .auth_helpers import CookieTokenMixin
+from .import_helpers import (
+  transform_to_ex_set,
+  exercise_exists
+)
 
 from .debug_utils import d_log
 
@@ -355,6 +359,7 @@ class UploadWorkoutsView(APIView):
   parser_classes = [MultiPartParser, FormParser]
   
   def post(self, request, *args, **kwargs):
+    user = self.request.user
     file_obj = request.FILES.get("file")
 
     if not file_obj:
@@ -363,8 +368,37 @@ class UploadWorkoutsView(APIView):
     try:
       reader = csv.DictReader(io.StringIO(file_obj.read().decode("utf-8")))
       rows = [row for row in reader]
+      name = None
+      date = None
+      notes = None
+      weight_lbs = None
+      reps = None
+      order = None
+
+
+      for row in rows:
+        if name is None: name = row["Workout Name"]
+        if date is None: date = row["Date"]
+        if notes is None: notes = row["Workout Notes"]
+
+        ex_set = transform_to_ex_set(row=row)
+
+        exercise = exercise_exists(name=row["Excercise Name"])
+        if not exercise:
+          serializer = ExerciseSerializer(
+            data={
+              "name": row["Excercise Name"]
+            }
+          )
+
+          exercise = serializer.save(
+            user=user,
+            user_added_flag="Y"
+          )
 
       print(rows[:3])
+
+      
 
       return Response({
         "message": f"Processed {len(rows)} rows.",

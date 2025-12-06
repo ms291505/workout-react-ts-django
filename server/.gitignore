@@ -31,3 +31,7 @@ client/sl/dist/
 .vscode/
 .idea/
 *.swp
+
+# Dev Test Data
+
+dev_test_data/

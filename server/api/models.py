@@ -146,7 +146,7 @@ class Exercise(models.Model):
   def clean(self):
     if self.user_added_flag == "Y" and self.user is None:
       raise ValueError("User must be set if user_added_flag is 'Y'")
-
+    
 
 class Exercise_Hist(models.Model):
   """

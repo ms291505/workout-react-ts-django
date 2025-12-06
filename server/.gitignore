@@ -33,5 +33,4 @@ client/sl/dist/
 *.swp
 
 # Dev Test Data
-
 dev_test_data/

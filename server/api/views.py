@@ -35,13 +35,14 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 from .auth_helpers import CookieTokenMixin
 from .import_helpers import (
   transform_to_ex_set,
-  exercise_exists
+  update_if_changed
 )
 
 from .debug_utils import d_log
 
 import csv
 import io
+import copy
 
 
 def index(request):
@@ -357,52 +358,74 @@ class CreateUserView(generics.CreateAPIView):
 
 class UploadWorkoutsView(APIView):
   parser_classes = [MultiPartParser, FormParser]
+  permission_classes = [IsAuthenticated]
   
   def post(self, request, *args, **kwargs):
     user = self.request.user
     file_obj = request.FILES.get("file")
+    workouts: list = []
+    workout: dict = {
+        "id": "",
+        "name": "",
+        "date": "",
+        "notes": "",
+        "exercises": [],
+      }
+    exercise: dict = {
+      "id": "",
+      "exercise_id": 0,
+      "name": "",
+      "notes": "",
+      "ex_sets": [],
+    }
 
     if not file_obj:
       return Response({"message": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
       reader = csv.DictReader(io.StringIO(file_obj.read().decode("utf-8")))
-      rows = [row for row in reader]
-      name = None
-      date = None
-      notes = None
-      weight_lbs = None
-      reps = None
-      order = None
-
-
+      rows = list(reader)
       for row in rows:
-        if name is None: name = row["Workout Name"]
-        if date is None: date = row["Date"]
-        if notes is None: notes = row["Workout Notes"]
+        changed = workout["date"] != row["Date"]
+        if changed:
+          if workout["name"]: workouts.append(copy.deepcopy(workout))
+          update_if_changed(workout, "name", row["Workout Name"])
+          update_if_changed(workout, "date", row["Date"])
+          update_if_changed(workout, "notes", row["Workout Notes"])
+          workout["exercises"] = []
+
+        exercise_serializer = ExerciseSerializer(
+          data={"name": row["Exercise Name"]},
+          context={"request": request},
+        )
+        exercise_serializer.is_valid(raise_exception=True)
+        ex_info: Exercise = exercise_serializer.save()
+
+        changed = exercise["name"] != ex_info.name
+        if changed:
+          if exercise["name"]: workout["exercises"].append(copy.deepcopy(exercise))
+          update_if_changed(exercise, "exercise_id", ex_info.pk)
+          update_if_changed(exercise, "name", ex_info.name)
+          exercise["ex_sets"] = []
 
         ex_set = transform_to_ex_set(row=row)
+        exercise["ex_sets"].append(copy.deepcopy(ex_set))
 
-        exercise = exercise_exists(name=row["Excercise Name"])
-        if not exercise:
-          serializer = ExerciseSerializer(
-            data={
-              "name": row["Excercise Name"]
-            }
-          )
+      if workout["name"]: workouts.append(copy.deepcopy(workout))
+      print(workouts)
 
-          exercise = serializer.save(
-            user=user,
-            user_added_flag="Y"
-          )
+      for workout in workouts:
 
-      print(rows[:3])
-
+        workout_hist_serializer = WorkoutHistSerializer(
+          data=workout,
+          context={"request": request},
+        )
+        workout_hist_serializer.is_valid(raise_exception=True)
+        workout_hist_serializer.save()
       
-
       return Response({
         "message": f"Processed {len(rows)} rows.",
-        "sample": rows[:3]
+        "sample": rows[:1]
       })
     
     except Exception as e:

@@ -7,7 +7,6 @@ import {
   TmplWorkoutHist,
   TmplHist,
   TemplateFolder,
-  UploadFormData
 } from "./library/types";
 import { API_BASE } from "./library/constants";
 

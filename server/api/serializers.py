@@ -12,6 +12,7 @@ from .models import (
   Tmpl_Ex_Set
   )
 from django.db.models import Q
+from django.db import transaction
 from datetime import timedelta
 from django.utils import timezone
 
@@ -62,18 +63,34 @@ class ExerciseSerializer(serializers.ModelSerializer):
     ]
     extra_kwargs = {
       "created": {"read_only": True},
-      "id": {"read_only": True}
+      "id": {"read_only": True},
+      "user": {"read_only": True},
     }
 
-  def validate_name(self, value):
-    user = self.context["request"].user
+  def create(self, validated_data):
+    request = self.context["request"]
+    user = request.user
+    name = validated_data["name"].strip()
 
-    if Exercise.objects.filter(
-      name__iexact=value,
-    ).filter(Q(user=user) | Q(user__isnull=True)).exists():
-      raise serializers.ValidationError("You already have an exercise with this name.")
+    exercise = Exercise.objects.filter(
+      name__iexact=name,
+      user=user
+    ).first()
+    if exercise:
+      return exercise
     
-    return value
+    exercise = Exercise.objects.filter(
+      name__iexact=name,
+      user__isnull=True
+    ).first()
+    if exercise:
+      return exercise
+    
+    return Exercise.objects.create(
+      name=name,
+      user=user,
+      user_added_flag="Y",
+    )
   
 
 class ExSetSerializer(serializers.ModelSerializer):
@@ -129,9 +146,11 @@ class WorkoutHistSerializer(serializers.ModelSerializer):
     fields = "__all__"
     extra_kwargs = {"user": {"read_only": True}}
 
+  @transaction.atomic
   def create(self, validated_data):
     exercises_data = validated_data.pop("exercises")
     tmpl_workout_hist_id = validated_data.pop("tmpl_workout_hist_id", None)
+
     workout_hist = Workout_Hist.objects.create(**validated_data)
 
     if tmpl_workout_hist_id:
